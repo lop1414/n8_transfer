@@ -2,6 +2,7 @@
 
 namespace App\Sdks\N8\Traits;
 
+use App\Common\Enums\ResponseCodeEnum;
 use App\Common\Tools\CustomException;
 
 trait Request
@@ -32,7 +33,12 @@ trait Request
         $result = $this->curlRequest($url, $param, $method, $header, $option);
 
         $result = json_decode($result,true);
-        if(empty($result) || $result['code'] != 0){
+        if(empty($result) || $result['code'] != ResponseCodeEnum::SUCCESS){
+
+            // 重复上报
+            if($result['code'] == 'DATA_REPEAT'){
+                return [];
+            }
             // 错误提示
             $errorMessage = $result['msg'] ?? 'n8系统请求错误';
 

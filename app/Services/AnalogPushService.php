@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Common\Services\BaseService;
+use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\SystemApi\ProductApiService;
 use App\Sdks\N8\N8Sdk;
 use App\Traits\AnalogPush\KyyUser;
@@ -21,6 +22,9 @@ class AnalogPushService extends BaseService
      */
     protected $timeInterval = 60*2;
 
+
+    public $echoService;
+
     /**
      * 时间区间
      *
@@ -30,6 +34,7 @@ class AnalogPushService extends BaseService
 
     public function __construct(){
         $this->pushSdk = new N8Sdk();
+        $this->echoService = new ConsoleEchoService();
     }
 
 

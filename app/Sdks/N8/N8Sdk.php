@@ -19,13 +19,6 @@ class N8Sdk
     protected $secret;
 
 
-    /**
-     * 公共接口地址
-     */
-    const BASE_URL = 'http://n8_product.local';
-
-
-
 
     /**
      * @param $uri
@@ -33,7 +26,7 @@ class N8Sdk
      * 获取请求地址
      */
     public function getUrl($uri){
-        return self::BASE_URL .'/'. ltrim($uri, '/');
+        return env('APP_PRODUCT_API_URL') .'/'. ltrim($uri, '/');
     }
 
     /**

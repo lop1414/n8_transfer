@@ -21,11 +21,15 @@ trait KyyUser
 
             $this->loopTime(function ($statTime,$endTime) use ($sdk,$product){
                $info = $sdk->getUserAction($product['cp_product_alias'],$product['cp_type'],$statTime,$endTime);
+               $count = count($info);
 
-               foreach ($info as $item){
+               foreach ($info as $i => $item){
+                   $rawData = $item['extend'];
+
+                   $this->echoService->progress($count,$i,"{$statTime} ~ {$endTime}");
+
                    switch ($item['type']){
                        case 'ACTIVATION':  // 注册行为
-                           $rawData = $item['extend'];
                            $this->pushSdk->reportKyyUserReg([
                                 'open_id'       => $rawData['guid'],
                                 'product_id'    => $product['id'],
@@ -38,10 +42,18 @@ trait KyyUser
 
                            break;
                        case 'REGISTER': //加桌行为
-
+                           $this->pushSdk->reportKyyUserShortcut([
+                               'open_id'       => $rawData['guid'],
+                               'product_id'    => $product['id'],
+                               'action_time'   => date('Y-m-d H:i:s',$rawData['time']),
+                               'ip'            => $rawData['ip'],
+                               'ua'            => $rawData['ua'] ? base64_decode($rawData['ua']) : '',
+                               'android_id'    => $rawData['android_id']
+                           ]);
                            break;
                    }
                }
+                $this->echoService->echo('');
             });
         }
     }
