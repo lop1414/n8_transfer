@@ -107,4 +107,6 @@ $app->router->group([
     require __DIR__.'/../routes/web.php';
 });
 
+defined('TIMESTAMP') || define('TIMESTAMP', time());
+
 return $app;
