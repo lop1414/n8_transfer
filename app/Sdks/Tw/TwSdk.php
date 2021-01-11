@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Sdks\Yw;
+namespace App\Sdks\Tw;
 
 
 
-use App\Sdks\Yw\Traits\Order;
-use App\Sdks\Yw\Traits\Request;
 
-class YwSdk
+use App\Sdks\Tw\Traits\Request;
+use App\Sdks\Tw\Traits\User;
+
+class TwSdk
 {
 
     use Request;
-    use Order;
+    use User;
 
-    /**
-     * @var
-     * 邮箱
-     */
-    protected $email;
 
     /**
      * @var
@@ -27,26 +23,21 @@ class YwSdk
 
     /**
      * @var
-     * 产品标识
+     * 应用包ID
      */
-    protected $appflags;
+    protected $packageId;
 
 
-    /**
-     * @var
-     * 版本号
-     */
-    protected $version = 1;
+
 
     /**
      * 公共接口地址
      */
-    const BASE_URL = 'https://open.yuewen.com';
+    const BASE_URL = 'https://api.tengwen018.com/package';
 
 
-    public function __construct($appflags,$email,$secret){
-        $this->appflags = $appflags;
-        $this->email = $email;
+    public function __construct($packageId,$secret){
+        $this->packageId = $packageId;
         $this->secret = $secret;
     }
 
@@ -77,14 +68,13 @@ class YwSdk
      * @return array
      */
     public function sign($params = []){
+
+
         $appSecret = $this->secret;
+
         unset($params['sign']);            //去除不参与签名的参数
-        ksort($params, SORT_REGULAR);    //根据键值以 ASCII 码升序排序
-        $splicedString = '';
-        foreach ($params as $paramKey => $paramValue) {
-            $splicedString .= $paramKey . $paramValue;
-        }
-        $params['sign'] = strtoupper(md5($appSecret. $splicedString));
-        return  $params;
+        $tmp = $this->packageId. $appSecret. $params['time'];
+        $params['sign'] = md5($tmp);
+        return $params;
     }
 }

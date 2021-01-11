@@ -6,12 +6,14 @@ use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\SystemApi\ProductApiService;
 use App\Sdks\N8\N8Sdk;
-use App\Traits\AnalogPush\KyyUser;
+use App\Traits\AnalogPush\TwKyy;
+use App\Traits\AnalogPush\YwKyy;
 
 
 class AnalogPushService extends BaseService
 {
-    use KyyUser;
+    use YwKyy;
+    use TwKyy;
 
     public $pushSdk;
 
@@ -20,7 +22,7 @@ class AnalogPushService extends BaseService
      *
      * @var int
      */
-    protected $timeInterval = 60*2;
+    protected $timeInterval = 60;
 
 
     public $echoService;
