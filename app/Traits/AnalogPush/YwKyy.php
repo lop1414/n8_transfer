@@ -16,6 +16,8 @@ trait YwKyy
      */
     public function ywKyyUserAction(){
 
+        $this->echoService->echo('阅文快应用：下单、订单完成');
+
         $productList = $this->getProductList();
 
         $sdk = new SecondVersionSdk();
@@ -67,6 +69,9 @@ trait YwKyy
      * 下单行为 , 完成充值行为
      */
     public function ywKyyUserPay(){
+
+        $this->echoService->echo('阅文快应用：下单、订单完成');
+
         $productList = $this->getProductList();
 
 

@@ -28,6 +28,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+
+        $timeRange = date('Y-m-d H:i:s',TIMESTAMP). ','. date('Y-m-d H:i:s',TIMESTAMP-60);
+        $schedule->command("analog_push:yw_kyy --time={$timeRange}")->cron('* * * * *');
+        $schedule->command("analog_push:tw_kyy --time={$timeRange}")->cron('* * * * *');
+
     }
 }

@@ -5,6 +5,7 @@ namespace App\Sdks\Tw;
 
 
 
+use App\Sdks\Tw\Traits\Order;
 use App\Sdks\Tw\Traits\Request;
 use App\Sdks\Tw\Traits\User;
 
@@ -13,6 +14,7 @@ class TwSdk
 
     use Request;
     use User;
+    use Order;
 
 
     /**

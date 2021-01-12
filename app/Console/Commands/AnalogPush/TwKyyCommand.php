@@ -3,7 +3,9 @@
 namespace App\Console\Commands\AnalogPush;
 
 use App\Common\Console\BaseCommand;
+use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
+use App\Common\Tools\CustomException;
 use App\Services\AnalogPushService;
 
 class TwKyyCommand extends BaseCommand
@@ -12,7 +14,7 @@ class TwKyyCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'analog_push:tw_kyy';
+    protected $signature = 'analog_push:tw_kyy {--time=}';
 
     /**
      * 命令描述
@@ -36,12 +38,25 @@ class TwKyyCommand extends BaseCommand
 
 
     public function handle(){
+        $time = $this->option('time');
+        list($statTime,$endTime) = explode(",", $time);
 
-        $statDate = "2021-01-01 00:00:00";
-        $endDate = "2021-01-01 00:10:00";
+        // 校验
+        if(
+            !isset($statTime) || !Functions::timeCheck($statTime) ||
+            !isset($endTime) || !Functions::timeCheck($endTime) ||
+            $statTime > $endTime
+        ){
+            throw new CustomException([
+                'code' => 'DATE_RANGE_ERROR',
+                'message' => '时间范围错误',
+            ]);
+        }
+
         $service = new AnalogPushService();
-        $service->setTimeRange($statDate,$endDate);
+        $service->setTimeRange($statTime,$endTime);
         $service->twKyyRegAction();
+        $service->twKyyPayAction();
     }
 
 

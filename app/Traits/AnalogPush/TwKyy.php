@@ -14,6 +14,8 @@ trait TwKyy
      */
     public function twKyyRegAction(){
 
+        $this->echoService->echo('腾文快应用：注册、加桌行为');
+
         $productList = $this->getProductList();
 
 
@@ -23,9 +25,9 @@ trait TwKyy
             $sdk = new TwSdk($product['cp_product_alias'],$product['cp_secret']);
 
 
-            $this->loopTime(function ($statTime,$endTime) use ($sdk,$product){
+            $this->loopTime(function ($startTime,$endTime) use ($sdk,$product){
                $info = $sdk->getUsers([
-                   'reg_time' => date('Y-m-d H:i',strtotime($statTime))
+                   'reg_time' => date('Y-m-d H:i',strtotime($startTime))
                ]);
 
 
@@ -33,7 +35,7 @@ trait TwKyy
 
                foreach ($info as $i => $item){
 
-                   $this->echoService->progress($count,$i,"{$statTime} ~ {$endTime}");
+                   $this->echoService->progress($count,$i,"{$startTime} ~ {$endTime}");
 
 
                    // 注册行为
@@ -69,67 +71,60 @@ trait TwKyy
      * 下单行为 , 完成充值行为
      */
     public function twKyyPayAction(){
+
+        $this->echoService->echo('腾文快应用：下单、订单完成');
+
         $productList = $this->getProductList();
 
-
         foreach ($productList as $product){
-            if($product['cp_type'] != 'YW' || $product['type'] != 'KYY') continue;
+            if($product['cp_type'] != 'TW' || $product['type'] != 'KYY') continue;
 
-            $sdk = new YwSdk($product['cp_product_alias'],$product['account'],$product['cp_secret']);
+            $sdk = new TwSdk($product['cp_product_alias'],$product['cp_secret']);
 
             $this->loopTime(function ($startTime,$endTime) use ($sdk,$product){
-                $typeMap = [
-                    1 => 'NORMAL', // 普通充值
-                    2 => 'ANNUAL' // 年费
+                $info = $sdk->getOrders([
+                    'pay_time' => date('Y-m-d H:i',strtotime($startTime))
+                ]);
+
+
+                $count = count($info);
+
+                $orderTypeMap = [
+                    1 => 'NORMAL',
+                    2 => 'OTHER',
+                    3 => 'ACTIVITY',
+                    4 => 'OTHER'
                 ];
 
-                $param = [
-                    'coop_type'   => 11,
-                    'start_time'  => strtotime($startTime),
-                    'end_time'    => strtotime($endTime),
-                    'page'        => 1
-                ];
+                foreach ($info as $i => $item){
 
-                $currentTotal = $total = 0;
+                    $this->echoService->progress($count,$i,"{$startTime} ~ {$endTime}");
 
-                do{
-                    $data = $sdk->getOrders($param);
-                    $count = count($data['list']);
 
-                    foreach ($data['list'] as $i => $item) {
-                        $this->echoService->progress($count,$i,"{$startTime} ~ {$endTime}");
+                    // 下单行为
+                    $this->pushSdk->reportKyyUserPay([
+                        'open_id'       => $item['uid'],
+                        'product_id'    => $product['id'],
+                        'order_id'      => $item['id'],
+                        'order_time'    => $item['created_at'],
+                        'amount'        => $item['amount'],
+                        'type'          => $orderTypeMap[$item['type']],
+                        'ip'            => $item['device_ip'],
+                        'imei'          => $item['imei'],
+                        'oaid'          => $item['oaid'],
+                        'device_product'=> $item['device_product'],
+                    ]);
 
-                        if(empty($item['order_id'])){
-                            var_dump($item);
-                            continue;
-                        }
-
-                        $this->pushSdk->reportKyyUserPay([
-                            'open_id'       => $item['guid'],
+                    //订单完成行为
+                    if($item['is_pay'] == 1){
+                        $this->pushSdk->reportKyyOrderComplete([
                             'product_id'    => $product['id'],
-                            'order_id'      => $item['order_id'],
-                            'order_time'    => $item['order_time'],
-                            'amount'        => $item['amount'] * 100,
-                            'type'          => $typeMap[$item['order_type']],
+                            'order_id'      => $item['id'],
+                            'complete_time' => $item['finished_at']
                         ]);
-
-                        if($item['order_status'] == 2 && !empty($item['pay_time'])){
-                            $this->pushSdk->reportKyyOrderComplete([
-                                'product_id'    => $product['id'],
-                                'order_id'      => $item['order_id'],
-                                'complete_time' => $item['pay_time']
-                            ]);
-                        }
                     }
-                    $this->echoService->echo('');
-
-                    $param['last_page'] = $param['page'];
-                    $param['page'] += 1;
-                    $param['last_min_id'] = $data['min_id'];
-                    $param['last_max_id'] = $data['max_id'];
-                    $total = $param['total_count'] = $data['total_count'];
-                    $currentTotal += $count;
-                }while($total > $currentTotal);
+                }
+                $this->echoService->echo('');
             });
         }
     }
