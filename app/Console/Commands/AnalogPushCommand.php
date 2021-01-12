@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\AnalogPush;
+namespace App\Console\Commands;
 
 use App\Common\Console\BaseCommand;
 use App\Common\Helpers\Functions;
@@ -8,13 +8,13 @@ use App\Common\Services\ConsoleEchoService;
 use App\Common\Tools\CustomException;
 use App\Services\AnalogPushService;
 
-class YwKyyCommand extends BaseCommand
+class AnalogPushCommand extends BaseCommand
 {
     /**
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'analog_push:yw_kyy {--time=}';
+    protected $signature = 'analog_push {--time=}';
 
     /**
      * 命令描述
@@ -54,10 +54,24 @@ class YwKyyCommand extends BaseCommand
             ]);
         }
 
+
         $service = new AnalogPushService();
         $service->setTimeRange($statTime,$endTime);
-        $service->ywKyyUserAction();
-        $service->ywKyyUserPay();
+
+
+        // 调试模式不锁
+        $expire = Functions::isDebug() ? 1 : 60 * 60;
+
+        $this->lockRun(function () use ($service){
+
+            $service->ywKyyUserAction();
+            $service->ywKyyUserPay();
+
+            $service->twKyyRegAction();
+            $service->twKyyPayAction();
+        },'analog_push',$expire,['log' => true]);
+
+
     }
 
 

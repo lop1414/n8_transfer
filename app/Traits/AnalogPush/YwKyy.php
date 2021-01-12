@@ -16,7 +16,7 @@ trait YwKyy
      */
     public function ywKyyUserAction(){
 
-        $this->echoService->echo('阅文快应用：下单、订单完成');
+        $this->echoService->echo('阅文快应用：注册、加桌行为');
 
         $productList = $this->getProductList();
 
