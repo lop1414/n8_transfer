@@ -21,7 +21,7 @@ class AnalogPushCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = '推送阅文快应用用户行为数据';
+    protected $description = '推送用户行为数据';
 
     protected $consoleEchoService;
 
@@ -40,13 +40,13 @@ class AnalogPushCommand extends BaseCommand
     public function handle(){
 
         $time = $this->option('time');
-        list($statTime,$endTime) = explode(",", $time);
+        list($startTime,$endTime) = explode(",", $time);
 
         // 校验
         if(
-            !isset($statTime) || !Functions::timeCheck($statTime) ||
+            !isset($startTime) || !Functions::timeCheck($startTime) ||
             !isset($endTime) || !Functions::timeCheck($endTime) ||
-            $statTime > $endTime
+            $startTime > $endTime
         ){
             throw new CustomException([
                 'code' => 'DATE_RANGE_ERROR',
@@ -56,7 +56,7 @@ class AnalogPushCommand extends BaseCommand
 
 
         $service = new AnalogPushService();
-        $service->setTimeRange($statTime,$endTime);
+        $service->setTimeRange($startTime,$endTime);
 
 
         // 调试模式不锁

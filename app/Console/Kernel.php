@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     {
 
 
-        $timeRange = '"'.date('Y-m-d H:i:s',TIMESTAMP). '","'. date('Y-m-d H:i:s',TIMESTAMP-60).'"';
+        $timeRange = '"'.date('Y-m-d H:i:s',TIMESTAMP-60). '","'. date('Y-m-d H:i:s',TIMESTAMP).'"';
         $schedule->command("analog_push --time={$timeRange}")->cron('* * * * *');
 
     }
