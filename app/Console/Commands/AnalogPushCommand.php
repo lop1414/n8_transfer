@@ -60,7 +60,7 @@ class AnalogPushCommand extends BaseCommand
 
 
         // 调试模式不锁
-        $expire = Functions::isDebug() ? 1 : 60 * 60;
+        $expire = Functions::isDebug() ? 1 : 60 ;
 
         $this->lockRun(function () use ($service){
 
