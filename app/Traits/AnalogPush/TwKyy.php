@@ -24,6 +24,8 @@ trait TwKyy
 
             $sdk = new TwSdk($product['cp_product_alias'],$product['cp_secret']);
 
+            // 设置密钥
+            $this->pushSdk->setSecret($product['secret']);
 
             $this->loopTime(function ($startTime,$endTime) use ($sdk,$product){
                $info = $sdk->getUsers([
@@ -80,6 +82,10 @@ trait TwKyy
             if($product['cp_type'] != 'TW' || $product['type'] != 'KYY') continue;
 
             $sdk = new TwSdk($product['cp_product_alias'],$product['cp_secret']);
+
+
+            // 设置密钥
+            $this->pushSdk->setSecret($product['secret']);
 
             $this->loopTime(function ($startTime,$endTime) use ($sdk,$product){
                 $info = $sdk->getOrders([

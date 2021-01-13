@@ -25,6 +25,9 @@ trait YwKyy
         foreach ($productList as $product){
             if($product['cp_type'] != 'YW' || $product['type'] != 'KYY') continue;
 
+            // 设置密钥
+            $this->pushSdk->setSecret($product['secret']);
+
             $this->loopTime(function ($statTime,$endTime) use ($sdk,$product){
                $info = $sdk->getUserAction($product['cp_product_alias'],$product['cp_type'],$statTime,$endTime);
                $count = count($info);
@@ -79,6 +82,9 @@ trait YwKyy
             if($product['cp_type'] != 'YW' || $product['type'] != 'KYY') continue;
 
             $sdk = new YwSdk($product['cp_product_alias'],$product['account'],$product['cp_secret']);
+
+            // 设置密钥
+            $this->pushSdk->setSecret($product['secret']);
 
             $this->loopTime(function ($startTime,$endTime) use ($sdk,$product){
                 $typeMap = [
