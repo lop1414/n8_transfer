@@ -59,9 +59,6 @@ class AnalogPushCommand extends BaseCommand
         $service->setTimeRange($startTime,$endTime);
 
 
-        // 调试模式不锁
-        $expire = Functions::isDebug() ? 1 : 60 ;
-
         $this->lockRun(function () use ($service){
 
             $service->ywKyyUserAction();
@@ -69,7 +66,7 @@ class AnalogPushCommand extends BaseCommand
 
             $service->twKyyRegAction();
             $service->twKyyPayAction();
-        },'analog_push',$expire,['log' => true]);
+        },'analog_push','60',['log' => true]);
 
 
     }
