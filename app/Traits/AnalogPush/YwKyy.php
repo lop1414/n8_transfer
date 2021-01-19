@@ -120,7 +120,7 @@ trait YwKyy
                         if($item['order_status'] == 2 && !empty($item['pay_time'])){
                             $this->pushSdk->reportKyyOrderComplete([
                                 'product_id'    => $product['id'],
-                                'order_id'      => $item['order_id'],
+                                'order_id'      => $item['yworder_id'],
                                 'complete_time' => $item['pay_time']
                             ]);
                         }
