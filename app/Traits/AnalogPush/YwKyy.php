@@ -108,15 +108,10 @@ trait YwKyy
                     foreach ($data['list'] as $i => $item) {
                         $this->echoService->progress($count,$i,"{$startTime} ~ {$endTime}");
 
-                        if(empty($item['order_id'])){
-                            var_dump($item);
-                            continue;
-                        }
-
                         $this->pushSdk->reportKyyUserPay([
                             'open_id'       => $item['guid'],
                             'product_id'    => $product['id'],
-                            'order_id'      => $item['order_id'],
+                            'order_id'      => $item['yworder_id'],
                             'order_time'    => $item['order_time'],
                             'amount'        => $item['amount'] * 100,
                             'type'          => $typeMap[$item['order_type']],
