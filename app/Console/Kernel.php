@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\AnalogPushCommand;
-use App\Console\Commands\SyncProductCommand;
+use App\Console\Commands\MakeUserActionLogsTableCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -16,8 +16,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
 
-        AnalogPushCommand::class,
-        SyncProductCommand::class
+        MakeUserActionLogsTableCommand::class,
+        AnalogPushCommand::class
     ];
 
     /**
