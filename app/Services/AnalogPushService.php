@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
-use App\Common\Services\SystemApi\ProductApiService;
+
+use App\Common\Services\SystemApi\UnionApiService;
 use App\Sdks\N8\N8Sdk;
 use App\Traits\AnalogPush\TwKyy;
 use App\Traits\AnalogPush\YwKyy;
@@ -68,7 +69,7 @@ class AnalogPushService extends BaseService
      * @throws \App\Common\Tools\CustomException
      */
     public function getProductList(){
-        return  (new ProductApiService())->apiGetProduct();
+        return  (new UnionApiService())->apiGetProduct();
     }
 
 

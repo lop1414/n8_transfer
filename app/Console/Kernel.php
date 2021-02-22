@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\AnalogPushCommand;
 use App\Console\Commands\MakeUserActionLogsTableCommand;
+use App\Console\Commands\Yw\PullKyyUserActionLogCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -17,6 +18,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
 
         MakeUserActionLogsTableCommand::class,
+
+        PullKyyUserActionLogCommand::class,
         AnalogPushCommand::class
     ];
 
