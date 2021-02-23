@@ -7,9 +7,37 @@ use App\Common\Tools\CustomException;
 
 trait Request
 {
+    /**
+     * @param $uri
+     * @param array $param
+     * @param string $method
+     * @param array $header
+     * @param array $option
+     * @return array|mixed
+     * @throws CustomException
+     */
+    public function apiKyyRequest($uri, $param = [], $method = 'GET', $header = [], $option = []){
+        $url = $this->getKyyUrl($uri);
+        return $this->apiRequest($url, $param, $method, $header, $option);
+    }
 
     /**
      * @param $uri
+     * @param array $param
+     * @param string $method
+     * @param array $header
+     * @param array $option
+     * @return array|mixed
+     * @throws CustomException
+     */
+    public function apiH5Request($uri, $param = [], $method = 'GET', $header = [], $option = []){
+        $url = $this->getH5Url($uri);
+        return $this->apiRequest($url, $param, $method, $header, $option);
+    }
+
+
+    /**
+     * @param $url
      * @param array $param
      * @param string $method
      * @param array $header
@@ -18,9 +46,8 @@ trait Request
      * @throws CustomException
      * 携带认证请求
      */
-    public function apiRequest($uri, $param = [], $method = 'GET', $header = [], $option = []){
+    public function apiRequest($url, $param = [], $method = 'GET', $header = [], $option = []){
 
-        $url = $this->getUrl($uri);
         $param['timestamp'] = time();
 
         $param = $this->sign($param);

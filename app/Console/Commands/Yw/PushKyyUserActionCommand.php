@@ -6,22 +6,23 @@ use App\Common\Console\BaseCommand;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Tools\CustomException;
-use App\Services\Yw\KyyPullUserActionService;
+use App\Services\Yw\PullKyyUserActionService;
+use App\Services\Yw\PushKyyUserActionService;
 
-class PullKyyUserActionLogCommand extends BaseCommand
+class PushKyyUserActionCommand extends BaseCommand
 {
     /**
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'pull:kyy:user_action_log {--time=}';
+    protected $signature = 'push:kyy:user_action {--time=}';
 
     /**
      * 命令描述
      *
      * @var string
      */
-    protected $description = '拉取用户行为数据';
+    protected $description = '上报用户行为数据';
 
     protected $consoleEchoService;
 
@@ -55,19 +56,19 @@ class PullKyyUserActionLogCommand extends BaseCommand
         }
 
 
-        $service = new KyyPullUserActionService();
+        $service = new PushKyyUserActionService();
         $service->setTimeRange($startTime,$endTime);
 
 
         $this->lockRun(function () use ($service){
 
-            $service->reg();
-            $service->bind_channel();
-            $service->addShortcut();
-            $service->order();
+//            $service->reg();
+//            $service->bind_channel();
+//            $service->addShortcut();
+//            $service->order();
             $service->complete_order();
 
-        },'pull_kyy_user_action_log',1,['log' => true]);
+        },'push_kyy_user_action_log',60*5,['log' => true]);
 
 
     }

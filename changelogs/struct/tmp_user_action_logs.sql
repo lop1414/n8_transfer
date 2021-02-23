@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 22/02/2021 17:56:54
+ Date: 23/02/2021 14:16:59
 */
 
 SET NAMES utf8mb4;
@@ -23,7 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `tmp_user_action_logs`;
 CREATE TABLE `tmp_user_action_logs` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) DEFAULT NULL COMMENT '产品ID',
+  `product_id` int(11) NOT NULL COMMENT '产品ID',
   `open_id` varchar(64) NOT NULL COMMENT '平台用户ID',
   `action_time` datetime NOT NULL COMMENT '时间',
   `type` varchar(50) NOT NULL COMMENT '行为类型',

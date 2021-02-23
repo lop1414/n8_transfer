@@ -3,11 +3,15 @@
 namespace App\Services;
 
 
+use App\Common\Enums\CpTypeEnums;
+use App\Common\Enums\ProductTypeEnums;
+use App\Common\Enums\StatusEnum;
 use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\UnionApiService;
 use App\Enums\UserActionPushStatusEnum;
+use App\Models\TmpUserActionLogModel;
 use Illuminate\Support\Facades\DB;
 
 
@@ -24,7 +28,7 @@ class PullUserActionBaseService extends BaseService
      *
      * @var int
      */
-    protected $timeInterval = 60*5;
+    protected $timeInterval = 60*60;
 
 
 
@@ -101,8 +105,9 @@ class PullUserActionBaseService extends BaseService
     public function loopTime($fn){
         $date = $this->statDate;
 
-        while($date <= $this->endDate){
+        while($date < $this->endDate){
             $tmpEndDate = date('Y-m-d H:i:s',  strtotime($date) + $this->timeInterval);
+            $tmpEndDate = $tmpEndDate > $this->endDate ? $this->endDate :$tmpEndDate;
 
             $fn($date,$tmpEndDate);
 
@@ -111,6 +116,20 @@ class PullUserActionBaseService extends BaseService
         }
     }
 
+
+    public function productForeach($fn){
+        $productList = $this->getProductList([
+            'cp_type' => CpTypeEnums::YW,
+            'type'    => ProductTypeEnums::KYY
+        ]);
+
+        foreach ($productList as $product){
+            if($product['status'] != StatusEnum::ENABLE) continue;
+
+            $this->echoService->echo('产品名称：'.$product['name']);
+            $fn($product);
+        }
+    }
 
 
 
@@ -145,6 +164,21 @@ class PullUserActionBaseService extends BaseService
             }
         }
 
+    }
+
+
+    public function getUserActionData($startTime,$endTime,$productId,$actionType){
+        $suffix = date('Ym',strtotime($startTime));
+        $tableName = 'user_action_logs_'.$suffix;
+
+        $model = new TmpUserActionLogModel();
+        $model->setTable($tableName);
+        $data = $model->whereBetween('created_at',[$startTime,$endTime])
+            ->where('product_id',$productId)
+            ->where('type',$actionType)
+            ->where('status',UserActionPushStatusEnum::WAITING)
+            ->get();
+        return $data;
     }
 
 

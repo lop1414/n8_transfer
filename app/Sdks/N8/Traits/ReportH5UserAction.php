@@ -4,7 +4,7 @@ namespace App\Sdks\N8\Traits;
 
 
 
-trait ReportKyyUserAction
+trait ReportH5UserAction
 {
 
 
@@ -15,11 +15,11 @@ trait ReportKyyUserAction
      * @param $param
      * @return mixed
      */
-    public function reportKyyUserReg($param){
+    public function reportH5UserReg($param){
 
         $uri = '/open/action_report/reg';
 
-        return $this->apiKyyRequest($uri,$param,'POST');
+        return $this->apiH5Request($uri,$param,'POST');
     }
 
 
@@ -29,25 +29,25 @@ trait ReportKyyUserAction
      * @param $param
      * @return mixed
      */
-    public function reportKyyUserBindChannel($param){
+    public function reportH5UserBindChannel($param){
 
         $uri = '/open/action_report/bind_channel';
 
-        return $this->apiKyyRequest($uri,$param,'POST');
+        return $this->apiH5Request($uri,$param,'POST');
     }
 
 
     /**
-     * 用户加桌行为
+     * 用户关注行为
      *
      * @param $param
      * @return mixed
      */
-    public function reportKyyUserShortcut($param){
+    public function reportH5UserFollow($param){
 
-        $uri = '/open/action_report/add_shortcut';
+        $uri = '/open/action_report/follow';
 
-        return $this->apiKyyRequest($uri,$param,'POST');
+        return $this->apiH5Request($uri,$param,'POST');
     }
 
 
@@ -57,11 +57,11 @@ trait ReportKyyUserAction
      * @param $param
      * @return mixed
      */
-    public function reportKyyUserOrder($param){
+    public function reportH5UserOrder($param){
 
         $uri = '/open/action_report/order';
 
-        return $this->apiKyyRequest($uri,$param,'POST');
+        return $this->apiH5Request($uri,$param,'POST');
     }
 
     /**
@@ -70,11 +70,11 @@ trait ReportKyyUserAction
      * @param $param
      * @return mixed
      */
-    public function reportKyyOrderComplete($param){
+    public function reportH5OrderComplete($param){
 
         $uri = '/open/action_report/order_complete';
 
-        return $this->apiKyyRequest($uri,$param,'POST');
+        return $this->apiH5Request($uri,$param,'POST');
     }
 
 }

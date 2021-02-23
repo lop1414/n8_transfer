@@ -2,10 +2,6 @@
 
 namespace App\Services\Yw;
 
-
-use App\Common\Enums\CpTypeEnums;
-use App\Common\Enums\ProductTypeEnums;
-use App\Common\Enums\StatusEnum;
 use App\Common\Services\SystemApi\ProductKyyApiService;
 use App\Common\Tools\CustomException;
 use App\Enums\UserActionTypeEnum;
@@ -14,7 +10,7 @@ use App\Sdks\Yw\YwSdk;
 use App\Services\PullUserActionBaseService;
 
 
-class KyyPullUserActionService extends PullUserActionBaseService
+class PullKyyUserActionService extends PullUserActionBaseService
 {
 
     public $productKyyApiService;
@@ -22,20 +18,6 @@ class KyyPullUserActionService extends PullUserActionBaseService
     public function __construct(){
         parent::__construct();
         $this->productKyyApiService = new ProductKyyApiService();
-    }
-
-    public function productForeach($fn){
-        $productList = $this->getProductList([
-            'cp_type' => CpTypeEnums::YW,
-            'type'    => ProductTypeEnums::KYY
-        ]);
-
-        foreach ($productList as $product){
-            if($product['status'] != StatusEnum::ENABLE) continue;
-
-            $this->echoService->echo('产品名称：'.$product['name']);
-            $fn($product);
-        }
     }
 
 
