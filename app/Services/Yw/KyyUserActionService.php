@@ -7,10 +7,10 @@ use App\Common\Tools\CustomException;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\SecondVersion\SecondVersionSdk;
 use App\Sdks\Yw\YwSdk;
-use App\Services\PullUserActionBaseService;
+use App\Services\UserActionBaseService;
 
 
-class PullKyyUserActionService extends PullUserActionBaseService
+class KyyUserActionService extends UserActionBaseService
 {
 
     public $productKyyApiService;

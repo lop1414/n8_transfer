@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Console\Commands\Yw;
+namespace App\Console\Commands;
 
 use App\Common\Console\BaseCommand;
+use App\Common\Enums\CpTypeEnums;
+use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Tools\CustomException;
-use App\Services\Yw\PullKyyUserActionService;
 
-class PullKyyUserActionCommand extends BaseCommand
+class PullUserActionCommand extends BaseCommand
 {
     /**
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'pull:kyy:user_action {--time=}';
+    protected $signature = 'pull:user_action {--cp_type=} {--product_type=}  {--time=} {--time_interval=}';
+
 
     /**
      * 命令描述
@@ -39,7 +41,11 @@ class PullKyyUserActionCommand extends BaseCommand
 
     public function handle(){
 
+        $cpType = $this->option('cp_type');
+        $productType = $this->option('product_type');
         $time = $this->option('time');
+        $timeInterval = $this->option('time_interval') ?: 60;
+
         list($startTime,$endTime) = explode(",", $time);
 
         // 校验
@@ -54,11 +60,40 @@ class PullKyyUserActionCommand extends BaseCommand
             ]);
         }
 
+        if(!isset($cpType)){
+            throw new CustomException([
+                'code' => 'UNVALID',
+                'message' => 'cp_type 必传',
+            ]);
+        }
 
-        $service = new PullKyyUserActionService();
+        if(!isset($productType)){
+            throw new CustomException([
+                'code' => 'UNVALID',
+                'message' => 'product_type 必传',
+            ]);
+        }
+
+
+        Functions::hasEnum(CpTypeEnums::class, $cpType);
+        Functions::hasEnum(ProductTypeEnums::class, $productType);
+
+
+        $class = "App\Services\\{$cpType}\\Pull{$productType}UserActionService";
+
+        if(!class_exists($class)){
+            throw new CustomException([
+                'code' => 'NOT_REALIZED',
+                'message' => '未实现',
+            ]);
+        }
+        $service = new $class();
+
+        $service->setTimeInterval($timeInterval);
         $service->setTimeRange($startTime,$endTime);
 
 
+        $lockKey = "{$cpType}:{$productType}:pull_user_action_log";
         $this->lockRun(function () use ($service){
 
             $service->reg();
@@ -67,7 +102,7 @@ class PullKyyUserActionCommand extends BaseCommand
             $service->order();
             $service->complete_order();
 
-        },'pull_kyy_user_action_log',60*5,['log' => true]);
+        },$lockKey,60*10,['log' => true]);
 
 
     }

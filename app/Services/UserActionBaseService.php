@@ -15,7 +15,7 @@ use App\Models\TmpUserActionLogModel;
 use Illuminate\Support\Facades\DB;
 
 
-class PullUserActionBaseService extends BaseService
+class UserActionBaseService extends BaseService
 {
 
 
@@ -28,7 +28,7 @@ class PullUserActionBaseService extends BaseService
      *
      * @var int
      */
-    protected $timeInterval = 60*60;
+    protected $timeInterval = 60;
 
 
 

@@ -6,10 +6,10 @@ namespace App\Services\Yw;
 use App\Enums\UserActionPushStatusEnum;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\N8\N8Sdk;
-use App\Services\PullUserActionBaseService;
+use App\Services\UserActionBaseService;
 
 
-class PushKyyUserActionService extends PullUserActionBaseService
+class PushKyyUserActionService extends UserActionBaseService
 {
 
     public $actionType;
