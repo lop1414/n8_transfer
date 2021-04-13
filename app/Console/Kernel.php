@@ -3,6 +3,7 @@
 namespace App\Console;
 
 
+use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\MakeUserActionLogsTableCommand;
 use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
@@ -18,7 +19,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
 
-        MakeUserActionLogsTableCommand::class,
+        CreateTableCommand::class,
 
         PullUserActionCommand::class,
         PushUserActionCommand::class,
@@ -34,6 +35,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        //创建分表
+        $schedule->command('create_table')->cron('0 0 1,15 * *');
+
         $timeRange = '"'.date('Y-m-d H:i:s',TIMESTAMP-60). '","'. date('Y-m-d H:i:s',TIMESTAMP).'"';
 
         // 拉取行为数据
