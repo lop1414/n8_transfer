@@ -3,7 +3,7 @@
 namespace App\Services\Yw;
 
 
-use App\Enums\UserActionPushStatusEnum;
+use App\Enums\PushStatusEnum;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\N8\N8Sdk;
 use App\Services\UserActionBaseService;
@@ -36,7 +36,7 @@ class PushKyyUserActionService extends UserActionBaseService
                      // 推送
                      $fn($sdk,$product,$rawData);
 
-                    $item->status = UserActionPushStatusEnum::DONE;
+                    $item->status = PushStatusEnum::DONE;
                     $item->save();
 
                 }

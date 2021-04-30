@@ -3,15 +3,13 @@
 namespace App\Sdks\N8;
 
 
-use App\Sdks\N8\Traits\ReportH5UserAction;
-use App\Sdks\N8\Traits\ReportKyyUserAction;
+use App\Sdks\N8\Traits\ReportUserAction;
 use App\Sdks\N8\Traits\Request;
 
 class N8Sdk
 {
     use Request;
-    use ReportKyyUserAction;
-    use ReportH5UserAction;
+    use ReportUserAction;
 
     /**
      * @var
@@ -27,27 +25,6 @@ class N8Sdk
      */
     public function setSecret($secret){
         $this->secret = $secret;
-    }
-
-
-
-    /**
-     * @param $uri
-     * @return string
-     * 获取请求地址
-     */
-    public function getKyyUrl($uri){
-        return env('APP_PRODUCT_KYY_API_URL') .'/'. ltrim($uri, '/');
-    }
-
-
-    /**
-     * @param $uri
-     * @return string
-     * 获取请求地址
-     */
-    public function getH5Url($uri){
-        return env('APP_PRODUCT_H5_API_URL') .'/'. ltrim($uri, '/');
     }
 
 

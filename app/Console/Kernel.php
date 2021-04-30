@@ -4,9 +4,8 @@ namespace App\Console;
 
 
 use App\Console\Commands\CreateTableCommand;
-use App\Console\Commands\MakeUserActionLogsTableCommand;
-use App\Console\Commands\PullUserActionCommand;
-use App\Console\Commands\PushUserActionCommand;
+use App\Console\Commands\MakeCommandCommand;
+use App\Console\Commands\UserActionCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -20,10 +19,10 @@ class Kernel extends ConsoleKernel
     protected $commands = [
 
         CreateTableCommand::class,
+        MakeCommandCommand::class,
 
-        PullUserActionCommand::class,
-        PushUserActionCommand::class,
-
+        // 用户行为 拉取 或 推送
+        UserActionCommand::class,
 
     ];
 
@@ -38,13 +37,23 @@ class Kernel extends ConsoleKernel
         //创建分表
         $schedule->command('create_table')->cron('0 0 1,15 * *');
 
-        $timeRange = '"'.date('Y-m-d H:i:s',TIMESTAMP-60). '","'. date('Y-m-d H:i:s',TIMESTAMP).'"';
+        //时间范围
+        $dateTime = date('Y-m-d H:i:s',TIMESTAMP);
+        //一分钟区间
+        $tmpTime = date('Y-m-d H:i:s',TIMESTAMP-60);
+        $oneMinuteRange = "'{$tmpTime}','{$dateTime}'";
+        //半小时区间
+        $halfHourRange = '"'.date('Y-m-d H:i:s',TIMESTAMP-60). '","'. $dateTime.'"';
 
-        // 拉取行为数据
-        $schedule->command("pull:user_action --cp_type=YW --product_type=KYY --time_interval=60 --time={$timeRange}")->cron('* * * * *');
+        //用户行为数据 拉取 及 上报
+        $path = base_path(). '/app/Services/CommandsService.php';
+        if(file_exists($path)){
+            $commandsService = new \App\Services\CommandsService();
+            $commandsService->pullUserAction($schedule,$oneMinuteRange);
+            $commandsService->pushUserAction($schedule,$halfHourRange);
+        }
 
-
-        // 上报行为数据
-        $schedule->command("push:user_action --cp_type=YW --product_type=KYY --time_interval=60 --time={$timeRange}")->cron('* * * * *');
     }
+
+
 }

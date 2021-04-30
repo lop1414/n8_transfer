@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Common\Models\BaseModel;
 
-class TmpUserActionLogModel extends BaseModel
+class UserActionLogModel extends BaseModel
 {
     /**
      * 关联到模型的数据表
@@ -14,12 +14,29 @@ class TmpUserActionLogModel extends BaseModel
     protected $table = 'tmp_user_action_logs';
 
 
-    /**
-     * 禁用默认更新时间
-     *
-     * @var bool
-     */
-    public $timestamps = false;
+
+    protected $fillable = [
+        'product_id',
+        'open_id',
+        'action_time',
+        'type',
+        'cp_channel_id',
+        'request_id',
+        'ip',
+        'data',
+        'status',
+        'action_id',
+        'matcher'
+    ];
+
+
+    public function setTableNameWithMonth($dateTime){
+
+        $name =  'user_action_logs_'. date('Ym',strtotime($dateTime));
+        $this->table = $name;
+        return $this;
+    }
+
 
 
     /**
