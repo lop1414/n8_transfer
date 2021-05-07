@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 30/04/2021 17:43:03
+ Date: 07/05/2021 16:10:50
 */
 
 SET NAMES utf8mb4;
@@ -34,6 +34,7 @@ CREATE TABLE `tmp_user_action_logs` (
   `status` varchar(50) NOT NULL COMMENT '状态',
   `action_id` varchar(255) NOT NULL DEFAULT '' COMMENT '行为ID',
   `matcher` varchar(50) NOT NULL DEFAULT '' COMMENT '归因方',
+  `fail_data` text COMMENT '失败数据',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),

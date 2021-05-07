@@ -6,7 +6,6 @@ namespace App\Services;
 use App\Common\Enums\AdvAliasEnum;
 use App\Common\Enums\MatcherEnum;
 use App\Common\Enums\ReportStatusEnum;
-use App\Common\Enums\ResponseCodeEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
@@ -27,11 +26,6 @@ class UserActionBaseService extends BaseService
     protected $actionType;
 
     /**
-     * @var N8Sdk
-     */
-    protected $n8Sdk;
-
-    /**
      * @var
      * 时间区间
      */
@@ -43,12 +37,6 @@ class UserActionBaseService extends BaseService
      */
     protected $product;
 
-    /**
-     * @var bool
-     * 上报不完整数据
-     */
-    protected $reportIncompleteData = false;
-
 
     public $echoService;
 
@@ -56,12 +44,18 @@ class UserActionBaseService extends BaseService
     protected $clickService;
 
 
+    /**
+     * @var N8Sdk
+     */
+    protected $n8Sdk;
+
+
 
     public function __construct(){
         parent::__construct();
+        $this->model = new UserActionLogModel();
         $this->echoService = new ConsoleEchoService();
         $this->n8Sdk = new N8Sdk();
-        $this->model = new UserActionLogModel();
 
     }
 
@@ -102,24 +96,12 @@ class UserActionBaseService extends BaseService
     }
 
 
-    /**
-     * 开启上报不完整数据
-     */
-    public function openReportIncompleteData(){
-        $this->reportIncompleteData = true;
-    }
 
 
     /**
      * 拉 预处理
      */
     public function pullPrepare(){}
-
-
-    /**
-     * 拉取后
-     */
-    public function pullAfter(){}
 
 
 
@@ -146,36 +128,56 @@ class UserActionBaseService extends BaseService
     }
 
 
+    /**
+     * 拉取后
+     */
+    public function pullAfter(){}
+
+
+
+
     public function pullItem($item){}
 
 
 
+    /**
+     * @param $adv
+     * @param $data
+     * @throws CustomException
+     * 保存广告点击数据
+     */
+    public function saveAdvClickData($adv,$data){
+        $service = $this->getClickService($adv);
+        $service->save($data);
+    }
 
 
-    public function push(){
-        $list = $this->getUserActionList();
 
-        $action = 'report';
-        $action .= ucfirst(Functions::camelize($this->actionType));
-        foreach ($list as $item){
-            $tmp = $this->pushItem($item);
-            $res = $this->n8Sdk->$action($tmp);
+    /**
+     * @param $adv
+     * @return mixed
+     * @throws CustomException
+     * 分发各广告商ClickService
+     */
+    public function getClickService($adv){
+        if(empty($this->clickService[$adv])){
+            Functions::hasEnum(AdvAliasEnum::class,$adv);
 
-            if($res['code'] == ResponseCodeEnum::SUCCESS){
-                $item->status = ReportStatusEnum::DONE;
-            }else{
-                $item->status = ReportStatusEnum::FAIL;
+            $action = ucfirst(Functions::camelize($adv));
+            $class = "App\Services\AdvClick\\{$action}ClickService";
+
+            if(!class_exists($class)){
+                throw new CustomException([
+                    'code' => 'NOT_FOUND_CLASS',
+                    'message' => "未知的类:{$class}",
+                ]);
             }
-            $item->save();
+
+            $this->clickService[$adv] = new $class;
         }
+
+        return $this->clickService[$adv];
     }
-
-
-
-    public function pushItem($item){
-        return [];
-    }
-
 
 
 
@@ -204,11 +206,64 @@ class UserActionBaseService extends BaseService
 
 
 
+
+
+
+
+
+
+
+
     /**
+     * 上报
+     */
+    public function push(){
+        $list = $this->getReportUserActionList();
+
+        foreach ($list as $item){
+
+            try{
+                $action = 'report';
+                $action .= ucfirst(Functions::camelize($this->actionType));
+                $tmp = $this->pushItemPrepare($item);
+                $this->n8Sdk->$action($tmp);
+                $item->status = ReportStatusEnum::DONE;
+
+            }catch(CustomException $e){
+                $errorInfo = $e->getErrorInfo(true);
+
+                $item->fail_data = $errorInfo;
+                $item->status = ReportStatusEnum::FAIL;
+                echo $errorInfo['message']. "\n";
+
+            }catch(\Exception $e){
+
+                $errorInfo = [
+                    'code'      => $e->getCode(),
+                    'message'   => $e->getMessage()
+                ];
+
+                $item->fail_data = $errorInfo;
+                $item->status = ReportStatusEnum::FAIL;
+                echo $e->getMessage(). "\n";
+            }
+
+            $item->save();
+        }
+    }
+
+
+    public function pushItemPrepare($item){}
+
+
+
+
+    /**
+     * @param array $where
      * @return mixed
      * 获取需要上报行为数据列表
      */
-    public function getUserActionList($fn = null){
+    public function getReportUserActionList($where = []){
 
         return $this->model
             ->setTableNameWithMonth($this->startTime)
@@ -216,55 +271,10 @@ class UserActionBaseService extends BaseService
             ->where('product_id',$this->product['id'])
             ->where('type',$this->actionType)
             ->where('status',ReportStatusEnum::WAITING)
-            ->when(!$this->reportIncompleteData,function ($query){
-                return $query
-                    ->where('ip','!=','');
-            })
-            ->when($fn,function ($query) use ($fn){
-                return $fn($query);
+            ->when($where,function ($query,$where){
+                return $query->where($where);
             })
             ->get();
     }
-
-
-    /**
-     * @param $adv
-     * @param $data
-     * @throws CustomException
-     * 保存广告点击数据
-     */
-    public function saveAdvClickData($adv,$data){
-        $service = $this->getClickService($adv);
-        $service->save($data);
-    }
-
-
-
-    /**
-     * @param $adv
-     * @return mixed
-     * @throws CustomException
-     * 分发各广告商service
-     */
-    public function getClickService($adv){
-        if(empty($this->clickService[$adv])){
-            Functions::hasEnum(AdvAliasEnum::class,$adv);
-
-            $action = ucfirst(Functions::camelize($adv));
-            $class = "App\Services\AdvClick\\{$action}ClickService";
-
-            if(!class_exists($class)){
-                throw new CustomException([
-                    'code' => 'NOT_FOUND_CLASS',
-                    'message' => "未知的类:{$class}",
-                ]);
-            }
-
-            $this->clickService[$adv] = new $class;
-        }
-
-        return $this->clickService[$adv];
-    }
-
 
 }

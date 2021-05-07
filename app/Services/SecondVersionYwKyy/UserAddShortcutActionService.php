@@ -36,7 +36,14 @@ class UserAddShortcutActionService extends UserActionBaseService
     }
 
 
-    public function pushItem($item){
+
+
+
+
+
+
+
+    public function pushItemPrepare($item){
         $rawData = $item['data'];
 
         return [

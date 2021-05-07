@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 30/04/2021 17:42:45
+ Date: 07/05/2021 16:11:18
 */
 
 SET NAMES utf8mb4;
@@ -29,6 +29,7 @@ CREATE TABLE `gdt_clicks` (
   `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
   `extends` text NOT NULL COMMENT '扩展字段',
   `status` varchar(50) NOT NULL COMMENT '上报状态',
+  `fail_data` text COMMENT '失败数据',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL COMMENT '更新事件',
   PRIMARY KEY (`id`),

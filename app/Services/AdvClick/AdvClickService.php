@@ -3,13 +3,22 @@
 namespace App\Services\AdvClick;
 
 use App\Common\Enums\AdvClickSourceEnum;
+use App\Common\Enums\ReportStatusEnum;
+use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
+use App\Common\Tools\CustomException;
 
 
 class AdvClickService extends BaseService
 {
 
     protected $adv;
+
+    /**
+     * @var
+     * 时间区间
+     */
+    protected $startTime,$endTime;
 
 
     /**
@@ -19,8 +28,68 @@ class AdvClickService extends BaseService
     protected $clickSource = AdvClickSourceEnum::N8_TRANSFER;
 
 
+
+    /**
+     * @param $startTime
+     * @param $endTime
+     * @return $this
+     * @throws CustomException
+     * 设置时间区间
+     */
+    public function setTimeRange($startTime,$endTime){
+        Functions::checkTimeRange($startTime,$endTime);
+        $this->startTime = $startTime;
+        $this->endTime = $endTime;
+        return $this;
+    }
+
+
+    /**
+     * @param $data
+     * 保存点击数据
+     */
     public function save($data){}
 
+
+
+    /**
+     * 预处理
+     */
+    public function pushPrepare(){}
+
+
+
+    public function pushItem($item){}
+
+
+    public function push(){
+        $list = $this->pushPrepare();
+        foreach ($list as $item){
+            try{
+                $this->pushItem($item);
+                $item->status = ReportStatusEnum::DONE;
+
+            }catch(CustomException $e){
+                $errorInfo = $e->getErrorInfo(true);
+
+                $item->fail_data = $errorInfo;
+                $item->status = ReportStatusEnum::FAIL;
+
+                echo $errorInfo['message']. "\n";
+
+            }catch(\Exception $e){
+                $item->fail_data = [
+                    'code'      => $e->getCode(),
+                    'message'   => $e->getMessage()
+                ];
+                $item->status = ReportStatusEnum::FAIL;
+
+                echo $e->getMessage(). "\n";
+            }
+            $item->save();
+
+        }
+    }
 
 
 }

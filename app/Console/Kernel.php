@@ -5,6 +5,7 @@ namespace App\Console;
 
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\MakeCommandCommand;
+use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\UserActionCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -23,6 +24,9 @@ class Kernel extends ConsoleKernel
 
         // 用户行为 拉取 或 推送
         UserActionCommand::class,
+
+        // 推送点击数据
+        PushAdvClickCommand::class
 
     ];
 

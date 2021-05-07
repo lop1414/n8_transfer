@@ -82,49 +82,21 @@ class UserActionCommand extends BaseCommand
         $timeInterval = $this->option('time_interval');
         $isSecondVersion = $this->option('second_version');
 
+        Functions::hasEnum(CpTypeEnums::class, $cpType);
+        Functions::hasEnum(ProductTypeEnums::class, $productType);
+        Functions::hasEnum(UserActionTypeEnum::class, $actionType);
+
         $type = $this->option('type');
         if(!in_array($type,['pull','push'])){
             throw new CustomException([
                 'code' => 'NOT_FOUND_TYPE',
                 'message' => "未知的类型（可选值:pull、push）",
             ]);
-
         }
-
-
 
         list($startTime,$endTime) = explode(",", $time);
+        Functions::checkTimeRange($startTime,$endTime);
 
-        // 校验
-        if(
-            !isset($startTime) || !Functions::timeCheck($startTime) ||
-            !isset($endTime) || !Functions::timeCheck($endTime) ||
-            $startTime > $endTime
-        ){
-            throw new CustomException([
-                'code' => 'DATE_RANGE_ERROR',
-                'message' => '时间范围错误',
-            ]);
-        }
-
-        if(!isset($cpType)){
-            throw new CustomException([
-                'code' => 'UNVALID',
-                'message' => 'cp_type 必传',
-            ]);
-        }
-
-        if(!isset($productType)){
-            throw new CustomException([
-                'code' => 'UNVALID',
-                'message' => 'product_type 必传',
-            ]);
-        }
-
-
-        Functions::hasEnum(CpTypeEnums::class, $cpType);
-        Functions::hasEnum(ProductTypeEnums::class, $productType);
-        Functions::hasEnum(UserActionTypeEnum::class, $actionType);
 
 
         // 设置值
@@ -145,7 +117,6 @@ class UserActionCommand extends BaseCommand
         $this->lockRun(function () use($type){
 
             $this->action($type);
-
         },$lockKey,60*60*3,['log' => true]);
 
 

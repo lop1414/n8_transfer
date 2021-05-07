@@ -23,32 +23,16 @@ class UserRegActionService extends UserActionBaseService
         ''      => '',
         'JRTT'  => AdvAliasEnum::OCEAN,
         'GDT'   => AdvAliasEnum::GDT,
+        'BAIDU' => AdvAliasEnum::BAIDU,
     ];
 
 
-    public function pushItem($item){
-        $rawData = $item['data'];
-        return [
-            'product_alias' => $this->product['cp_product_alias'],
-            'cp_type'       => $this->product['cp_type'],
-            'open_id'       => $item['open_id'],
-            'action_time'   => $item['action_time'],
-            'cp_channel_id' => $item['cp_channel_id'],
-            'ip'            => $item['ip'],
-            'ua'            => $rawData['user_info']['ua'] ?? '',
-            'muid'          => $rawData['user_info']['muid'] ?? '',
-            'device_brand'          => '',
-            'device_manufacturer'   => '',
-            'device_model'          => '',
-            'device_product'        => '',
-            'device_os_version_name'    => '',
-            'device_os_version_code'    => '',
-            'device_platform_version_name'  => '',
-            'device_platform_version_code'  => '',
-            'android_id'            => $rawData['extend']['android_id'] ?? '',
-            'request_id'            => $item['request_id']
-        ];
+    public function setYwSdk(){
+        $cpAccount = (new ProductService())->readCpAccount($this->product['cp_account_id']);
+        $this->ywSdk = new YwSdk($this->product['cp_product_alias'],$cpAccount['account'],$cpAccount['cp_secret']);
     }
+
+
 
 
     public function pullPrepare(){
@@ -124,6 +108,10 @@ class UserRegActionService extends UserActionBaseService
         // 没有广告商
         if(!empty($adv)){
             $clickData['request_id'] = $requestId;
+            $clickData['action_time'] = $item['valid_info']['act_time'];
+            $clickData['open_id'] = $rawData['guid'];
+            $clickData['action_id'] = $rawData['guid'];
+            $clickData['type'] = $this->actionType;
             $this->saveAdvClickData($adv,$clickData);
         }
     }
@@ -133,30 +121,6 @@ class UserRegActionService extends UserActionBaseService
 
         $this->channelChangeUser();
         $this->replenishCpChannelId();
-    }
-
-
-    /**
-     * 补充渠道ID信息
-     */
-    public function replenishCpChannelId(){
-        $this->setYwSdk();
-        $list = $this->getUserActionList(function ($query){
-            return $query->where('cp_channel_id','');
-        });
-        foreach ($list as $item){
-            $tmp = $this->ywSdk->getUser([
-                'guid'  => $item['open_id']
-            ]);
-            $user = $tmp['list'][0];
-
-            // 用户被重新染色 TODO
-            if($user['seq_time'] != $item['action_time']){}
-
-            $item->cp_channel_id = $user['channel_id'];
-            $item->save();
-        }
-
     }
 
 
@@ -217,8 +181,66 @@ class UserRegActionService extends UserActionBaseService
     }
 
 
-    public function setYwSdk(){
-        $cpAccount = (new ProductService())->readCpAccount($this->product['cp_account_id']);
-        $this->ywSdk = new YwSdk($this->product['cp_product_alias'],$cpAccount['account'],$cpAccount['cp_secret']);
+
+    /**
+     * 补充CP渠道ID
+     */
+    public function replenishCpChannelId(){
+        $this->setYwSdk();
+        $list = $this->getReportUserActionList(['cp_channel_id' => 0]);
+
+        foreach ($list as $item){
+            $tmp = $this->ywSdk->getUser([
+                'guid'  => $item['open_id']
+            ]);
+
+            $user = $tmp['list'][0];
+
+            // 用户被重新染色 TODO
+            if($user['seq_time'] != $item['action_time']){}
+
+            $item->cp_channel_id = $user['channel_id'];
+            $item->save();
+        }
+
     }
+
+
+
+
+
+
+
+
+
+
+
+    public function pushItemPrepare($item){
+        $rawData = $item['data'];
+        return [
+            'product_alias' => $this->product['cp_product_alias'],
+            'cp_type'       => $this->product['cp_type'],
+            'open_id'       => $item['open_id'],
+            'action_time'   => $item['action_time'],
+            'cp_channel_id' => $item['cp_channel_id'],
+            'ip'            => $item['ip'],
+            'ua'            => $rawData['user_info']['ua'] ?? '',
+            'muid'          => $rawData['user_info']['muid'] ?? '',
+            'device_brand'          => '',
+            'device_manufacturer'   => '',
+            'device_model'          => '',
+            'device_product'        => '',
+            'device_os_version_name'    => '',
+            'device_os_version_code'    => '',
+            'device_platform_version_name'  => '',
+            'device_platform_version_code'  => '',
+            'android_id'            => $rawData['extend']['android_id'] ?? '',
+            'request_id'            => $item['request_id']
+        ];
+    }
+
+
+
+
+
 }

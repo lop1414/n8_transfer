@@ -58,4 +58,25 @@ class UserActionLogModel extends BaseModel
         $this->attributes['data'] = json_encode($value);
     }
 
+
+
+    /**
+     * @param $value
+     * @return array
+     * 属性访问器
+     */
+    public function getFailDataAttribute($value)
+    {
+        return json_decode($value,true);
+    }
+
+    /**
+     * @param $value
+     * 属性修饰器
+     */
+    public function setFailDataAttribute($value)
+    {
+        $this->attributes['fail_data'] = json_encode($value);
+    }
+
 }

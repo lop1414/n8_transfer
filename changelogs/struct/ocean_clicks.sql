@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 30/04/2021 17:42:54
+ Date: 07/05/2021 16:10:28
 */
 
 SET NAMES utf8mb4;
@@ -47,12 +47,13 @@ CREATE TABLE `ocean_clicks` (
   `link` varchar(512) NOT NULL DEFAULT '' COMMENT '落地页原始url',
   `extends` text NOT NULL COMMENT '扩展字段',
   `status` varchar(50) NOT NULL COMMENT '上报状态',
+  `fail_data` text COMMENT '失败数据',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`) USING BTREE,
   KEY `click_at` (`click_at`) USING BTREE,
   KEY `created_at` (`created_at`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='巨量点击表';
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8 COMMENT='巨量点击表';
 
 SET FOREIGN_KEY_CHECKS = 1;

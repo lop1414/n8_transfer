@@ -6,6 +6,7 @@ namespace App\Services\AdvClick;
 
 use App\Common\Enums\AdvAliasEnum;
 use App\Common\Enums\ReportStatusEnum;
+use App\Common\Services\SystemApi\AdvOceanApiService;
 use App\Models\OceanClickModel;
 
 class OceanClickService extends AdvClickService
@@ -13,10 +14,13 @@ class OceanClickService extends AdvClickService
 
     protected $adv = AdvAliasEnum::OCEAN;
 
+    protected $advOceanApiService;
+
 
     public function __construct(){
         parent::__construct();
         $this->model = new OceanClickModel();
+        $this->advOceanApiService = new AdvOceanApiService();
     }
 
 
@@ -47,6 +51,27 @@ class OceanClickService extends AdvClickService
             'extends'       => $data,
             'status'        => ReportStatusEnum::WAITING
         ]);
+    }
+
+
+
+
+
+    /**
+     * 预处理
+     */
+    public function pushPrepare(){
+        $model = new OceanClickModel();
+        return $model->whereBetween('created_at',[$this->startTime,$this->endTime])
+            ->where('status',ReportStatusEnum::WAITING)
+            ->get();
+    }
+
+
+    public function pushItem($item){
+        $tmp = $item->toArray();
+        $tmp['click_at'] = strtotime($tmp['click_at']). '000';
+        $this->advOceanApiService->apiCreateClick($tmp,$item['click_source']);
     }
 
 
