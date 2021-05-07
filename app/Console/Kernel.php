@@ -3,6 +3,7 @@
 namespace App\Console;
 
 
+use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\PushAdvClickCommand;
@@ -48,6 +49,11 @@ class Kernel extends ConsoleKernel
         $oneMinuteRange = "'{$tmpTime}','{$dateTime}'";
         //半小时区间
         $halfHourRange = '"'.date('Y-m-d H:i:s',TIMESTAMP-60). '","'. $dateTime.'"';
+
+
+        //广告商点击数据上报
+        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN." --time={$halfHourRange}")->cron('* * * * *');
+
 
         //用户行为数据 拉取 及 上报
         $path = base_path(). '/app/Services/CommandsService.php';

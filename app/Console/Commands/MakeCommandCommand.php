@@ -79,6 +79,14 @@ class MakeCommandCommand extends BaseCommand
                 $productTypeItem = Functions::getEnumMapItem(ProductTypeEnums::class,$productType);
                 //用户行为
                 foreach($productTypeItem['user_action_type'] as $userAction){
+
+                    if(
+                        $cpType['id'] == CpTypeEnums::YW
+                        && $type == 'pull'
+                        && in_array($userAction,[UserActionTypeEnum::REG,UserActionTypeEnum::ADD_SHORTCUT])){
+                        continue;
+                    }
+
                     $tmpCommand = "user_action --type={$type} ";
                     $tmpCommand .= "--cp_type={$cpType['id']} --product_type={$productType} ";
                     $tmpCommand .= "--action_type={$userAction} ";
