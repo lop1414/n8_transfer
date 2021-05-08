@@ -26,8 +26,8 @@ trait Channel
             'appflag'       => $appflag,
             'plf_alias'     => $plfAlias,
             'type'          => 'ACTIVATION',
-            'start_date'    => $startTime,
-            'end_date'      => $endTime,
+            'start_time'    => $startTime,
+            'end_time'      => $endTime,
         ];
 
         return $this->apiRequest($uri,$param,'POST');
