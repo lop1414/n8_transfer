@@ -52,7 +52,8 @@ class ChannelService extends BaseService
                     ]);
                 }
             }catch(CustomException $e){
-                echo $e->getErrorInfo()['message']. "\n";
+                $errInfo = $e->getErrorInfo();
+                echo $errInfo['message']. "\n";
             }catch(\Exception $e){
                 echo $e->getMessage(). "\n";
             }
