@@ -6,6 +6,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Common\Services\BaseService;
 use App\Common\Services\SystemApi\CenterApiService;
 use App\Common\Services\SystemApi\UnionApiService;
+use App\Common\Tools\CustomException;
 use App\Sdks\SecondVersion\SecondVersionSdk;
 
 
@@ -40,15 +41,22 @@ class ChannelService extends BaseService
         $adminList = (new CenterApiService())->apiGetAdminUsers();
         $adminMap = array_column($adminList,'id','name');
         foreach ($productList as $product){
-           $list = $sdk->getChannel($product['cp_product_alias'],$product['cp_type'],$startTime,$endTime);
-           foreach ($list as $item){
-               $this->createChannelExtend([
-                   'product_id' => $product['id'],
-                   'cp_channel_id' => $item['custom_alias'],
-                   'adv_alias'  => $this->advMap[$item['adv_alias']],
-                   'admin_id'  => $adminMap[$item['admin_name']]
-               ]);
-           }
+            try {
+                $list = $sdk->getChannel($product['cp_product_alias'],$product['cp_type'],$startTime,$endTime);
+                foreach ($list as $item){
+                    $this->createChannelExtend([
+                        'product_id' => $product['id'],
+                        'cp_channel_id' => $item['custom_alias'],
+                        'adv_alias'  => $this->advMap[$item['adv_alias']],
+                        'admin_id'  => $adminMap[$item['admin_name']]
+                    ]);
+                }
+            }catch(CustomException $e){
+                echo $e->getErrorInfo()['message']. "\n";
+            }catch(\Exception $e){
+                echo $e->getMessage(). "\n";
+            }
+
         }
     }
 
