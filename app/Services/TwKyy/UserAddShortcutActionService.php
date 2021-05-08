@@ -83,9 +83,4 @@ class UserAddShortcutActionService extends UserActionBaseService
             'request_id'            => $item['request_id']
         ];
     }
-
-
-
-
-
 }
