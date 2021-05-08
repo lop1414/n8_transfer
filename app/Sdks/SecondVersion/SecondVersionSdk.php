@@ -27,7 +27,7 @@ class SecondVersionSdk
 
 
     public function __construct(){
-        $this->secret = env('SECOND_VERSION_SECRET');
+        $this->secret = env('SECOND_VERSION_API_SECRET');
     }
 
     /**
