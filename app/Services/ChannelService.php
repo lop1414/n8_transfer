@@ -41,23 +41,23 @@ class ChannelService extends BaseService
         $adminList = (new CenterApiService())->apiGetAdminUsers();
         $adminMap = array_column($adminList,'id','name');
         foreach ($productList as $product){
-            try {
-                $list = $sdk->getChannel($product['cp_product_alias'],$product['cp_type'],$startTime,$endTime);
-                foreach ($list as $item){
+            $list = $sdk->getChannel($product['cp_product_alias'],$product['cp_type'],$startTime,$endTime);
+            foreach ($list as $item){
+                try {
+
                     $this->createChannelExtend([
                         'product_id' => $product['id'],
                         'cp_channel_id' => $item['custom_alias'],
                         'adv_alias'  => $this->advMap[$item['adv_alias']],
                         'admin_id'  => $adminMap[$item['admin_name']]
                     ]);
+                }catch(CustomException $e){
+                    $errInfo = $e->getErrorInfo();
+                    echo $errInfo['message']. "\n";
+                }catch(\Exception $e){
+                    echo $e->getMessage(). "\n";
                 }
-            }catch(CustomException $e){
-                $errInfo = $e->getErrorInfo();
-                echo $errInfo['message']. "\n";
-            }catch(\Exception $e){
-                echo $e->getMessage(). "\n";
             }
-
         }
     }
 
