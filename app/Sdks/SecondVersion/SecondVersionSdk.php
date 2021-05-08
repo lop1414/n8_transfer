@@ -3,6 +3,7 @@
 namespace App\Sdks\SecondVersion;
 
 
+use App\Sdks\SecondVersion\Traits\Channel;
 use App\Sdks\SecondVersion\Traits\Request;
 use App\Sdks\SecondVersion\Traits\UserAction;
 
@@ -10,6 +11,7 @@ class SecondVersionSdk
 {
     use Request;
     use UserAction;
+    use Channel;
 
     /**
      * @var

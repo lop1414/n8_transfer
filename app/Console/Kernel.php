@@ -7,6 +7,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\PushAdvClickCommand;
+use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\UserActionCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -27,7 +28,10 @@ class Kernel extends ConsoleKernel
         UserActionCommand::class,
 
         // 推送点击数据
-        PushAdvClickCommand::class
+        PushAdvClickCommand::class,
+
+        // 推送渠道扩展信息
+        PushChannelExtendCommand::class,
 
     ];
 
@@ -52,7 +56,7 @@ class Kernel extends ConsoleKernel
 
 
         //广告商点击数据上报
-        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN." --time={$halfHourRange}")->cron('* * * * *');
+        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN." --time={$halfHourRange}")->cron('*/5 * * * *');
 
 
         //用户行为数据 拉取 及 上报

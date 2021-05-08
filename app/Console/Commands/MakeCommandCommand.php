@@ -80,6 +80,7 @@ class MakeCommandCommand extends BaseCommand
                 //用户行为
                 foreach($productTypeItem['user_action_type'] as $userAction){
 
+                    // 跳过阅文注册、加桌行为
                     if(
                         $cpType['id'] == CpTypeEnums::YW
                         && $type == 'pull'
