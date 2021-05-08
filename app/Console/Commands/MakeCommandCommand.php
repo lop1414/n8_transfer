@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Common\Console\BaseCommand;
 use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
-use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Enums\UserActionTypeEnum;
 
@@ -69,6 +68,26 @@ class MakeCommandCommand extends BaseCommand
         $cpTypeList = CpTypeEnums::$list;
 
         $str = "";
+
+        $userActionMap = [
+            ProductTypeEnums::KYY => [
+                UserActionTypeEnum::REG,
+                UserActionTypeEnum::READ,
+                UserActionTypeEnum::ADD_SHORTCUT,
+                UserActionTypeEnum::LOGIN,
+                UserActionTypeEnum::ORDER,
+                UserActionTypeEnum::COMPLETE_ORDER
+            ],
+            ProductTypeEnums::H5 => [
+                UserActionTypeEnum::REG,
+                UserActionTypeEnum::READ,
+                UserActionTypeEnum::FOLLOW,
+                UserActionTypeEnum::LOGIN,
+                UserActionTypeEnum::ORDER,
+                UserActionTypeEnum::COMPLETE_ORDER
+            ]
+        ];
+
         //书城
         foreach ($cpTypeList as $cpType){
             $productTypeList = $cpType['product_type'] ?? [];
@@ -76,9 +95,9 @@ class MakeCommandCommand extends BaseCommand
             foreach ($productTypeList as $productType){
                 $str .= "        //{$cpType['name']}-{$productType}\n";
 
-                $productTypeItem = Functions::getEnumMapItem(ProductTypeEnums::class,$productType);
                 //用户行为
-                foreach($productTypeItem['user_action_type'] as $userAction){
+                $userActionList = $userActionMap[$productType];
+                foreach($userActionList as $userAction){
 
                     // 跳过阅文注册、加桌行为
                     if(

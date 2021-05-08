@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 07/05/2021 16:10:28
+ Date: 08/05/2021 17:32:12
 */
 
 SET NAMES utf8mb4;
@@ -37,7 +37,7 @@ CREATE TABLE `ocean_clicks` (
   `oaid` varchar(100) NOT NULL DEFAULT '' COMMENT 'Android Q及更高版本的设备号',
   `oaid_md5` varchar(64) NOT NULL DEFAULT '' COMMENT 'Android Q及更高版本的设备号的md5摘要',
   `os` varchar(50) NOT NULL DEFAULT '' COMMENT '操作系统平台',
-  `ip` varchar(15) NOT NULL DEFAULT '' COMMENT 'IP地址',
+  `ip` varchar(50) NOT NULL DEFAULT '' COMMENT 'IP地址',
   `ua` varchar(1024) NOT NULL DEFAULT '' COMMENT 'user agent',
   `click_at` timestamp NULL DEFAULT NULL COMMENT '点击时间',
   `callback_param` varchar(512) NOT NULL DEFAULT '' COMMENT '回调参数',
@@ -54,6 +54,6 @@ CREATE TABLE `ocean_clicks` (
   KEY `request_id` (`request_id`) USING BTREE,
   KEY `click_at` (`click_at`) USING BTREE,
   KEY `created_at` (`created_at`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8 COMMENT='巨量点击表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='巨量点击表';
 
 SET FOREIGN_KEY_CHECKS = 1;
