@@ -52,7 +52,7 @@ class ChannelService extends BaseService
                         'admin_id'  => $adminMap[$item['admin_name']]
                     ]);
                 }catch(CustomException $e){
-                    $errInfo = $e->getErrorInfo();
+                    $errInfo = $e->getErrorInfo(true);
                     echo $errInfo['message']. "\n";
                 }catch(\Exception $e){
                     echo $e->getMessage(). "\n";
