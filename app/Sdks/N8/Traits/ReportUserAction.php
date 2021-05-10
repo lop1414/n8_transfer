@@ -102,9 +102,9 @@ trait ReportUserAction
      * @param $param
      * @return mixed
      */
-    public function reportOrderComplete($param){
+    public function reportCompleteOrder($param){
 
-        $uri = '/open/action_report/order_complete';
+        $uri = '/open/action_report/complete_order';
 
         return $this->apiRequest($uri,$param,'POST');
     }

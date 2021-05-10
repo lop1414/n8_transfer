@@ -10,26 +10,26 @@ use App\Sdks\Tw\TwSdk;
 use App\Services\UserActionBaseService;
 
 
-class UserRegActionService extends UserActionBaseService
+class UserOrderActionService extends UserActionBaseService
 {
 
-    protected $actionType = UserActionTypeEnum::REG;
+    protected $actionType = UserActionTypeEnum::ORDER;
 
 
-    protected $advMap;
+    protected $orderTypeMap;
 
 
-    public function setAdvMap(){
-        $this->advMap = (new ConfigModel())
+    public function setOrderTypeMap(){
+        $this->orderTypeMap = (new ConfigModel())
             ->where('group',CpTypeEnums::TW)
-            ->where('k','adv_map')
+            ->where('k','order_type_map')
             ->first()
             ->v;
     }
 
     public function pullPrepare(){
 
-        $this->setAdvMap();
+
 
         $sdk = new TwSdk($this->product['cp_product_alias'],$this->product['cp_secret']);
 
@@ -38,8 +38,8 @@ class UserRegActionService extends UserActionBaseService
         $data = [];
         do{
             echo $date. "\n";
-            $tmp =  $sdk->getUsers([
-                'reg_time'  => $date
+            $tmp =  $sdk->getOrders([
+                'pay_time'  => $date
             ]);
             $data = array_merge($data,$tmp);
             $date = date('Y-m-d H:i',strtotime('+1 minutes',strtotime($date)));
@@ -51,51 +51,27 @@ class UserRegActionService extends UserActionBaseService
 
     public function pullItem($item){
 
-        $requestId = $advData['request_id'] ?? '';
-
-
-        $adv = $this->advMap[$item['pt']] ?? '';
-
-        //有广告商
-        if(!empty($adv)){
-            if(empty($requestId)){
-                $requestId = 'n8_'.md5(uniqid());
-            }
-
-            $advData = $item['data'];
-            $clickData = [
-                'ip'           => $advData['ip'] ?? '',
-                'muid'         => $advData['imei'] ?? '',
-                'oaid'         => $advData['oaid'] ?? '',
-                'os'           => $advData['os'] ?? '',
-                'click_at'     => $item['reg_time'],
-                'ad_id'        => $advData['adid'],
-                'creative_id'  => $advData['cid'],
-                'union_site'   => $advData['union_site'] ?? '',
-                'request_id'   => $requestId,
-                'type'         => $this->actionType
-            ];
-
-            $this->saveAdvClickData($adv,$clickData);
-        }
-
         $this->save([
-            'open_id'       => $item['id'],
-            'action_time'   => $item['reg_time'],
+            'open_id'       => $item['uid'],
+            'action_time'   => $item['created_at'],
             'cp_channel_id' => $item['channel_id'],
-            'request_id'    => $requestId,
-            'ip'            => $item['device_ip'],
+            'request_id'    => '',
+            'ip'            => '',
             'action_id'     => $item['id'],
             'matcher'       => $this->product['matcher']
         ],$item);
-
-
-
 
     }
 
 
 
+
+
+
+
+    public function pushPrepare(){
+        $this->setOrderTypeMap();
+    }
 
 
     public function pushItemPrepare($item){
@@ -104,20 +80,24 @@ class UserRegActionService extends UserActionBaseService
             'product_alias' => $this->product['cp_product_alias'],
             'cp_type'       => $this->product['cp_type'],
             'open_id'       => $item['open_id'],
+            'order_id'      => $item['id'],
             'action_time'   => $item['action_time'],
             'cp_channel_id' => $item['cp_channel_id'],
-            'ip'            => $item['ip'],
+            'amount'        => $rawData['amount'],
+            'type'          => $this->orderTypeMap[$rawData['type']],
+            'ip'            => '',
             'ua'            => '',
             'muid'          => $rawData['imei'],
-            'device_brand'          => $rawData['device_company'],
+            'oaid'          => $rawData['oaid'],
+            'device_brand'          => '',
             'device_manufacturer'   => '',
             'device_model'          => '',
             'device_product'        => $rawData['device_product'],
             'device_os_version_name'    => '',
-            'device_os_version_code'    => $rawData['device_os'],
+            'device_os_version_code'    => '',
             'device_platform_version_name'  => '',
             'device_platform_version_code'  => '',
-            'android_id'            => $rawData['android_id'],
+            'android_id'            => '',
             'request_id'            => $item['request_id']
         ];
     }

@@ -43,7 +43,7 @@ trait Request
                 return [];
             }
             // 错误提示
-            $errorMessage = $result['msg'] ?? 'n8系统请求错误';
+            $errorMessage = $result['message'] ?? 'n8系统请求错误';
 
             throw new CustomException([
                 'code' => 'N8_REQUEST_ERROR',

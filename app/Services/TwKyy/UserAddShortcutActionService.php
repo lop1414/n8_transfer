@@ -3,9 +3,7 @@
 namespace App\Services\TwKyy;
 
 
-use App\Common\Enums\CpTypeEnums;
 use App\Enums\UserActionTypeEnum;
-use App\Models\ConfigModel;
 use App\Sdks\Tw\TwSdk;
 use App\Services\UserActionBaseService;
 
@@ -72,7 +70,7 @@ class UserAddShortcutActionService extends UserActionBaseService
             'ua'            => '',
             'muid'          => $rawData['imei'],
             'device_brand'          => $rawData['device_company'],
-            'device_manufacturer'   => $rawData['device_product'],
+            'device_manufacturer'   => '',
             'device_model'          => '',
             'device_product'        => $rawData['device_product'],
             'device_os_version_name'    => '',

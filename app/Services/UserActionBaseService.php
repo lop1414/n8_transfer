@@ -211,13 +211,18 @@ class UserActionBaseService extends BaseService
 
 
 
-
+    /**
+     * push 预处理
+     */
+    public function pushPrepare(){}
 
 
     /**
      * 上报
      */
     public function push(){
+        $this->pushPrepare();
+
         $list = $this->getReportUserActionList();
 
         foreach ($list as $item){
