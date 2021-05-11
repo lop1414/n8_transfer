@@ -7,6 +7,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\PushAdvClickCommand;
+use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\UserActionCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -29,6 +30,9 @@ class Kernel extends ConsoleKernel
 
         // 推送点击数据
         PushAdvClickCommand::class,
+
+        // 推送渠道
+        PushChannelCommand::class,
 
         // 推送渠道扩展信息
         PushChannelExtendCommand::class,
