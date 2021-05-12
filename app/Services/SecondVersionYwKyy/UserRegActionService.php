@@ -191,7 +191,7 @@ class UserRegActionService extends UserActionBaseService
     public function replenishCpChannelId(){
         echo "补充CP渠道ID\n";
         $this->setYwSdk();
-        $list = $this->getReportUserActionList(['cp_channel_id' => 0]);
+        $list = $this->getReportUserActionList(['cp_channel_id' => '']);
 
         foreach ($list as $item){
             try{
