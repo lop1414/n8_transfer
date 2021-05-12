@@ -5,6 +5,7 @@ namespace App\Services\SecondVersionYwKyy;
 
 use App\Common\Enums\AdvAliasEnum;
 use App\Common\Services\ErrorLogService;
+use App\Common\Tools\CustomException;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\SecondVersion\SecondVersionSdk;
 use App\Sdks\Yw\YwSdk;
@@ -190,21 +191,33 @@ class UserRegActionService extends UserActionBaseService
         $list = $this->getReportUserActionList(['cp_channel_id' => 0]);
 
         foreach ($list as $item){
-            $tmp = $this->ywSdk->getUser([
-                'guid'  => $item['open_id']
-            ]);
+            try{
 
-            if(empty($tmp['list'])){
-                continue;
+                $tmp = $this->ywSdk->getUser([
+                    'guid'  => $item['open_id']
+                ]);
+
+                if(empty($tmp['list'])){
+                    continue;
+                }
+
+                $user = $tmp['list'][0];
+
+                // 用户被重新染色 TODO
+                if($user['seq_time'] != $item['action_time']){}
+
+                $item->cp_channel_id = $user['channel_id'];
+                $item->save();
+            }catch(CustomException $e){
+                $errorInfo = $e->getErrorInfo(true);
+
+                echo $errorInfo['message']. "\n";
+
+            }catch (\Exception $e){
+
+                echo $e->getMessage(). "\n";
+
             }
-
-            $user = $tmp['list'][0];
-
-            // 用户被重新染色 TODO
-            if($user['seq_time'] != $item['action_time']){}
-
-            $item->cp_channel_id = $user['channel_id'];
-            $item->save();
         }
 
     }
