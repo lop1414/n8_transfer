@@ -10,7 +10,7 @@ trait Channel
 
 
     /**
-     * 用户注册行为数据
+     * 渠道信息
      *
      * @param $appflag
      * @param $plfAlias
@@ -25,7 +25,6 @@ trait Channel
         $param = [
             'appflag'       => $appflag,
             'plf_alias'     => $plfAlias,
-            'type'          => 'ACTIVATION',
             'start_time'    => $startTime,
             'end_time'      => $endTime,
         ];

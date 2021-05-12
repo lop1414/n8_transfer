@@ -13,6 +13,10 @@ class UserRegActionService extends UserActionBaseService
     protected $actionType = UserActionTypeEnum::REG;
 
 
+    public function pullPrepare(){
+        return [];
+    }
+
     public function pushItemPrepare($item){
         $rawData = $item['data'];
         return [

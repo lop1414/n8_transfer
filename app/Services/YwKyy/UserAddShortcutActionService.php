@@ -13,6 +13,9 @@ class UserAddShortcutActionService extends UserActionBaseService
     protected $actionType = UserActionTypeEnum::ADD_SHORTCUT;
 
 
+    public function pullPrepare(){
+        return [];
+    }
 
     public function pushItemPrepare($item){
         $rawData = $item['data'];
