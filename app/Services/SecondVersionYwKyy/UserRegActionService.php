@@ -129,6 +129,8 @@ class UserRegActionService extends UserActionBaseService
      * 渠道变更用户
      */
     public function channelChangeUser(){
+        echo "渠道变更用户\n";
+
         $sdk = new SecondVersionSdk();
         $list = $sdk->getChannelChangeUser($this->product['cp_product_alias'],$this->product['cp_type'],$this->startTime,$this->endTime);
 
@@ -187,6 +189,7 @@ class UserRegActionService extends UserActionBaseService
      * 补充CP渠道ID
      */
     public function replenishCpChannelId(){
+        echo "补充CP渠道ID\n";
         $this->setYwSdk();
         $list = $this->getReportUserActionList(['cp_channel_id' => 0]);
 
@@ -215,7 +218,14 @@ class UserRegActionService extends UserActionBaseService
 
             }catch (\Exception $e){
 
-                echo $e->getMessage(). "\n";
+                //未命中唯一索引
+                if($e->getCode() != 23000){
+                    //日志
+                    (new ErrorLogService())->catch($e);
+                    var_dump($e);
+                }else{
+                    echo "  命中唯一索引\n";
+                }
 
             }
         }
