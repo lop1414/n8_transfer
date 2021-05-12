@@ -194,6 +194,10 @@ class UserRegActionService extends UserActionBaseService
                 'guid'  => $item['open_id']
             ]);
 
+            if(empty($tmp['list'])){
+                continue;
+            }
+
             $user = $tmp['list'][0];
 
             // 用户被重新染色 TODO
