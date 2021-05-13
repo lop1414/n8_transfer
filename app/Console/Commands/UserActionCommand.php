@@ -132,7 +132,7 @@ class UserActionCommand extends BaseCommand
 
         foreach ($productList as $product){
 
-            $this->consoleEchoService->echo("产品 : {$product['name']}");
+            $this->consoleEchoService->echo("产品 : {$product['name']}\n\n\n");
 
             $service->setProduct($product);
 
