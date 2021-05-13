@@ -95,8 +95,8 @@ class PushChannelService extends PushChannelBaseService
                         'product_id' => $product['id'],
                         'cp_channel_id' => $item['id'],
                         'book_id'  => $unionBook['id'],
-                        'chapter_id'  => $unionChapter['id'],
-                        'force_chapter_id'  => $unionForceChapter['id'],
+                        'chapter_id'  => $unionChapter['id'] ?? 0,
+                        'force_chapter_id'  => $unionForceChapter['id'] ?? 0,
                         'create_time'  => $item['create_time'],
                         'updated_time'  => $item['create_time'],
                     ]);
