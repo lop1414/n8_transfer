@@ -69,7 +69,7 @@ class UserRegActionService extends UserActionBaseService
             'oaid'         => $rawData['oaid'] ?? '',
             'oaid_md5'     => $rawData['oaid_md5'] ?? '',
             'os'           => $rawData['os'] ?? '',
-            'click_at'     =>  date('Y-m-d H:i:s',$rawData['time']) ?? '',
+            'click_at'     => $item['valid_info']['act_time'],
         ];
 
 
