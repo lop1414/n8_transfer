@@ -65,11 +65,12 @@ class PushChannelService extends PushChannelBaseService
                 ]);
                 // 创建章节
                 foreach ($book['chapterList'] as $chapter){
+                    $chapterId = $chapter['id'] ?? 0;
                     $tmpChapter = $this->unionApiService->apiCreateChapter([
                         'book_id' => $unionBook['id'],
                         'cp_chapter_id' => $chapter['ccid'],
                         'name'  => $chapter['chapterName'],
-                        'seq'  =>  $chapter['id']
+                        'seq'  =>  $chapterId
                     ]);
 
                     //打开章节
@@ -78,7 +79,7 @@ class PushChannelService extends PushChannelBaseService
                     }
 
                     //强制章节
-                    if($chapter['id'] == $item['force_chapter']){
+                    if($chapterId == $item['force_chapter']){
                         $unionForceChapter = $tmpChapter;
                     }
                 }
