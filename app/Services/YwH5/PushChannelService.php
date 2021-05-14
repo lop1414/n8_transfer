@@ -56,11 +56,10 @@ class PushChannelService extends PushChannelBaseService
 
 
         $page = 1;
-        $currentCount = 0;
+
         do{
             $channelList = $spider->getSpreadPromotionList($this->startDate,$this->endDate,$page,$recycle);
-            $count = $channelList['count'];
-            $currentCount += count($channelList['list']);
+
             foreach ($channelList['list'] as $item){
 
                 $unionForceChapter = $unionChapter = [];
@@ -109,7 +108,7 @@ class PushChannelService extends PushChannelBaseService
 
             }
             $page += 1;
-        }while($currentCount < $count);
+        }while($page <= $channelList['maxPage']);
     }
 
 
