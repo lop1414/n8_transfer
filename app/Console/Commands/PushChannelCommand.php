@@ -60,9 +60,9 @@ class PushChannelCommand extends BaseCommand
 
 
     public function handle(){
-        $date    = $this->option('date');
+        $tmpDate    = $this->option('date');
 
-        list($this->startDate,$this->endDate) = explode(",", $date);
+        list($this->startDate,$this->endDate) = explode(",", $tmpDate);
         Functions::checkDateRange($this->startDate,$this->endDate);
 
         $this->cpType    = $this->option('cp_type');
@@ -72,8 +72,16 @@ class PushChannelCommand extends BaseCommand
 
 
         $service = $this->getService();
+        $date = $this->startDate;
+        while($date <= $this->endDate){
+            $tmpEndDate = date('Y-m-d',  strtotime('+1 day',strtotime($date)));
 
-        $service->setDateRange($this->startDate,$this->endDate)->run();
+            $this->consoleEchoService->echo("时间 : {$date} ~ {$tmpEndDate}");
+
+            $service->setDateRange($date,$tmpEndDate)->run();
+
+            $date = $tmpEndDate;
+        }
 
     }
 
