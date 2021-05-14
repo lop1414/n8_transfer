@@ -116,12 +116,12 @@ class PushChannelService extends PushChannelBaseService
                     (new ErrorLogService())->catch($e);
 
                     $errInfo = $e->getErrorInfo(true);
-                    echo $errInfo['message']. "\n";
+                    echo $errInfo['message']. "  cp_channel_id:{$item['id']}\n";
                 }catch(\Exception $e){
                     //日志
                     (new ErrorLogService())->catch($e);
 
-                    echo $e->getMessage(). "\n";
+                    echo $e->getMessage(). "  cp_channel_id:{$item['id']}\n";
                 }
             }
             $page += 1;
