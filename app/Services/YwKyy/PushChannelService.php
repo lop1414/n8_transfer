@@ -42,13 +42,24 @@ class PushChannelService extends PushChannelBaseService
 
 
     public function productItem($product){
+        $this->item($product);
+        $this->item($product,1); //已删除
+    }
+
+
+    /**
+     * @param $product
+     * @param int $recycle  1 - 获取已删除
+     * @throws CustomException
+     */
+    public function item($product,$recycle = 0){
         $spider = (new YwSpider($this->cookie))->switchApp($product['name'],$product['type']);
 
         $page = 1;
         $currentCount = 0;
         do{
 
-            $channelList = $spider->getQuickSpreadPromotionList($this->startDate,$this->endDate,$page);
+            $channelList = $spider->getQuickSpreadPromotionList($this->startDate,$this->endDate,$page,$recycle);
 
             $count = $channelList['count'];
             $currentCount += count($channelList['list']);
@@ -116,7 +127,4 @@ class PushChannelService extends PushChannelBaseService
             $page += 1;
         }while($currentCount < $count);
     }
-
-
-
 }
