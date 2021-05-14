@@ -74,6 +74,14 @@ class ChannelService extends BaseService
 
 
 
+    public function bindAdId(){
+       $list = [];
+       foreach ($list as $item){
+
+       }
+    }
+
+
 
 
 }
