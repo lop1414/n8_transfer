@@ -7,3 +7,5 @@ Homestead.yaml
 composer.lock
 /app/Common
 /app/Services/CommandsService.php
+/config/common.php
+/config/database.php
