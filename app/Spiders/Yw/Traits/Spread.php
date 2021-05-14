@@ -16,7 +16,7 @@ trait Spread
             'recycle'   => $recycle,
             'name'      => '',
             'id'        => '',
-            'p'         => $page,
+            'page'      => $page,
             'page_name' => ''
         ];
         return $this->apiRequest($uri,$param);
