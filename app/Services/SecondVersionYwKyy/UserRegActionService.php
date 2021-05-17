@@ -83,10 +83,10 @@ class UserRegActionService extends UserActionBaseService
         if(!empty($item['click'])){
             $requestId = $item['request_id'] ?? '';
 
-            $clickData['ad_id'] = $item['click']['ad_id'];
-            $clickData['creative_id'] = $item['click']['c_id'];
-            $clickData['creative_type'] = $item['click']['c_type'];
-            $clickData['link'] = $item['click']['link'];
+            $clickData['ad_id'] = $item['click']['extend']['ad_id'];
+            $clickData['creative_id'] = $item['click']['extend']['c_id'];
+            $clickData['creative_type'] = $item['click']['extend']['c_type'];
+            $clickData['link'] = $item['click']['extend']['link'];
         }
 
 

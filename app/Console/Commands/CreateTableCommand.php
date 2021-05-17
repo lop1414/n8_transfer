@@ -37,10 +37,6 @@ class CreateTableCommand extends BaseCommand
 
 
     public function handle(){
-
-
-        $tmp = explode('》',"《九域剑帝》第五章 灵药殿前");
-        dd(trim($tmp[0],'《'));
         $service = new CreateTableService();
 
         $date    = $this->option('date');
