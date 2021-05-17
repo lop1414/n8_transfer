@@ -49,7 +49,7 @@ class ChannelService extends BaseService
                         'product_id' => $product['id'],
                         'cp_channel_id' => $item['custom_alias'],
                         'adv_alias'  => $this->advMap[$item['adv_alias']],
-                        'admin_id'  => $adminMap[$item['admin_name']]
+                        'admin_id'  => $adminMap[$item['admin_name']] ?? 0
                     ]);
                 }catch(CustomException $e){
                     $errInfo = $e->getErrorInfo(true);
