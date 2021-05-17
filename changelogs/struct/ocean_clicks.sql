@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 08/05/2021 17:32:12
+ Date: 17/05/2021 14:59:52
 */
 
 SET NAMES utf8mb4;
@@ -44,7 +44,7 @@ CREATE TABLE `ocean_clicks` (
   `model` varchar(100) NOT NULL DEFAULT '' COMMENT '手机型号',
   `union_site` varchar(100) NOT NULL DEFAULT '',
   `caid` varchar(100) NOT NULL DEFAULT '' COMMENT '不同版本的中国广告协会互联网广告标识，CAID1是20201230版，暂无CAID2',
-  `link` varchar(512) NOT NULL DEFAULT '' COMMENT '落地页原始url',
+  `link` varchar(1024) NOT NULL DEFAULT '' COMMENT '落地页原始url',
   `extends` text NOT NULL COMMENT '扩展字段',
   `status` varchar(50) NOT NULL COMMENT '上报状态',
   `fail_data` text COMMENT '失败数据',

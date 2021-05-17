@@ -119,6 +119,7 @@ class UserActionBaseService extends BaseService
                     //日志
                     (new ErrorLogService())->catch($e);
                     echo $e->getMessage()."\n";
+                    var_dump($item);
                 }else{
                     echo "  命中唯一索引\n";
                 }
