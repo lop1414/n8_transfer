@@ -66,6 +66,7 @@ class PushChannelService extends PushChannelBaseService
             foreach ($channelList['list'] as $item){
 
                 try{
+                    echo $item['id']."\n";
                     $unionForceChapter = $unionChapter = [];
 
                     $book = $spider->getBookInfo($item['cbid']);
@@ -111,17 +112,53 @@ class PushChannelService extends PushChannelBaseService
                         'create_time'  => $item['create_time'],
                         'updated_time'  => $item['create_time'],
                     ]);
+
+
                 }catch(CustomException $e){
                     //日志
                     (new ErrorLogService())->catch($e);
 
                     $errInfo = $e->getErrorInfo(true);
-                    echo $errInfo['message']. "  cp_channel_id:{$item['id']}\n";
+                    echo 'CustomException :'. $errInfo['message']. "  cp_channel_id:{$item['id']}\n";
+
+                    // 书籍不存在 拆分推广页面字段
+                    if($errInfo['code'] == 'NO_BOOK'){
+                        $tmp = explode('》',$item['page_name']);
+                        $bookName =  trim($tmp[0],'《');
+                        $chapterName = $tmp[1];
+                        //创建书籍
+                        $unionBook = $this->unionApiService->apiCreateBook([
+                            'cp_type'    => $product['cp_type'],
+                            'cp_book_id' => $item['cbid'],
+                            'name'       => $bookName,
+                            'author_name'  => '',
+                            'all_words'  => 0,
+                            'update_time'  => $item['create_time'],
+                        ]);
+                        // 章节
+                        $chapter = $this->unionApiService->apiCreateChapter([
+                            'book_id' => $unionBook['id'],
+                            'cp_chapter_id' => $item['ccid'],
+                            'name'  => $chapterName,
+                            'seq'  => 0
+                        ]);
+                        // 创建渠道
+                        $this->unionApiService->apiCreateChannel([
+                            'name'       => $item['name'],
+                            'product_id' => $product['id'],
+                            'cp_channel_id' => $item['id'],
+                            'book_id'  => $unionBook['id'],
+                            'chapter_id'  => $chapter['id'] ?? 0,
+                            'force_chapter_id'  =>  0,
+                            'create_time'  => $item['create_time'],
+                            'updated_time'  => $item['create_time'],
+                        ]);
+                    }
                 }catch(\Exception $e){
                     //日志
                     (new ErrorLogService())->catch($e);
 
-                    echo $e->getMessage(). "  cp_channel_id:{$item['id']}\n";
+                    echo 'Exception :'. $e->getMessage(). "  cp_channel_id:{$item['id']}\n";
                 }
             }
             $page += 1;

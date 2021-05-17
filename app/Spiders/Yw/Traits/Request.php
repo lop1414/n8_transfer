@@ -34,9 +34,9 @@ trait Request
         if(empty($result) || $result['code'] != 0){
             // 错误提示
             $errorMessage = $result['msg'] ?? '阅文请求错误';
-
+            $errorCode = $result['code'] == 11001 ? 'NO_BOOK' : 'YW_REQUEST_ERROR';
             throw new CustomException([
-                'code' => 'YW_REQUEST_ERROR',
+                'code' => $errorCode,
                 'message' => $errorMessage,
                 'log' => true,
                 'data' => [
