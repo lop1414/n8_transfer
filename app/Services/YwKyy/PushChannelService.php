@@ -115,8 +115,7 @@ class PushChannelService extends PushChannelBaseService
 
 
                 }catch(CustomException $e){
-                    //日志
-                    (new ErrorLogService())->catch($e);
+
 
                     $errInfo = $e->getErrorInfo(true);
                     echo 'CustomException :'. $errInfo['message']. "  cp_channel_id:{$item['id']}\n";
@@ -153,6 +152,9 @@ class PushChannelService extends PushChannelBaseService
                             'create_time'  => $item['create_time'],
                             'updated_time'  => $item['create_time'],
                         ]);
+                    }else{
+                        //日志
+                        (new ErrorLogService())->catch($e);
                     }
                 }catch(\Exception $e){
                     //日志
