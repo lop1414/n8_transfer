@@ -41,6 +41,7 @@ class ChannelService extends BaseService
         $adminList = (new CenterApiService())->apiGetAdminUsers();
         $adminMap = array_column($adminList,'id','name');
         foreach ($productList as $product){
+            echo $product['name']. "\n";
             $list = $sdk->getChannel($product['cp_product_alias'],$product['cp_type'],$startTime,$endTime);
             foreach ($list as $item){
                 try {
