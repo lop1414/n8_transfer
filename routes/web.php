@@ -14,3 +14,14 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+// 后台
+$router->group([
+    'prefix' => 'admin',
+    'middleware' => ['center_menu_auth', 'admin_request_log', 'access_control_allow_origin']
+], function () use ($router) {
+    // config
+    $router->group(['prefix' => 'config'], function () use ($router) {
+        $router->post('get', 'Admin\ConfigController@get');
+        $router->post('save', 'Admin\ConfigController@save');
+    });
+});
