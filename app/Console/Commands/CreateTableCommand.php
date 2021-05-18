@@ -40,16 +40,21 @@ class CreateTableCommand extends BaseCommand
         $service = new CreateTableService();
 
         $date    = $this->option('date');
-        if(!empty($date)){
-            Functions::dateCheck($date);
-            $suffix = date('Ym',strtotime($date));
-        }else{
-            $suffix = date('Ym',strtotime('+1 month'));
 
+        $dateList = [];
+        if(!empty($date)){
+            $dateRange = Functions::getDateRange($date);
+
+            $dateList = Functions::getMonthListByRange($dateRange,'Ym');
+        }else{
+            $dateList[] = date('Ym',strtotime('+1 month'));
         }
 
-        $service->setSuffix($suffix);
-        $service->create();
+        foreach ($dateList as $item){
+            echo " 创建:{$item}\n";
+            $service->setSuffix($item);
+            $service->create();
+        }
     }
 
 
