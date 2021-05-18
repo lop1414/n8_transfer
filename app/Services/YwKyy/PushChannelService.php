@@ -66,7 +66,6 @@ class PushChannelService extends PushChannelBaseService
             foreach ($channelList['list'] as $item){
 
                 try{
-                    echo $item['id']."\n";
                     $unionForceChapter = $unionChapter = [];
 
                     $book = $spider->getBookInfo($item['cbid']);
