@@ -75,8 +75,8 @@ class UserRegActionService extends UserActionBaseService
 
         //转发上报信息
         if(!empty($item['forward'])){
-            $clickData['ad_id'] = $item['forward']['extend']['aid'];
-            $clickData['creative_id'] = $item['forward']['extend']['cid'];
+            $clickData['ad_id'] = $item['forward']['extend']['aid'] ?? '';
+            $clickData['creative_id'] = $item['forward']['extend']['cid'] ?? '';
         }
 
         //点击信息
