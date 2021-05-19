@@ -107,6 +107,7 @@ class UserActionBaseService extends BaseService
 
     public function pull(){
         $list = $this->pullPrepare();
+        echo "total:".count($list)."\n";
         foreach ($list as $item){
 
             try{
