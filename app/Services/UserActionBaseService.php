@@ -226,12 +226,16 @@ class UserActionBaseService extends BaseService
 
         $list = $this->getReportUserActionList();
 
+        $product = (new ProductService())->get();
+        $productMap = array_column($product,null,'id');
+
         foreach ($list as $item){
 
             try{
                 $action = 'report';
                 $action .= ucfirst(Functions::camelize($this->actionType));
                 $tmp = $this->pushItemPrepare($item);
+                $this->n8Sdk->setSecret($productMap[$item['product_id']]['secret']);
                 $this->n8Sdk->$action($tmp);
                 $item->status = ReportStatusEnum::DONE;
 
