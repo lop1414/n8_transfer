@@ -3,6 +3,7 @@
 namespace App\Sdks\N8\Traits;
 
 use App\Common\Enums\ResponseCodeEnum;
+use App\Common\Enums\SystemAliasEnum;
 use App\Common\Tools\CustomException;
 
 trait Request
@@ -21,7 +22,7 @@ trait Request
      */
     public function apiRequest($uri, $param = [], $method = 'GET', $header = [], $option = []){
 
-        $url =  env('APP_UNION_API_URL') .'/'. ltrim($uri, '/');
+        $url =  config('common.system_api.'.SystemAliasEnum::UNION.'.url') .'/'. ltrim($uri, '/');
 
         $param['timestamp'] = time();
 
