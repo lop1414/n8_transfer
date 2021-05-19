@@ -7,12 +7,7 @@ use App\Common\Models\BaseModel;
 class ConfigModel extends BaseModel
 {
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+
 
 
     /**
@@ -21,6 +16,22 @@ class ConfigModel extends BaseModel
      * @var string
      */
     protected $table = 'config';
+
+
+    /**
+     * 禁用默认更新时间
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
 
     protected $fillable = [

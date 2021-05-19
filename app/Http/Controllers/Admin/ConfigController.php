@@ -13,6 +13,11 @@ class ConfigController extends BaseController
 {
 
 
+    /**
+     * @var string
+     * 默认排序字段
+     */
+    protected $defaultOrderBy = 'group';
 
 
     /**
@@ -48,22 +53,18 @@ class ConfigController extends BaseController
     public function save(Request $request){
         $requestData = $request->all();
 
+        $data = [];
         foreach ($requestData['data'] as $group => $item){
             foreach ($item as $k => $v){
-                $config = (new ConfigModel())
-                    ->where('group',$group)
-                    ->where('k',$k)
-                    ->first();
-                if(empty($config)){
-                    $config = new ConfigModel();
-                    $config->group = $group;
-                    $config->k = $k;
-                }
-                $config->v = $v;
-                $config->save();
+                $data[] = [
+                    'group' => $group,
+                    'k'     => $k,
+                    'v'     => json_encode($v)
+                ];
             }
 
         }
+        (new ConfigModel())->batchInsertOrUpdate($data);
         return $this->success([]);
     }
 

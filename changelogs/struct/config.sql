@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 18/05/2021 14:18:39
+ Date: 19/05/2021 10:02:04
 */
 
 SET NAMES utf8mb4;
@@ -25,9 +25,7 @@ CREATE TABLE `config` (
   `group` varchar(50) NOT NULL DEFAULT '',
   `k` varchar(50) NOT NULL,
   `v` mediumtext NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`group`,`k`) USING BTREE
+  UNIQUE KEY `group_k` (`group`,`k`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS = 1;
