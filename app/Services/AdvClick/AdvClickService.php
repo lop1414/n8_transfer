@@ -58,14 +58,15 @@ class AdvClickService extends BaseService
 
 
     public function push(){
-        $list = $this->model
-            ->whereBetween('created_at',[$this->startTime,$this->endTime])
-            ->where('status',ReportStatusEnum::WAITING)
-            ->skip(0)
-            ->take($this->pageSize)
-            ->get();
+
 
         do{
+            $list = $this->model
+                ->whereBetween('created_at',[$this->startTime,$this->endTime])
+                ->where('status',ReportStatusEnum::WAITING)
+                ->skip(0)
+                ->take($this->pageSize)
+                ->get();
             foreach ($list as $item){
                 try{
                     $this->pushItem($item);
