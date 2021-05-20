@@ -61,9 +61,10 @@ class UserRegActionService extends UserActionBaseService
         $adv = $this->advMap[$advAlias];
 
         $requestId = $rawData['request_id'] ?? '';
+        $ua = $rawData['ua'] ?? '';
         $clickData = [
             'ip'    => $rawData['ip'] ?? '',
-            'ua'    => $rawData['ua'] ? base64_decode($rawData['ua']) : '',
+            'ua'    => $ua ? base64_decode($ua) : '',
             'muid'         => $rawData['muid'] ?? '',
             'android_id'   => $rawData['android_id'] ?? '',
             'oaid'         => $rawData['oaid'] ?? '',
