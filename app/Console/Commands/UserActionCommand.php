@@ -53,7 +53,7 @@ class UserActionCommand extends BaseCommand
      * @var
      * 时间间隔
      */
-    protected $timeInterval = 60*60*2;
+    protected $timeInterval = 60*60;
 
     /**
      * @var
