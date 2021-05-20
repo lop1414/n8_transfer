@@ -122,7 +122,8 @@ class UserActionBaseService extends BaseService
                     echo $e->getMessage()."\n";
                     var_dump($item);
                 }else{
-                    echo "  命中唯一索引\n";
+                    echo "  命中唯一索引 \n";
+                    echo $e->getMessage()."\n\n";
                 }
             }
         }
