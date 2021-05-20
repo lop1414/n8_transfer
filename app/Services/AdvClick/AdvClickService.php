@@ -92,8 +92,6 @@ class AdvClickService extends BaseService
 
             }
         }while(!$list->isEmpty());
-
-        $this->push();
     }
 
 
