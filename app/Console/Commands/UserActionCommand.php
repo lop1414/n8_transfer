@@ -145,7 +145,7 @@ class UserActionCommand extends BaseCommand
             $service->setProduct($product);
 
             $time = $this->startTime;
-            while($time <= $this->endTime){
+            while($time < $this->endTime){
                 $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + $this->timeInterval);
 
                 $this->consoleEchoService->echo("时间 : {$time} ~ {$tmpEndTime}");
