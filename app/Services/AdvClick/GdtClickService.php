@@ -25,7 +25,7 @@ class GdtClickService extends AdvClickService
             'click_source' => $this->clickSource,
             'click_at'     => $data['click_at'] ?? '',
             'request_id'   => $data['request_id'] ?? '',
-            'channel_id'   => $data['channel_id'] ?? '',
+            'channel_id'   => $data['channel_id'] ?? 0,
             'extends' => $data,
             'status'  => ReportStatusEnum::WAITING
         ]);
