@@ -54,20 +54,6 @@ class OceanClickService extends AdvClickService
     }
 
 
-
-
-
-    /**
-     * 预处理
-     */
-    public function pushPrepare(){
-        $model = new OceanClickModel();
-        return $model->whereBetween('created_at',[$this->startTime,$this->endTime])
-            ->where('status',ReportStatusEnum::WAITING)
-            ->get();
-    }
-
-
     public function pushItem($item){
         $tmp = $item->toArray();
         $tmp['click_at'] = strtotime($tmp['click_at']). '000';

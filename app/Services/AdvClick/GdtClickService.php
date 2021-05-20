@@ -34,13 +34,6 @@ class GdtClickService extends AdvClickService
 
 
 
-
-    /**
-     * 预处理 还没有广电通广告系统
-     */
-    public function pushPrepare(){}
-
-
     public function pushItem($item){}
 
 }

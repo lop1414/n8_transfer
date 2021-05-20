@@ -28,6 +28,9 @@ class AdvClickService extends BaseService
     protected $clickSource = AdvClickSourceEnum::N8_TRANSFER;
 
 
+    protected $pageSize = 1000;
+
+
 
     /**
      * @param $startTime
@@ -51,44 +54,46 @@ class AdvClickService extends BaseService
     public function save($data){}
 
 
-
-    /**
-     * 预处理
-     */
-    public function pushPrepare(){}
-
-
-
     public function pushItem($item){}
 
 
     public function push(){
-        $list = $this->pushPrepare();
-        foreach ($list as $item){
-            try{
-                $this->pushItem($item);
-                $item->status = ReportStatusEnum::DONE;
+        $list = $this->model
+            ->whereBetween('created_at',[$this->startTime,$this->endTime])
+            ->where('status',ReportStatusEnum::WAITING)
+            ->skip(0)
+            ->take($this->pageSize)
+            ->get();
 
-            }catch(CustomException $e){
-                $errorInfo = $e->getErrorInfo(true);
+        do{
+            foreach ($list as $item){
+                try{
+                    $this->pushItem($item);
+                    $item->status = ReportStatusEnum::DONE;
 
-                $item->fail_data = $errorInfo;
-                $item->status = ReportStatusEnum::FAIL;
+                }catch(CustomException $e){
+                    $errorInfo = $e->getErrorInfo(true);
 
-                echo $errorInfo['message']. "\n";
+                    $item->fail_data = $errorInfo;
+                    $item->status = ReportStatusEnum::FAIL;
 
-            }catch(\Exception $e){
-                $item->fail_data = [
-                    'code'      => $e->getCode(),
-                    'message'   => $e->getMessage()
-                ];
-                $item->status = ReportStatusEnum::FAIL;
+                    echo $errorInfo['message']. "\n";
 
-                echo $e->getMessage(). "\n";
+                }catch(\Exception $e){
+                    $item->fail_data = [
+                        'code'      => $e->getCode(),
+                        'message'   => $e->getMessage()
+                    ];
+                    $item->status = ReportStatusEnum::FAIL;
+
+                    echo $e->getMessage(). "\n";
+                }
+                $item->save();
+
             }
-            $item->save();
+        }while(!$list->isEmpty());
 
-        }
+        $this->push();
     }
 
 
