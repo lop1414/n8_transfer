@@ -17,7 +17,7 @@ class UserActionCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'user_action {--type=} {--cp_type=} {--product_type=} {--action_type=}  {--time=} {--time_interval=} {--second_version=}';
+    protected $signature = 'user_action {--type=} {--cp_type=} {--product_type=} {--action_type=}  {--time=} {--time_interval=} {--second_version=} {--product_id=}';
 
 
     /**
@@ -61,6 +61,9 @@ class UserActionCommand extends BaseCommand
      */
     protected $startTime,$endTime;
 
+
+    protected $productId;
+
     /**
      * Create a new command instance.
      *
@@ -81,6 +84,7 @@ class UserActionCommand extends BaseCommand
         $time = $this->option('time');
         $timeInterval = $this->option('time_interval');
         $isSecondVersion = $this->option('second_version');
+        $this->productId = $this->option('product_id');
 
         Functions::hasEnum(CpTypeEnums::class, $cpType);
         Functions::hasEnum(ProductTypeEnums::class, $productType);
@@ -131,6 +135,10 @@ class UserActionCommand extends BaseCommand
         ]);
 
         foreach ($productList as $product){
+            //指定产品id
+            if(!empty($this->productId) && $this->productId != $product['id']){
+                continue;
+            }
 
             $this->consoleEchoService->echo("产品 : {$product['name']}\n\n\n");
 
