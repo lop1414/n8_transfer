@@ -102,7 +102,7 @@ class UserRegActionService extends UserActionBaseService
             'action_time'   => $item['valid_info']['act_time'],
             'cp_channel_id' => $item['valid_info']['custom_alias'] ?? '',
             'request_id'    => $requestId,
-            'ip'            => $rawData['ip'],
+            'ip'            => $rawData['ip'] ?? '',
             'action_id'     => $openId,
             'matcher'       => $this->product['matcher']
         ],$item);
