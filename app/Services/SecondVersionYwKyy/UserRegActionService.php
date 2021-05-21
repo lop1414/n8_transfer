@@ -61,6 +61,8 @@ class UserRegActionService extends UserActionBaseService
                 if($user['seq_time'] == $regTime){
                     $cpChannelId = $user['channel_id'];
                 }
+            }else{
+                $cpChannelId = 0;
             }
         }
 
