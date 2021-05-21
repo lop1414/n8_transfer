@@ -59,10 +59,10 @@ class UserRegActionService extends UserActionBaseService
                 $user = $tmp['list'][0];
                 // 染色时间 等于 注册时间
                 if($user['seq_time'] == $regTime){
-                    $cpChannelId = $user['channel_id'];
+                    $cpChannelId = $user['channel_id'] ?: '';
                 }
             }else{
-                $cpChannelId = 0;
+                $cpChannelId = '';
             }
         }
 
@@ -147,7 +147,7 @@ class UserRegActionService extends UserActionBaseService
     public function pullAfter(){
 
         $this->channelChangeUser();
-        $this->replenishCpChannelId();
+//        $this->replenishCpChannelId();
     }
 
 
@@ -242,7 +242,7 @@ class UserRegActionService extends UserActionBaseService
                     // 用户被重新染色
                     if($user['seq_time'] != $item['action_time']){}
 
-                    $item->cp_channel_id = empty($user['channel_id']) ? 0 : $user['channel_id'];
+                    $item->cp_channel_id = empty($user['channel_id']) ? '' : $user['channel_id'];
                 }
 
                 $item->save();
