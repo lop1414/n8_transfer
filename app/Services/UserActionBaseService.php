@@ -113,6 +113,13 @@ class UserActionBaseService extends BaseService
             try{
                 $this->pullItem($item);
 
+            }catch(CustomException $e){
+                (new ErrorLogService())->catch($e);
+
+                //日志
+                $errorInfo = $e->getErrorInfo(true);
+                echo $errorInfo['message']. "\n";
+
             }catch (\Exception $e){
 
                 //未命中唯一索引
