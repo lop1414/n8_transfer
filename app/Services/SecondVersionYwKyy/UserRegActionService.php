@@ -46,6 +46,24 @@ class UserRegActionService extends UserActionBaseService
     public function pullItem($item){
         $rawData = $item['extend'];
 
+        $cpChannelId = $item['valid_info']['custom_alias'] ?? '';
+        $regTime = $item['valid_info']['act_time'];
+        //有计划没渠道
+        if(!empty($rawData['user_info']['ad_id']) && empty($item['channel_info'])){
+
+            $tmp = $this->ywSdk->getUser([
+                'guid'  => $item['open_id']
+            ]);
+
+            if(!empty($tmp['list'])){
+                $user = $tmp['list'][0];
+                // 染色时间 等于 注册时间
+                if($user['seq_time'] == $regTime){
+                    $cpChannelId = $user['channel_id'];
+                }
+            }
+        }
+
         //渠道的广告商
         $advAlias = $item['channel_info']['adv_alias'] ?? '';
 
@@ -56,6 +74,11 @@ class UserRegActionService extends UserActionBaseService
         //转发上报数据的广告商
         if(empty($advAlias)){
             $advAlias = $item['forward']['adv_alias'] ?? '';
+        }
+
+        //用户信息上的广告商
+        if(empty($advAlias)){
+            $advAlias = $item['user_info']['adv_alias'] ?? '';
         }
 
         $adv = $this->advMap[$advAlias];
@@ -70,7 +93,7 @@ class UserRegActionService extends UserActionBaseService
             'oaid'         => $rawData['oaid'] ?? '',
             'oaid_md5'     => $rawData['oaid_md5'] ?? '',
             'os'           => $rawData['os'] ?? '',
-            'click_at'     => $item['valid_info']['act_time'],
+            'click_at'     => $regTime,
         ];
 
 
@@ -99,8 +122,8 @@ class UserRegActionService extends UserActionBaseService
         $openId = $rawData['guid'] ?? $rawData['open_id'];
         $this->save([
             'open_id'       => $openId,
-            'action_time'   => $item['valid_info']['act_time'],
-            'cp_channel_id' => $item['valid_info']['custom_alias'] ?? '',
+            'action_time'   => $regTime,
+            'cp_channel_id' => $cpChannelId,
             'request_id'    => $requestId,
             'ip'            => $rawData['ip'] ?? '',
             'action_id'     => $openId,
