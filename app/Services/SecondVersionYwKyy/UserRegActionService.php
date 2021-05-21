@@ -194,6 +194,13 @@ class UserRegActionService extends UserActionBaseService
 
                 }
 
+            }catch(CustomException $e){
+                (new ErrorLogService())->catch($e);
+
+                //日志
+                $errorInfo = $e->getErrorInfo(true);
+                echo $errorInfo['message']. "\n";
+
             }catch (\Exception $e){
 
                 //未命中唯一索引
@@ -240,6 +247,9 @@ class UserRegActionService extends UserActionBaseService
 
                 $item->save();
             }catch(CustomException $e){
+                (new ErrorLogService())->catch($e);
+
+                //日志
                 $errorInfo = $e->getErrorInfo(true);
 
                 echo $errorInfo['message']. "\n";
