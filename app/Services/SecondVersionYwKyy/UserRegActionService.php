@@ -225,15 +225,17 @@ class UserRegActionService extends UserActionBaseService
                 ]);
 
                 if(empty($tmp['list'])){
-                    continue;
+                    $item->cp_channel_id = 0;
+                }else{
+
+                    $user = $tmp['list'][0];
+
+                    // 用户被重新染色
+                    if($user['seq_time'] != $item['action_time']){}
+
+                    $item->cp_channel_id = $user['channel_id'];
                 }
 
-                $user = $tmp['list'][0];
-
-                // 用户被重新染色
-                if($user['seq_time'] != $item['action_time']){}
-
-                $item->cp_channel_id = $user['channel_id'];
                 $item->save();
             }catch(CustomException $e){
                 $errorInfo = $e->getErrorInfo(true);
