@@ -235,7 +235,7 @@ class UserRegActionService extends UserActionBaseService
                     // 用户被重新染色
                     if($user['seq_time'] != $item['action_time']){}
 
-                    $item->cp_channel_id = $user['channel_id'];
+                    $item->cp_channel_id = empty($user['channel_id']) ? 0 : $user['channel_id'];
                 }
 
                 $item->save();
