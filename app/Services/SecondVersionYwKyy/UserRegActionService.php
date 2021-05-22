@@ -146,7 +146,7 @@ class UserRegActionService extends UserActionBaseService
 
     public function pullAfter(){
 
-        $this->channelChangeUser();
+//        $this->channelChangeUser();
 //        $this->replenishCpChannelId();
     }
 
