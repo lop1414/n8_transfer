@@ -126,10 +126,11 @@ class UserActionBaseService extends BaseService
                 if($e->getCode() != 23000){
                     //日志
                     (new ErrorLogService())->catch($e);
-                    echo $e->getMessage()."\n";
                 }else{
                     echo "  命中唯一索引 \n";
                 }
+                echo $e->getMessage()."\n";
+
             }
         }
         $this->pullAfter();
