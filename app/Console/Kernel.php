@@ -37,6 +37,8 @@ class Kernel extends ConsoleKernel
         // 推送渠道扩展信息
         PushChannelExtendCommand::class,
 
+        FillUserActionInfoCommand::class
+
     ];
 
     /**

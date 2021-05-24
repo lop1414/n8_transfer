@@ -60,6 +60,12 @@ class UserActionBaseService extends BaseService
     }
 
 
+    public function setActionType($type){
+        $this->actionType = $type;
+        return $this;
+
+    }
+
     /**
      * @return mixed
      */
