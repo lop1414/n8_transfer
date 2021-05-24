@@ -234,7 +234,7 @@ class UserRegActionService extends UserActionBaseService
                 ]);
 
                 if(empty($tmp['list'])){
-                    $item->cp_channel_id = 0;
+                    $item->cp_channel_id = '';
                 }else{
 
                     $user = $tmp['list'][0];
