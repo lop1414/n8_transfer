@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Common\Console\BaseCommand;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
-use App\Services\CreateTableService;
 use App\Services\ProductService;
 use App\Services\YwKyy\FillUserActionInfoService;
 
