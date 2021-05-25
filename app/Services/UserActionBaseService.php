@@ -11,6 +11,7 @@ use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
+use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 use App\Sdks\N8\N8Sdk;
 
@@ -246,6 +247,14 @@ class UserActionBaseService extends BaseService
         foreach ($list as $item){
 
             try{
+                // 注册行为没有渠道
+                if($this->actionType == UserActionTypeEnum::REG && empty($item->cp_chanel_id)){
+                    //时间差
+                    $diff = time() - strtotime($item->created_at);
+                    if($diff < 60*60*12){
+                        continue;
+                    }
+                }
                 $action = 'report';
                 $action .= ucfirst(Functions::camelize($this->actionType));
                 $tmp = $this->pushItemPrepare($item);
@@ -298,6 +307,7 @@ class UserActionBaseService extends BaseService
             ->when($where,function ($query,$where){
                 return $query->where($where);
             })
+            ->orderBy('action_time')
             ->get();
     }
 
