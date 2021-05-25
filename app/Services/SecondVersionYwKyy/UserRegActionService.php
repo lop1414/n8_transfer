@@ -51,18 +51,15 @@ class UserRegActionService extends UserActionBaseService
         //有计划没渠道
         if(!empty($rawData['user_info']['ad_id']) && empty($item['channel_info']) && $item['valid_info']['has_channel'] == 1){
 
+            $cpChannelId = '';
+
             $tmp = $this->ywSdk->getUser([
                 'guid'  => $item['open_id']
             ]);
 
             if(!empty($tmp['list'])){
                 $user = $tmp['list'][0];
-                // 染色时间 等于 注册时间
-                if($user['seq_time'] == $regTime){
-                    $cpChannelId = $user['channel_id'] ?: '';
-                }
-            }else{
-                $cpChannelId = '';
+                $cpChannelId = $user['channel_id'] ?: '';
             }
         }
 
