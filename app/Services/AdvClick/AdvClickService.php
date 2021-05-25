@@ -62,7 +62,7 @@ class AdvClickService extends BaseService
 
         do{
             $list = $this->model
-                ->whereBetween('created_at',[$this->startTime,$this->endTime])
+                ->whereBetween('click_at',[$this->startTime,$this->endTime])
                 ->where('status',ReportStatusEnum::WAITING)
                 ->skip(0)
                 ->take($this->pageSize)
