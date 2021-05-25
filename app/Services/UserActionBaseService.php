@@ -251,7 +251,7 @@ class UserActionBaseService extends BaseService
                 if($this->actionType == UserActionTypeEnum::REG && empty($item->cp_chanel_id)){
                     //时间差
                     $diff = time() - strtotime($item->created_at);
-                    if($diff < 60*60*12){
+                    if($diff < 60*60*2){
                         continue;
                     }
                 }
