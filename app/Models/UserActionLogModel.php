@@ -23,6 +23,7 @@ class UserActionLogModel extends BaseModel
         'cp_channel_id',
         'request_id',
         'ip',
+        'extend',
         'data',
         'status',
         'action_id',
@@ -38,6 +39,25 @@ class UserActionLogModel extends BaseModel
         return $this;
     }
 
+
+    /**
+     * @param $value
+     * @return array
+     * 属性访问器
+     */
+    public function getExtendAttribute($value)
+    {
+        return json_decode($value,true);
+    }
+
+    /**
+     * @param $value
+     * 属性修饰器
+     */
+    public function setExtendAttribute($value)
+    {
+        $this->attributes['extend'] = json_encode($value);
+    }
 
 
     /**

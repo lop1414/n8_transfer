@@ -11,7 +11,6 @@ use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
-use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 use App\Sdks\N8\N8Sdk;
 
@@ -229,6 +228,7 @@ class UserActionBaseService extends BaseService
             'cp_channel_id' => $data['cp_channel_id'],
             'request_id'    => $data['request_id'],
             'ip'            => $data['ip'],
+            'extend'        => $data['extend'],
             'data'          => $rawData,
             'status'        => ReportStatusEnum::WAITING,
             'action_id'     => $data['action_id'] ?? '',
@@ -239,95 +239,26 @@ class UserActionBaseService extends BaseService
     }
 
 
-
-
-
-
-
-
     /**
-     * push 预处理
+     * @param $data
+     * @return array
+     * 过滤扩展信息
      */
-    public function pushPrepare(){}
-
-
-    /**
-     * 上报
-     */
-    public function push(){
-        $this->pushPrepare();
-
-        $list = $this->getReportUserActionList();
-
-        $product = (new ProductService())->get();
-        $productMap = array_column($product,null,'id');
-
-        foreach ($list as $item){
-
-            try{
-                // 注册行为没有渠道
-                if($this->actionType == UserActionTypeEnum::REG && empty($item->cp_chanel_id)){
-                    //时间差
-                    $diff = time() - strtotime($item->created_at);
-                    if($diff < 60*60*2){
-                        continue;
-                    }
-                }
-                $action = 'report';
-                $action .= ucfirst(Functions::camelize($this->actionType));
-                $tmp = $this->pushItemPrepare($item);
-                $this->n8Sdk->setSecret($productMap[$item['product_id']]['secret']);
-                $this->n8Sdk->$action($tmp);
-                $item->status = ReportStatusEnum::DONE;
-
-            }catch(CustomException $e){
-                $errorInfo = $e->getErrorInfo(true);
-
-                $item->fail_data = $errorInfo;
-                $item->status = ReportStatusEnum::FAIL;
-                echo $errorInfo['message']. "\n";
-
-            }catch(\Exception $e){
-
-                $errorInfo = [
-                    'code'      => $e->getCode(),
-                    'message'   => $e->getMessage()
-                ];
-
-                $item->fail_data = $errorInfo;
-                $item->status = ReportStatusEnum::FAIL;
-                echo $e->getMessage(). "\n";
-            }
-
-            $item->save();
-        }
-    }
-
-
-    public function pushItemPrepare($item){}
-
-
-
-
-    /**
-     * @param array $where
-     * @return mixed
-     * 获取需要上报行为数据列表
-     */
-    public function getReportUserActionList($where = []){
-
-        return $this->model
-            ->setTableNameWithMonth($this->startTime)
-            ->whereBetween('action_time',[$this->startTime,$this->endTime])
-            ->where('product_id',$this->product['id'])
-            ->where('type',$this->actionType)
-            ->where('source',$this->source)
-            ->where('status',ReportStatusEnum::WAITING)
-            ->when($where,function ($query,$where){
-                return $query->where($where);
-            })
-            ->orderBy('action_time')
-            ->get();
+    public function filterExtendInfo($data){
+        return array(
+            'ua'                    => $data['ua'] ?? '',
+            'muid'                  => $data['muid'] ?? '',
+            'oaid'                  => $data['oaid'] ?? '',
+            'device_brand'          => $data['device_brand'] ?? '',
+            'device_manufacturer'   => $data['device_manufacturer'] ?? '',
+            'device_model'          => $data['device_model'] ?? '',
+            'device_product'        => $data['device_product'] ?? '',
+            'device_os_version_name'=> $data['device_os_version_name'] ?? '',
+            'device_os_version_code'=> $data['device_os_version_code'] ?? '',
+            'device_platform_version_name' => $data['device_platform_version_name'] ?? '',
+            'device_platform_version_code' => $data['device_platform_version_code'] ?? '',
+            'android_id'            => $data['android_id'] ?? ''
+        );
     }
 
 }

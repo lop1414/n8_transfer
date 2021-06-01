@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 01/06/2021 16:09:00
+ Date: 01/06/2021 19:48:23
 */
 
 SET NAMES utf8mb4;
@@ -30,6 +30,7 @@ CREATE TABLE `tmp_user_action_logs` (
   `cp_channel_id` varchar(50) NOT NULL DEFAULT '' COMMENT '书城渠道ID',
   `request_id` varchar(255) NOT NULL DEFAULT '' COMMENT '广告商的请求ID',
   `ip` varchar(50) NOT NULL DEFAULT '' COMMENT 'ip',
+  `extend` text NOT NULL COMMENT '扩展信息',
   `data` text NOT NULL COMMENT '数据',
   `status` varchar(50) NOT NULL COMMENT '状态',
   `action_id` varchar(255) NOT NULL DEFAULT '' COMMENT '行为ID',

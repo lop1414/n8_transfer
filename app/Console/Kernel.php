@@ -10,7 +10,8 @@ use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
-use App\Console\Commands\UserActionCommand;
+use App\Console\Commands\PullUserActionCommand;
+use App\Console\Commands\PushUserActionCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -26,8 +27,10 @@ class Kernel extends ConsoleKernel
         CreateTableCommand::class,
         MakeCommandCommand::class,
 
-        // 用户行为 拉取 或 推送
-        UserActionCommand::class,
+        // 拉取用户行为
+        PullUserActionCommand::class,
+        // 推送用户行为
+        PushUserActionCommand::class,
 
         // 推送点击数据
         PushAdvClickCommand::class,
