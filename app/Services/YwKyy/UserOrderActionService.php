@@ -4,6 +4,7 @@ namespace App\Services\YwKyy;
 
 
 use App\Common\Enums\OrderTypeEnums;
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Yw\YwSdk;
 use App\Services\ProductService;
@@ -14,6 +15,8 @@ class UserOrderActionService extends UserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::ORDER;
+
+    protected $source = DataSourceEnums::CP;
 
     protected $ywSdk;
 

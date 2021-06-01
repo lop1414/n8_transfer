@@ -3,6 +3,7 @@
 namespace App\Services\YwKyy;
 
 
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Services\UserActionBaseService;
 
@@ -12,13 +13,21 @@ class UserRegActionService extends UserActionBaseService
 
     protected $actionType = UserActionTypeEnum::REG;
 
+    protected $source = DataSourceEnums::CP;
+
 
     public function pullPrepare(){
         return [];
     }
 
+    /**
+     * @param $item
+     * @return array|void
+     * TODO
+     */
     public function pushItemPrepare($item){
         $rawData = $item['data'];
+
         return [
             'product_alias' => $this->product['cp_product_alias'],
             'cp_type'       => $this->product['cp_type'],
@@ -26,8 +35,8 @@ class UserRegActionService extends UserActionBaseService
             'action_time'   => $item['action_time'],
             'cp_channel_id' => $item['cp_channel_id'],
             'ip'            => $item['ip'],
-            'ua'            => $rawData['user_info']['ua'] ?? '',
-            'muid'          => $rawData['user_info']['muid'] ?? '',
+            'ua'            =>  '',
+            'muid'          =>  '',
             'device_brand'          => '',
             'device_manufacturer'   => '',
             'device_model'          => '',
@@ -36,7 +45,7 @@ class UserRegActionService extends UserActionBaseService
             'device_os_version_code'    => '',
             'device_platform_version_name'  => '',
             'device_platform_version_code'  => '',
-            'android_id'            => $rawData['extend']['android_id'] ?? '',
+            'android_id'            => '',
             'request_id'            => $item['request_id']
         ];
     }

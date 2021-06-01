@@ -321,6 +321,7 @@ class UserActionBaseService extends BaseService
             ->whereBetween('action_time',[$this->startTime,$this->endTime])
             ->where('product_id',$this->product['id'])
             ->where('type',$this->actionType)
+            ->where('source',$this->source)
             ->where('status',ReportStatusEnum::WAITING)
             ->when($where,function ($query,$where){
                 return $query->where($where);

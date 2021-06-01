@@ -3,6 +3,7 @@
 namespace App\Services\YwKyy;
 
 
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Services\UserActionBaseService;
 
@@ -12,11 +13,18 @@ class UserAddShortcutActionService extends UserActionBaseService
 
     protected $actionType = UserActionTypeEnum::ADD_SHORTCUT;
 
+    protected $source = DataSourceEnums::CP;
+
 
     public function pullPrepare(){
         return [];
     }
 
+    /**
+     * @param $item
+     * @return array|void
+     * TODO
+     */
     public function pushItemPrepare($item){
         $rawData = $item['data'];
 
@@ -27,8 +35,8 @@ class UserAddShortcutActionService extends UserActionBaseService
             'action_time'   => $item['action_time'],
             'cp_channel_id' => $item['cp_channel_id'],
             'ip'            => $item['ip'],
-            'ua'            => $rawData['extend']['ua'] ? base64_decode($rawData['extend']['ua']) : '' ,
-            'muid'          => $rawData['extend']['muid'] ?? '',
+            'ua'            => '' ,
+            'muid'          => '',
             'device_brand'          => '',
             'device_manufacturer'   => '',
             'device_model'          => '',
@@ -37,7 +45,7 @@ class UserAddShortcutActionService extends UserActionBaseService
             'device_os_version_code'    => '',
             'device_platform_version_name'  => '',
             'device_platform_version_code'  => '',
-            'android_id'            => $rawData['extend']['android_id'] ?? '',
+            'android_id'            => '',
             'request_id'            => $item['request_id']
         ];
     }
