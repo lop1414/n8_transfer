@@ -115,7 +115,7 @@ class PushUserActionService extends BaseService
 
             try{
                 // 注册行为没有渠道
-                if($this->actionType == UserActionTypeEnum::REG && empty($item->cp_chanel_id)){
+                if($this->actionType == UserActionTypeEnum::REG && empty($item->cp_channel_id)){
                     //时间差
                     $diff = time() - strtotime($item->created_at);
                     if($diff < 60*60*2){
@@ -133,6 +133,7 @@ class PushUserActionService extends BaseService
                     'ip'            => $item['ip'],
                     'request_id'    => $item['request_id']
                 ],$item['extend']);
+
                 $this->n8Sdk->setSecret($productMap[$item['product_id']]['secret']);
                 $this->n8Sdk->$action($pushData);
                 $item->status = ReportStatusEnum::DONE;
