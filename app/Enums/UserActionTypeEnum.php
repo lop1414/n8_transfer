@@ -12,6 +12,8 @@ class UserActionTypeEnum
     const LOGIN = 'LOGIN';
     const ORDER = 'ORDER';
     const COMPLETE_ORDER = 'COMPLETE_ORDER';
+    const RETENT = 'RETENT';
+    const FORM = 'FORM';
 
     /**
      * @var string
@@ -31,5 +33,7 @@ class UserActionTypeEnum
         ['id' => self::LOGIN,        'name' => '登陆'],
         ['id' => self::ORDER,        'name' => '下单'],
         ['id' => self::COMPLETE_ORDER,'name' => '完成订单'],
+        ['id' => self::RETENT,        'name' => '次留'],
+        ['id' => self::FORM,         'name' => '表单预约'],
     ];
 }

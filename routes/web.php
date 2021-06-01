@@ -25,3 +25,24 @@ $router->group([
         $router->post('save', 'Admin\ConfigController@save');
     });
 });
+
+
+
+// 开放接口
+$router->group([
+    // 路由前缀
+    'prefix' => 'open',
+    // 路由中间件
+    'middleware' => ['access_control_allow_origin']
+], function () use ($router) {
+
+
+    $router->group(['prefix' => 'yw_kyy'], function () use ($router) {
+        $router->any('user', 'Open\YwKyy\UserController@distribute');
+
+        $router->group(['prefix' => 'match'], function () use ($router) {
+            $router->any('ocean', 'Admin\MatchDataController@ocean');
+            $router->any('kuaishou', 'Admin\MatchDataController@kuaishou');
+        });
+    });
+});
