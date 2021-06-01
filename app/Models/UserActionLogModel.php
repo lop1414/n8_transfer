@@ -26,7 +26,8 @@ class UserActionLogModel extends BaseModel
         'data',
         'status',
         'action_id',
-        'matcher'
+        'matcher',
+        'source'
     ];
 
 
