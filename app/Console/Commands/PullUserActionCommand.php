@@ -78,20 +78,23 @@ class PullUserActionCommand extends BaseCommand
 
     public function handle(){
 
-        $cpType = $this->option('cp_type');
-        $productType = $this->option('product_type');
-        $actionType = $this->option('action_type');
-        $time = $this->option('time');
-        $timeInterval = $this->option('time_interval');
-        $isSecondVersion = $this->option('second_version');
+        $this->cpType = $this->option('cp_type');
+        $this->productType = $this->option('product_type');
+        $this->actionType = $this->option('action_type');
         $this->productId = $this->option('product_id');
+        $time = $this->option('time');
+        $isSecondVersion = $this->option('second_version');
+        $timeInterval = $this->option('time_interval');
 
-        Functions::hasEnum(CpTypeEnums::class, $cpType);
-        Functions::hasEnum(ProductTypeEnums::class, $productType);
-        Functions::hasEnum(UserActionTypeEnum::class, $actionType);
 
-        list($startTime,$endTime) = explode(",", $time);
-        Functions::checkTimeRange($startTime,$endTime);
+
+
+        Functions::hasEnum(CpTypeEnums::class, $this->cpType);
+        Functions::hasEnum(ProductTypeEnums::class, $this->productType);
+        Functions::hasEnum(UserActionTypeEnum::class, $this->actionType);
+
+        list($this->startTime,$this->endTime) = explode(",", $time);
+        Functions::checkTimeRange($this->startTime,$this->endTime);
 
 
 
@@ -99,15 +102,10 @@ class PullUserActionCommand extends BaseCommand
         if(!empty($timeInterval)){
             $this->timeInterval = $timeInterval;
         }
-        $this->cpType = $cpType;
-        $this->productType = $productType;
-        $this->actionType = $actionType;
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
 
-        $lockKey = "pull|{$cpType}|{$productType}|{$actionType}";
+        $lockKey = "pull|{$this->cpType}|{$this->productType}|{$this->actionType}";
         if($isSecondVersion){
-            $lockKey = "pull|{$cpType}|{$productType}|{$actionType}|{$isSecondVersion}";
+            $lockKey = "pull|{$this->cpType}|{$this->productType}|{$this->actionType}|SecondVersion";
         }
 
         $this->lockRun(function (){

@@ -78,20 +78,20 @@ class PushUserActionCommand extends BaseCommand
 
 
     public function handle(){
-        $cpType = $this->option('cp_type');
-        $productType = $this->option('product_type');
-        $actionType = $this->option('action_type');
+        $this->cpType = $this->option('cp_type');
+        $this->productType = $this->option('product_type');
+        $this->actionType = $this->option('action_type');
         $time = $this->option('time');
         $this->productId = $this->option('product_id');
 
-        Functions::hasEnum(CpTypeEnums::class, $cpType);
-        Functions::hasEnum(ProductTypeEnums::class, $productType);
-        Functions::hasEnum(UserActionTypeEnum::class, $actionType);
+        Functions::hasEnum(CpTypeEnums::class, $this->cpType);
+        Functions::hasEnum(ProductTypeEnums::class, $this->productType);
+        Functions::hasEnum(UserActionTypeEnum::class, $this->actionType);
 
-        list($startTime,$endTime) = explode(",", $time);
-        Functions::checkTimeRange($startTime,$endTime);
+        list($this->startTime,$this->endTime) = explode(",", $time);
+        Functions::checkTimeRange($this->startTime,$this->endTime);
 
-        $lockKey = "push|{$cpType}|{$productType}|{$actionType}";
+        $lockKey = "push|{$this->cpType}|{$this->productType}|{$this->actionType}";
 
 
         $this->lockRun(function (){
