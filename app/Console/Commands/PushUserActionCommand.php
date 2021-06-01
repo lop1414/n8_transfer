@@ -7,28 +7,32 @@ use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
-use App\Common\Tools\CustomException;
 use App\Enums\UserActionTypeEnum;
 use App\Services\ProductService;
+use App\Services\PushUserActionService;
 
-class UserActionCommand extends BaseCommand
+class PushUserActionCommand extends BaseCommand
 {
     /**
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'user_action {--type=} {--cp_type=} {--product_type=} {--action_type=}  {--time=} {--time_interval=} {--second_version=} {--product_id=}';
-
+    protected $signature = 'push_user_action {--cp_type=} {--product_type=} {--action_type=} {--time=} {--product_id=}';
 
     /**
      * 命令描述
      *
      * @var string
      */
-    protected $description = '用户行为数据';
-
+    protected $description = '推送用户行为数据';
 
     protected $consoleEchoService;
+
+    /**
+     * @var
+     * 行为类型
+     */
+    protected $actionType;
 
     /**
      * @var
@@ -44,10 +48,9 @@ class UserActionCommand extends BaseCommand
 
     /**
      * @var
-     * 行为类型
+     * 产品id
      */
-    protected $actionType;
-
+    protected $productId;
 
     /**
      * @var
@@ -62,8 +65,6 @@ class UserActionCommand extends BaseCommand
     protected $startTime,$endTime;
 
 
-    protected $productId;
-
     /**
      * Create a new command instance.
      *
@@ -77,58 +78,34 @@ class UserActionCommand extends BaseCommand
 
 
     public function handle(){
-
         $cpType = $this->option('cp_type');
         $productType = $this->option('product_type');
         $actionType = $this->option('action_type');
         $time = $this->option('time');
-        $timeInterval = $this->option('time_interval');
-        $isSecondVersion = $this->option('second_version');
         $this->productId = $this->option('product_id');
 
         Functions::hasEnum(CpTypeEnums::class, $cpType);
         Functions::hasEnum(ProductTypeEnums::class, $productType);
         Functions::hasEnum(UserActionTypeEnum::class, $actionType);
 
-        $type = $this->option('type');
-        if(!in_array($type,['pull','push'])){
-            throw new CustomException([
-                'code' => 'NOT_FOUND_TYPE',
-                'message' => "未知的类型（可选值:pull、push）",
-            ]);
-        }
-
         list($startTime,$endTime) = explode(",", $time);
         Functions::checkTimeRange($startTime,$endTime);
 
+        $lockKey = "push|{$cpType}|{$productType}|{$actionType}";
 
 
-        // 设置值
-        if(!empty($timeInterval)){
-            $this->timeInterval = $timeInterval;
-        }
-        $this->cpType = $cpType;
-        $this->productType = $productType;
-        $this->actionType = $actionType;
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
+        $this->lockRun(function (){
 
-        $lockKey = "{$cpType}|{$productType}|{$actionType}|{$type}";
-        if($isSecondVersion){
-            $lockKey = "{$cpType}|{$productType}|{$actionType}|{$type}|{$isSecondVersion}";
-        }
-
-        $this->lockRun(function () use($type){
-
-            $this->action($type);
+            $this->action();
         },$lockKey,60*60*3,['log' => true]);
-
 
     }
 
 
-    public function action($type){
-        $service = $this->getService();
+    public function action(){
+        $service = (new PushUserActionService())->setActionType($this->actionType);
+
+
         $productList = (new ProductService())->get([
             'cp_type' => $this->cpType,
             'type'    => $this->productType
@@ -151,33 +128,19 @@ class UserActionCommand extends BaseCommand
                 $this->consoleEchoService->echo("时间 : {$time} ~ {$tmpEndTime}");
 
                 $service->setTimeRange($time, $tmpEndTime);
-                $service->$type();
+                $service->push();
 
                 $time = $tmpEndTime;
             }
-
-
         }
     }
 
 
-    public function getService(){
-        $cpType = ucfirst(Functions::camelize($this->cpType));
-        $productType = ucfirst(Functions::camelize($this->productType));
-        $actionType = ucfirst(Functions::camelize($this->actionType));
 
-        $isSecondVersion = $this->option('second_version');
-        $tmp = $isSecondVersion ? 'SecondVersion' :'';
 
-        $class = "App\Services\\{$tmp}{$cpType}{$productType}\\User{$actionType}ActionService";
 
-        if(!class_exists($class)){
-            throw new CustomException([
-                'code' => 'NOT_REALIZED',
-                'message' => '未实现',
-            ]);
-        }
-        return new $class();
-    }
+
+
+
 
 }
