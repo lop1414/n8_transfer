@@ -6,6 +6,7 @@ namespace App\Services\SecondVersionYwKyy;
 use App\Common\Enums\AdvAliasEnum;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\SecondVersion\SecondVersionSdk;
 use App\Sdks\Yw\YwSdk;
@@ -17,6 +18,8 @@ class UserRegActionService extends UserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::REG;
+
+    protected $source = DataSourceEnums::SECOND_VERSION;
 
     protected $ywSdk;
 

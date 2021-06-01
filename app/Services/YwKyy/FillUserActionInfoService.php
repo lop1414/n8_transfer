@@ -8,6 +8,7 @@ namespace App\Services\YwKyy;
 use App\Common\Enums\ReportStatusEnum;
 use App\Common\Services\BaseService;
 use App\Common\Services\SystemApi\UnionApiService;
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 use App\Sdks\Yw\YwSdk;
@@ -41,6 +42,7 @@ class FillUserActionInfoService extends BaseService
         $service = new UserActionBaseService();
         $service->setProduct($this->product);
         $service->setActionType(UserActionTypeEnum::REG);
+        $service->setSource(DataSourceEnums::CP);
         while($time < $endTime){
             $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + 60*60);
             $tmpEndTime = min($tmpEndTime,date('Y-m-d H:i:s'));

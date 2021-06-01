@@ -3,6 +3,7 @@
 namespace App\Services\SecondVersionYwKyy;
 
 
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\SecondVersion\SecondVersionSdk;
 use App\Services\UserActionBaseService;
@@ -12,6 +13,9 @@ class UserAddShortcutActionService extends UserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::ADD_SHORTCUT;
+
+
+    protected $source = DataSourceEnums::SECOND_VERSION;
 
 
     public function pullPrepare(){

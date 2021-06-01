@@ -28,6 +28,12 @@ class UserActionBaseService extends BaseService
 
     /**
      * @var
+     * 数据来源
+     */
+    protected $source;
+
+    /**
+     * @var
      * 时间区间
      */
     protected $startTime,$endTime;
@@ -72,6 +78,17 @@ class UserActionBaseService extends BaseService
      */
     public function getActionType(){
         return $this->actionType;
+    }
+
+
+    public function setSource($source){
+        $this->source = $source;
+        return $this;
+    }
+
+
+    public function getSource(){
+        return $this->source;
     }
 
 
@@ -216,6 +233,7 @@ class UserActionBaseService extends BaseService
             'status'        => ReportStatusEnum::WAITING,
             'action_id'     => $data['action_id'] ?? '',
             'matcher'       => $data['matcher'] ?? MatcherEnum::SYS,
+            'source'        => $this->source,
         ]);
 
     }
