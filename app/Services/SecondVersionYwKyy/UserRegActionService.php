@@ -152,7 +152,6 @@ class UserRegActionService extends UserActionBaseService
     public function pullAfter(){
 
 //        $this->channelChangeUser();
-//        $this->replenishCpChannelId();
     }
 
 
@@ -223,58 +222,7 @@ class UserRegActionService extends UserActionBaseService
 
 
 
-    /**
-     * 补充CP渠道ID
-     */
-    public function replenishCpChannelId(){
-        echo "补充CP渠道ID\n";
-        $this->setYwSdk();
-        $list = $this->getReportUserActionList(['cp_channel_id' => '']);
 
-        foreach ($list as $item){
-            try{
-
-                $tmp = $this->ywSdk->getUser([
-                    'guid'  => $item['open_id']
-                ]);
-
-                if(empty($tmp['list'])){
-                    $item->cp_channel_id = '';
-                }else{
-
-                    $user = $tmp['list'][0];
-
-                    // 用户被重新染色
-                    if($user['seq_time'] != $item['action_time']){}
-
-                    $item->cp_channel_id = empty($user['channel_id']) ? '' : $user['channel_id'];
-                }
-
-                $item->save();
-            }catch(CustomException $e){
-                (new ErrorLogService())->catch($e);
-
-                //日志
-                $errorInfo = $e->getErrorInfo(true);
-
-                echo $errorInfo['message']. "\n";
-
-            }catch (\Exception $e){
-
-                //未命中唯一索引
-                if($e->getCode() != 23000){
-                    //日志
-                    (new ErrorLogService())->catch($e);
-                    echo $e->getMessage(). "\n";
-
-                }else{
-                    echo "  命中唯一索引\n";
-                }
-
-            }
-        }
-
-    }
 
 
 
