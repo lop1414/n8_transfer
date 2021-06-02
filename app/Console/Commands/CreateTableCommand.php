@@ -40,7 +40,6 @@ class CreateTableCommand extends BaseCommand
 
 
     public function handle(){
-        $this->update();die;
         $service = new CreateTableService();
 
         $date    = $this->option('date');
@@ -60,55 +59,5 @@ class CreateTableCommand extends BaseCommand
             $service->create();
         }
     }
-
-
-
-    public function update(){
-        $model = new UserActionLogModel();
-        $arr = [
-            '1970-01-01',
-            '2020-09-01',
-            '2020-10-01',
-            '2020-11-01',
-            '2020-12-01',
-            '2021-01-01',
-            '2021-02-01',
-            '2021-03-01',
-            '2021-04-01',
-            '2021-05-01'
-        ];
-
-        $service = new UserRegActionService();
-        foreach ($arr as $date){
-            do{
-                $list = $model->setTableNameWithMonth($date)
-                    ->where('extend','')
-                    ->skip(0)
-                    ->take(1000)
-                    ->get();
-                foreach ($list as $item){
-                    $data = $item['data'];
-                    if($item->source == DataSourceEnums::SECOND_VERSION){
-                        $rawData = $data['extend'] ?? [];
-                        $item->extend = $service->filterExtendInfo([
-                            'ua'            => $rawData['user_info']['ua'] ?? '',
-                            'muid'          => $rawData['user_info']['muid'] ?? '',
-                            'android_id'    => $rawData['extend']['android_id'] ?? '',
-                        ]);
-                    }elseif ($item->source == DataSourceEnums::CP){
-                        $item->extend = $service->filterExtendInfo([
-                            'oaid'          => $data['oaid'] ?? '',
-                            'device_manufacturer'  => $data['manufacturer'] ?? '',
-                        ]);
-                    }
-
-                    $item->save();
-                    echo "更新成功 {$item->open_id}\n";
-                }
-            }while(!$list->isEmpty());
-        }
-
-    }
-
 
 }
