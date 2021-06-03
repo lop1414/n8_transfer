@@ -20,6 +20,7 @@ class ChannelService extends BaseService
         'JRTT'  => AdvAliasEnum::OCEAN,
         'GDT'   => AdvAliasEnum::GDT,
         'BAIDU' => AdvAliasEnum::BAIDU,
+        'KUAISHOU' => AdvAliasEnum::KUAISHOU,
     ];
 
 
@@ -71,15 +72,6 @@ class ChannelService extends BaseService
      */
     public function createChannelExtend($data = []){
         return  (new UnionApiService())->apiCreateChannelExtend($data);
-    }
-
-
-
-    public function bindAdId(){
-       $list = [];
-       foreach ($list as $item){
-
-       }
     }
 
 
