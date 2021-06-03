@@ -23,6 +23,26 @@ class MakeCommandCommand extends BaseCommand
      */
     protected $description = '创建命令';
 
+
+    protected $userActionMap = [
+        ProductTypeEnums::KYY => [
+            UserActionTypeEnum::REG,
+//            UserActionTypeEnum::READ,
+            UserActionTypeEnum::ADD_SHORTCUT,
+//            UserActionTypeEnum::LOGIN,
+            UserActionTypeEnum::ORDER,
+            UserActionTypeEnum::COMPLETE_ORDER
+        ],
+        ProductTypeEnums::H5 => [
+            UserActionTypeEnum::REG,
+//            UserActionTypeEnum::READ,
+//            UserActionTypeEnum::FOLLOW,
+//            UserActionTypeEnum::LOGIN,
+            UserActionTypeEnum::ORDER,
+            UserActionTypeEnum::COMPLETE_ORDER
+        ]
+    ];
+
     protected $consoleEchoService;
 
 
@@ -45,10 +65,10 @@ class MakeCommandCommand extends BaseCommand
 
         $content = str_replace('TmpCommandsService','CommandsService',$content);
 
-        $str = $this->userAction('pull');
+        $str = $this->pullUserAction();
         $content = str_replace('#commands|pull_user_action#',$str,$content);
 
-        $str = $this->userAction('push');
+        $str = $this->pushUserAction();
         $content = str_replace('#commands|push_user_action#',$str,$content);
 
         $fileName = $path.'CommandsService.php';
@@ -56,37 +76,9 @@ class MakeCommandCommand extends BaseCommand
     }
 
 
-
-
-    /**
-     * @param string $type
-     * @return string
-     * @throws \App\Common\Tools\CustomException
-     * 用户行为
-     */
-    public function userAction($type = ''){
+    public function pullUserAction(){
         $cpTypeList = CpTypeEnums::$list;
-
         $str = "";
-
-        $userActionMap = [
-            ProductTypeEnums::KYY => [
-                UserActionTypeEnum::REG,
-                UserActionTypeEnum::READ,
-                UserActionTypeEnum::ADD_SHORTCUT,
-                UserActionTypeEnum::LOGIN,
-                UserActionTypeEnum::ORDER,
-                UserActionTypeEnum::COMPLETE_ORDER
-            ],
-            ProductTypeEnums::H5 => [
-                UserActionTypeEnum::REG,
-                UserActionTypeEnum::READ,
-                UserActionTypeEnum::FOLLOW,
-                UserActionTypeEnum::LOGIN,
-                UserActionTypeEnum::ORDER,
-                UserActionTypeEnum::COMPLETE_ORDER
-            ]
-        ];
 
         //书城
         foreach ($cpTypeList as $cpType){
@@ -96,18 +88,17 @@ class MakeCommandCommand extends BaseCommand
                 $str .= "        //{$cpType['name']}-{$productType}\n";
 
                 //用户行为
-                $userActionList = $userActionMap[$productType];
+                $userActionList = $this->userActionMap[$productType];
                 foreach($userActionList as $userAction){
 
                     // 跳过阅文注册、加桌行为
                     if(
                         $cpType['id'] == CpTypeEnums::YW
-                        && $type == 'pull'
                         && in_array($userAction,[UserActionTypeEnum::REG,UserActionTypeEnum::ADD_SHORTCUT])){
                         continue;
                     }
 
-                    $tmpCommand = "user_action --type={$type} ";
+                    $tmpCommand = "pull_user_action";
                     $tmpCommand .= "--cp_type={$cpType['id']} --product_type={$productType} ";
                     $tmpCommand .= "--action_type={$userAction} ";
                     $tmpCommand .= "--time={\$timeRange}";
@@ -117,7 +108,7 @@ class MakeCommandCommand extends BaseCommand
 
 
                 // 阅文注册加桌数据 需从二版拿
-                if($cpType['id'] == CpTypeEnums::YW && $type == 'pull'){
+                if($cpType['id'] == CpTypeEnums::YW ){
                     $str .= "        //{$cpType['name']}(二版)-{$productType}\n";
 
                     $userActions = [UserActionTypeEnum::REG];
@@ -127,7 +118,7 @@ class MakeCommandCommand extends BaseCommand
                     }
                     //用户行为
                     foreach($userActions as $userAction){
-                        $tmpCommand = "user_action --type={$type} ";
+                        $tmpCommand = "pull_user_action ";
                         $tmpCommand .= "--cp_type={$cpType['id']} --product_type={$productType} ";
                         $tmpCommand .= "--action_type={$userAction} ";
                         $tmpCommand .= "--time={\$timeRange} ";
@@ -136,6 +127,35 @@ class MakeCommandCommand extends BaseCommand
                     }
                     $str .= "\n";
                 }
+            }
+        }
+        return $str;
+    }
+
+
+
+    public function pushUserAction(){
+        $cpTypeList = CpTypeEnums::$list;
+
+        $str = "";
+
+        //书城
+        foreach ($cpTypeList as $cpType){
+            $productTypeList = $cpType['product_type'] ?? [];
+            //产品类型
+            foreach ($productTypeList as $productType){
+                $str .= "        //{$cpType['name']}-{$productType}\n";
+
+                //用户行为
+                $userActionList = $this->userActionMap[$productType];
+                foreach($userActionList as $userAction){
+                    $tmpCommand = "push_user_action  ";
+                    $tmpCommand .= "--cp_type={$cpType['id']} --product_type={$productType} ";
+                    $tmpCommand .= "--action_type={$userAction} ";
+                    $tmpCommand .= "--time={\$timeRange}";
+                    $str .= $this->echoCommand($tmpCommand);
+                }
+                $str .= "\n";
             }
         }
         return $str;

@@ -150,8 +150,7 @@ class UserRegActionService extends UserActionBaseService
 
 
     public function pullAfter(){
-
-//        $this->channelChangeUser();
+        $this->channelChangeUser();
     }
 
 
@@ -175,7 +174,8 @@ class UserRegActionService extends UserActionBaseService
                     'action_id'     => $item['open_id'],
                     'ip'            => '',
                     'request_id'    => $requestId,
-                    'matcher'       => $this->product['matcher']
+                    'matcher'       => $this->product['matcher'],
+                    'extend'        => $this->filterExtendInfo([])
                 ],$item);
 
                 if(!empty($item['channel_info'])){
