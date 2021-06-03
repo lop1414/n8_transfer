@@ -56,6 +56,7 @@ class FillUserActionInfoService extends BaseService
             ];
             $currentCount = 0;
             $unionApiService = new UnionApiService();
+            $userActionService = new UserActionBaseService();
             do{
                 $tmp = $this->ywSdk->getUser($para);
                 $count = $tmp['total_count'];
@@ -77,7 +78,11 @@ class FillUserActionInfoService extends BaseService
                             'request_id'    => '',
                             'ip'            => '',
                             'action_id'     => $user['guid'],
-                            'matcher'       => $this->product['matcher']
+                            'matcher'       => $this->product['matcher'],
+                            'extend'        => $userActionService->filterExtendInfo([
+                                'oaid'         => $user['oaid'] ?? '',
+                                'device_manufacturer' => $user['manufacturer'] ?? ''
+                            ])
                         ],$user);
                     }
                     //没有渠道
