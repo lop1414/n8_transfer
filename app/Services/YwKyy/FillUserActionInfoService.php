@@ -68,24 +68,9 @@ class FillUserActionInfoService extends BaseService
                         ->where('open_id',$user['guid'])
                         ->where('type',UserActionTypeEnum::REG)
                         ->get();
-                    //没有用户注册行为数据
-                    $cpChannelId = empty($user['channel_id']) ? '': $user['channel_id'];
-                    if($tmpUser->isEmpty()){
-                        $service->save([
-                            'open_id'       => $user['guid'],
-                            'action_time'   => $user['reg_time'],
-                            'cp_channel_id' => $cpChannelId,
-                            'request_id'    => '',
-                            'ip'            => '',
-                            'action_id'     => $user['guid'],
-                            'matcher'       => $this->product['matcher'],
-                            'extend'        => $userActionService->filterExtendInfo([
-                                'oaid'         => $user['oaid'] ?? '',
-                                'device_manufacturer' => $user['manufacturer'] ?? ''
-                            ])
-                        ],$user);
-                    }
+
                     //没有渠道
+                    $cpChannelId = empty($user['channel_id']) ? '': $user['channel_id'];
                     if(empty($cpChannelId)) continue;
 
                     $channel = $unionApiService->apiReadChannel([
