@@ -143,8 +143,8 @@ class UserRegActionService extends UserActionBaseService
         // 没有广告商
         if(!empty($adv)){
             $clickData['request_id'] = $requestId;
-            $clickData['open_id'] = $rawData['guid'];
-            $clickData['action_id'] = $rawData['guid'];
+            $clickData['open_id'] = $openId;
+            $clickData['action_id'] = $openId;
             $clickData['type'] = $this->actionType;
             $this->saveAdvClickData($adv,$clickData);
         }
