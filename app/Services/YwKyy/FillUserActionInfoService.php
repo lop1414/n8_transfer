@@ -7,7 +7,9 @@ namespace App\Services\YwKyy;
 
 use App\Common\Enums\ReportStatusEnum;
 use App\Common\Services\BaseService;
+use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\UnionApiService;
+use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
@@ -56,39 +58,57 @@ class FillUserActionInfoService extends BaseService
             ];
             $currentCount = 0;
             $unionApiService = new UnionApiService();
-            $userActionService = new UserActionBaseService();
             do{
                 $tmp = $this->ywSdk->getUser($para);
                 $count = $tmp['total_count'];
                 $currentCount += count($tmp['list']);
                 foreach($tmp['list'] as $user){
+                    try{
+                        $tmpUser = $userActionLogModel
+                            ->setTableNameWithMonth($user['reg_time'])
+                            ->where('open_id',$user['guid'])
+                            ->where('type',UserActionTypeEnum::REG)
+                            ->get();
 
-                    $tmpUser = $userActionLogModel
-                        ->setTableNameWithMonth($user['reg_time'])
-                        ->where('open_id',$user['guid'])
-                        ->where('type',UserActionTypeEnum::REG)
-                        ->get();
+                        //没有渠道
+                        $cpChannelId = empty($user['channel_id']) ? '': $user['channel_id'];
+                        if(empty($cpChannelId)) continue;
 
-                    //没有渠道
-                    $cpChannelId = empty($user['channel_id']) ? '': $user['channel_id'];
-                    if(empty($cpChannelId)) continue;
+                        $channel = $unionApiService->apiReadChannel([
+                            'product_id'    => $this->product['id'],
+                            'cp_channel_id' => $cpChannelId
+                        ]);
 
-                    $channel = $unionApiService->apiReadChannel([
-                        'product_id'    => $this->product['id'],
-                        'cp_channel_id' => $cpChannelId
-                    ]);
+                        foreach ($tmpUser as $modelUser){
+                            if(!empty($modelUser->cp_channel_id)) continue;
 
-                    foreach ($tmpUser as $modelUser){
-                        if(!empty($modelUser->cp_channel_id)) continue;
-
-                        // 渠道创建时间 大于 注册时间
-                        if($channel['create_time'] > $modelUser->action_time){
-                            echo "渠道创建时间 大于 注册时间:".$modelUser->open_id. "\n";
-                            continue;
+                            // 渠道创建时间 大于 注册时间
+                            if($channel['create_time'] > $modelUser->action_time){
+                                echo "渠道创建时间 大于 注册时间:".$modelUser->open_id. "\n";
+                                continue;
+                            }
+                            $modelUser->cp_channel_id = $user['channel_id'];
+                            $modelUser->save();
+                            echo "渠道更新:".$modelUser->open_id. "\n";
                         }
-                        $modelUser->cp_channel_id = $user['channel_id'];
-                        $modelUser->save();
-                        echo "渠道更新:".$modelUser->open_id. "\n";
+                    }catch(CustomException $e){
+                        (new ErrorLogService())->catch($e);
+
+                        //日志
+                        $errorInfo = $e->getErrorInfo(true);
+                        echo $errorInfo['message']. "\n";
+
+                    }catch (\Exception $e){
+
+                        //未命中唯一索引
+                        if($e->getCode() != 23000){
+                            //日志
+                            (new ErrorLogService())->catch($e);
+                            echo $e->getMessage()."\n";
+                        }else{
+                            echo "  命中唯一索引 \n";
+                        }
+
                     }
                 }
                 $para['page'] += 1;
