@@ -28,6 +28,7 @@ class UserRegActionService extends UserActionBaseService
         'JRTT'  => AdvAliasEnum::OCEAN,
         'GDT'   => AdvAliasEnum::GDT,
         'BAIDU' => AdvAliasEnum::BAIDU,
+        'KUAISHOU' => AdvAliasEnum::KUAISHOU,
     ];
 
 
