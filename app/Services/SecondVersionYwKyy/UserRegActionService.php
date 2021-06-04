@@ -88,9 +88,13 @@ class UserRegActionService extends UserActionBaseService
 
         $requestId = $rawData['request_id'] ?? '';
         $ua = $rawData['ua'] ?? '';
+        if(!empty($ua) && $ua == base64_encode(base64_decode($ua))){
+            $ua = base64_decode($ua);
+        }
+
         $clickData = [
             'ip'    => $rawData['ip'] ?? '',
-            'ua'    => $ua ? base64_decode($ua) : '',
+            'ua'    => $ua,
             'muid'         => $rawData['muid'] ?? '',
             'android_id'   => $rawData['android_id'] ?? '',
             'oaid'         => $rawData['oaid'] ?? '',
