@@ -8,7 +8,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Common\Enums\ReportStatusEnum;
 use App\Models\KuaiShouClickModel;
 
-class KusiShouClickService extends AdvClickService
+class KuaiShouClickService extends AdvClickService
 {
 
     protected $adv = AdvAliasEnum::KUAI_SHOU;
