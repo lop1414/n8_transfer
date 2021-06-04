@@ -122,6 +122,7 @@ class UserRegActionService extends UserActionBaseService
 
 
         $openId = $rawData['guid'] ?? $rawData['open_id'];
+        $cpChannelId = $cpChannelId ?: '';
         $this->save([
             'open_id'       => $openId,
             'action_time'   => $regTime,
