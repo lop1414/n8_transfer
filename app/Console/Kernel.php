@@ -7,6 +7,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\FillUserActionInfoCommand;
 use App\Console\Commands\MakeCommandCommand;
+use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
@@ -30,6 +31,8 @@ class Kernel extends ConsoleKernel
 
         // 队列行为数据入库
         UserActionDataToDbCommand::class,
+        // 匹配数据入库
+        MatchDataToDbCommand::class,
         // 拉取用户行为
         PullUserActionCommand::class,
         // 推送用户行为
