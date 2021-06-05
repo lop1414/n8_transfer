@@ -10,12 +10,10 @@ use App\Common\Services\BaseService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\UnionApiService;
 use App\Common\Tools\CustomException;
-use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 use App\Sdks\Yw\YwSdk;
 use App\Services\ProductService;
-use App\Services\UserActionBaseService;
 
 
 class FillUserActionInfoService extends BaseService
@@ -24,6 +22,8 @@ class FillUserActionInfoService extends BaseService
     protected $product;
 
     protected $ywSdk;
+
+    protected $channelMap;
 
     public function setProduct($product){
         $this->product = $product;
@@ -41,10 +41,6 @@ class FillUserActionInfoService extends BaseService
     public function cpChannelId($startTime,$endTime){
         $time = $startTime;
         $userActionLogModel = new UserActionLogModel();
-        $service = new UserActionBaseService();
-        $service->setProduct($this->product);
-        $service->setActionType(UserActionTypeEnum::REG);
-        $service->setSource(DataSourceEnums::CP);
         while($time < $endTime){
             $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + 60*60);
             $tmpEndTime = min($tmpEndTime,date('Y-m-d H:i:s'));
@@ -57,7 +53,6 @@ class FillUserActionInfoService extends BaseService
                 'page'      => 1
             ];
             $currentCount = 0;
-            $unionApiService = new UnionApiService();
             do{
                 $tmp = $this->ywSdk->getUser($para);
                 $count = $tmp['total_count'];
@@ -74,10 +69,7 @@ class FillUserActionInfoService extends BaseService
                         $cpChannelId = empty($user['channel_id']) ? '': $user['channel_id'];
                         if(empty($cpChannelId)) continue;
 
-                        $channel = $unionApiService->apiReadChannel([
-                            'product_id'    => $this->product['id'],
-                            'cp_channel_id' => $cpChannelId
-                        ]);
+                        $channel = $this->getChannel($this->product['id'],$cpChannelId);
 
                         foreach ($tmpUser as $modelUser){
                             if(!empty($modelUser->cp_channel_id)) continue;
@@ -118,6 +110,21 @@ class FillUserActionInfoService extends BaseService
 
             $time = $tmpEndTime;
         }
+    }
+
+
+
+    public function getChannel($productId,$cpChannelId){
+        $key = $productId.'_'.$cpChannelId;
+
+        if(!isset($this->channelMap[$key]) && !empty($this->channelMap[$key])){
+            $this->channelMap[$key] =  (new UnionApiService())->apiReadChannel([
+                'product_id'    => $productId,
+                'cp_channel_id' => $cpChannelId
+            ]);
+        }
+
+        return $this->channelMap[$key];
     }
 
 
