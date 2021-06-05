@@ -41,8 +41,8 @@ $router->group([
         $router->get('user', 'Open\YwKyy\UserController@distribute');
 
         $router->group(['prefix' => 'match'], function () use ($router) {
-            $router->get('ocean', 'Admin\MatchDataController@ocean');
-            $router->get('kuaishou', 'Admin\MatchDataController@kuaishou');
+            $router->get('ocean', 'Open\YwKyy\MatchDataController@ocean');
+            $router->get('kuaishou', 'Open\YwKyy\MatchDataController@kuaishou');
         });
     });
 });

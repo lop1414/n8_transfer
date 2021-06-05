@@ -8,20 +8,20 @@ use App\Common\Services\ConsoleEchoService;
 use App\Enums\QueueEnums;
 use App\Services\UserActionDataToDbService;
 
-class UserActionDataToDbCommand extends BaseCommand
+class MatchDataToDbCommand extends BaseCommand
 {
     /**
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'user_action_data_to_db {--enum=}';
+    protected $signature = 'match_data_to_db {--enum=}';
 
     /**
      * 命令描述
      *
      * @var string
      */
-    protected $description = '队列行为数据入库';
+    protected $description = '匹配数据数据入库';
 
     protected $consoleEchoService;
 
@@ -54,13 +54,12 @@ class UserActionDataToDbCommand extends BaseCommand
         Functions::hasEnum(QueueEnums::class,$this->enum);
 
         $enumInfo = Functions::getEnumMapItem(QueueEnums::class,$this->enum);
-        if($enumInfo['type']  != 'action'){
-            $this->consoleEchoService->error('枚举类型不是action');
+        if($enumInfo['type']  != 'match'){
+            $this->consoleEchoService->error('枚举类型不是match');
             return ;
         }
 
-
-        $key = 'user_action_data_to_db|'.$this->enum;
+        $key = 'match_data_to_db|'.$this->enum;
         $this->lockRun(function (){
             (new UserActionDataToDbService())
                 ->setQueueEnum($this->enum)

@@ -16,9 +16,11 @@ use Illuminate\Http\Request;
 class MatchDataController extends BaseController
 {
 
+
     /**
      * @param Request $request
-     * 百度
+     * @return mixed
+     * 头条
      */
     public function ocean(Request $request){
         $requestData = $request->all();
@@ -35,26 +37,28 @@ class MatchDataController extends BaseController
             3 => UserActionTypeEnum::FORM,
             6 => UserActionTypeEnum::RETENT
         ];
-        $requestData['type'] = $map[$convertType] ?? '';
-        if($requestData['type'] == UserActionTypeEnum::REG){
-            // 异步 修改 user_action_log表 生成点击数据
-            $service = new DataToQueueService(QueueEnums::USER_REG_ACTION_MATCH_HANDLE);
-            $service->push($requestData);
-        }
 
-        $service = new DataToQueueService(QueueEnums::USER_ACTION);
+        $requestData['type'] = $map[$convertType] ?? '';
+        $requestData['decode_url'] = $url;
+        $requestData['url_info'] = $urlInfo;
+        $service = new DataToQueueService(QueueEnums::OCEAN_MATCH_DATA);
         $service->push($requestData);
 
+        return $this->_response(0,'success');
     }
+
 
 
     /**
      * @param Request $request
+     * @return mixed
      * 快手
      */
     public function kuaishou(Request $request){
         $requestData = $request->all();
-        $requestData['adv_alias'] = AdvAliasEnum::KUAISHOU;
+        $requestData['adv_alias'] = AdvAliasEnum::KUAI_SHOU;
+        $url = urldecode(base64_decode(urldecode($requestData['url'])));
+        $urlInfo = $this->get_link_para($url);
         // 转化行为
         $convertType = $urlInfo['event_type'] ?? '';
         $map = [
@@ -64,16 +68,12 @@ class MatchDataController extends BaseController
             7 => UserActionTypeEnum::RETENT
         ];
         $requestData['type'] = $map[$convertType] ?? '';
-
-        if($requestData['type'] == UserActionTypeEnum::REG){
-            // 异步 修改 user_action_log表 生成点击数据
-            $service = new DataToQueueService(QueueEnums::USER_REG_ACTION_MATCH_HANDLE);
-            $service->push($requestData);
-        }
-
-        $service = new DataToQueueService(QueueEnums::USER_ACTION);
+        $requestData['decode_url'] = $url;
+        $requestData['url_info'] = $urlInfo;
+        $service = new DataToQueueService(QueueEnums::KUAI_SHOU_MATCH_DATA);
         $service->push($requestData);
 
+        return $this->_response(0,'success');
     }
 
 
