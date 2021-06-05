@@ -11,10 +11,10 @@ use App\Enums\UserActionTypeEnum;
 use App\Sdks\SecondVersion\SecondVersionSdk;
 use App\Sdks\Yw\YwSdk;
 use App\Services\ProductService;
-use App\Services\UserActionBaseService;
+use App\Services\PullUserActionBaseService;
 
 
-class UserRegActionService extends UserActionBaseService
+class UserRegActionService extends PullUserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::REG;

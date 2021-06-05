@@ -8,10 +8,10 @@ use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Yw\YwSdk;
 use App\Services\ProductService;
-use App\Services\UserActionBaseService;
+use App\Services\PullUserActionBaseService;
 
 
-class UserOrderActionService extends UserActionBaseService
+class UserOrderActionService extends PullUserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::ORDER;

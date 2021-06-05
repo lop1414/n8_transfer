@@ -5,10 +5,10 @@ namespace App\Services\TwKyy;
 
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Tw\TwSdk;
-use App\Services\UserActionBaseService;
+use App\Services\PullUserActionBaseService;
 
 
-class UserAddShortcutActionService extends UserActionBaseService
+class UserAddShortcutActionService extends PullUserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::ADD_SHORTCUT;

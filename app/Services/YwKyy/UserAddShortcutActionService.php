@@ -5,10 +5,10 @@ namespace App\Services\YwKyy;
 
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
-use App\Services\UserActionBaseService;
+use App\Services\PullUserActionBaseService;
 
 
-class UserAddShortcutActionService extends UserActionBaseService
+class UserAddShortcutActionService extends PullUserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::ADD_SHORTCUT;

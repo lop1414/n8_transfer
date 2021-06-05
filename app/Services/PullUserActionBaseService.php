@@ -15,7 +15,7 @@ use App\Models\UserActionLogModel;
 use App\Sdks\N8\N8Sdk;
 
 
-class UserActionBaseService extends BaseService
+class PullUserActionBaseService extends BaseService
 {
 
 

@@ -7,10 +7,10 @@ use App\Common\Enums\CpTypeEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\ConfigModel;
 use App\Sdks\Tw\TwSdk;
-use App\Services\UserActionBaseService;
+use App\Services\PullUserActionBaseService;
 
 
-class UserRegActionService extends UserActionBaseService
+class UserRegActionService extends PullUserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::REG;
