@@ -40,6 +40,9 @@ class MakeCommandsService
         $str = $this->userActionQueueDataToDb();
         $content = str_replace('#commands|user_action_queue_data_to_db#',$str,$content);
 
+        $str = $this->matchQueueDataToDb();
+        $content = str_replace('#commands|match_queue_data_to_db#',$str,$content);
+
         $str = $this->pullUserAction();
         $content = str_replace('#commands|pull_user_action#',$str,$content);
 
@@ -51,18 +54,35 @@ class MakeCommandsService
     }
 
 
+
     protected function userActionQueueDataToDb(){
         $list = QueueEnums::$list;
         $str = "";
-        $arr = [
-            QueueEnums::USER_REG_ACTION,
-            QueueEnums::USER_ADD_SHORTCUT_ACTION,
-        ];
+
         foreach ($list as $item){
-            if(!in_array($item['id'],$arr)) continue;
+            if($item['type'] != 'action') continue;
 
             $str .= "        //{$item['name']}\n";
             $tmpCommand = "user_action_data_to_db ";
+            $tmpCommand .= "--enum={$item['id']} ";
+            $str .= $this->echoCommand($tmpCommand);
+        }
+        $str .= "\n";
+        return $str;
+    }
+
+
+
+    protected function matchQueueDataToDb(){
+        $list = QueueEnums::$list;
+        $str = "";
+
+        foreach ($list as $item){
+            if($item['type'] != 'match') continue;
+
+
+            $str .= "        //{$item['name']}\n";
+            $tmpCommand = "match_data_to_db ";
             $tmpCommand .= "--enum={$item['id']} ";
             $str .= $this->echoCommand($tmpCommand);
         }

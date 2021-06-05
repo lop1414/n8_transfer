@@ -8,6 +8,8 @@ class MatchDataModel extends BaseModel
 {
     protected $fillable = [
         'product_id',
+        'open_id',
+        'cp_channel_id',
         'adv_alias',
         'type',
         'data',

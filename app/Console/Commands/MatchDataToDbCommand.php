@@ -6,7 +6,7 @@ use App\Common\Console\BaseCommand;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Enums\QueueEnums;
-use App\Services\UserActionDataToDbService;
+use App\Services\MatchDataToDbService;
 
 class MatchDataToDbCommand extends BaseCommand
 {
@@ -61,7 +61,7 @@ class MatchDataToDbCommand extends BaseCommand
 
         $key = 'match_data_to_db|'.$this->enum;
         $this->lockRun(function (){
-            (new UserActionDataToDbService())
+            (new MatchDataToDbService())
                 ->setQueueEnum($this->enum)
                 ->run();
         },$key,60*60,['log' => true]);
