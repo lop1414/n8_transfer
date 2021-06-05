@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Open\YwKyy;
 
 
 use App\Common\Enums\CpTypeEnums;
+use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
 use App\Enums\QueueEnums;
 use App\Common\Services\DataToQueueService;
+use App\Enums\UserActionTypeEnum;
 use App\Http\Controllers\Open\BaseController;
 use Illuminate\Http\Request;
 
@@ -15,13 +17,15 @@ class UserController extends BaseController
 {
 
 
+
     /**
      * @param Request $request
+     * @return mixed
+     * @throws CustomException
      * 分配行为
      */
     public function distribute(Request $request){
         $requestData = $request->all();
-        $requestData['source'] = DataSourceEnums::CP;
         $type = $requestData['type'];
 
         if($type == 'REGISTER'){
@@ -30,7 +34,15 @@ class UserController extends BaseController
         }elseif ($type == 'ADD_DESKTOP'){
 
             $this->addShortcut($requestData);
+        }else{
+            throw new CustomException([
+                'code' => 'UNKNOWN_TYPE',
+                'message' => '未知类型:'.$type,
+                'log' => true,
+                'data' => $requestData,
+            ]);
         }
+        return $this->_response(0,'success');
     }
 
 
@@ -40,17 +52,25 @@ class UserController extends BaseController
      * 注册
      */
     public function reg($requestData){
+        $rawData = $requestData;
+
+        if(isset($requestData['ua']) && !empty($requestData['ua'])){
+            $requestData['ua'] = base64_decode($requestData['ua']);
+        }
         $data = array_merge([
             'cp_type'     => CpTypeEnums::YW,
             'cp_product_alias' => $requestData['appflag'],
             'open_id'      => $requestData['guid'],
-            'ip'           => $requestData['ip'] ?? '',
-            'ua'           => base64_decode($requestData['ua'] ?? ''),
             'action_time'  => date('Y-m-d H:i:s',$requestData['time']),
+            'type'         => UserActionTypeEnum::REG,
             'cp_channel_id'=> $requestData['channel_id'] ?? '',
             'request_id'   => $requestData['request_id'] ?? '',
-            'rawData'      => $requestData
-        ],$this->filterDeviceInfo($requestData));
+            'ip'           => $requestData['ip'] ?? '',
+            'extend'       => $this->filterDeviceInfo($requestData),
+            'data'         => $rawData,
+            'action_id'    => $requestData['guid'],
+            'source'       => DataSourceEnums::CP
+        ]);
 
         $service = new DataToQueueService(QueueEnums::USER_REG_ACTION);
         $service->push($data);
@@ -67,18 +87,25 @@ class UserController extends BaseController
      * 加桌行为
      */
     public function addShortcut($requestData){
+        $rawData = $requestData;
 
+        if(isset($requestData['ua']) && !empty($requestData['ua'])){
+            $requestData['ua'] = base64_decode($requestData['ua']);
+        }
         $data = array_merge([
             'cp_type'     => CpTypeEnums::YW,
             'cp_product_alias' => $requestData['appflag'],
             'open_id'      => $requestData['guid'],
-            'ip'           => $requestData['ip'] ?? '',
-            'ua'           => base64_decode($requestData['ua'] ?? ''),
             'action_time'  => date('Y-m-d H:i:s',$requestData['time']),
+            'type'         => UserActionTypeEnum::ADD_SHORTCUT,
             'cp_channel_id'=> $requestData['channel_id'] ?? '',
             'request_id'   => $requestData['request_id'] ?? '',
-            'rawData'      => $requestData
-        ],$this->filterDeviceInfo($requestData));
+            'ip'           => $requestData['ip'] ?? '',
+            'extend'       => $this->filterDeviceInfo($requestData),
+            'data'         => $rawData,
+            'action_id'    => $requestData['guid'],
+            'source'       => DataSourceEnums::CP
+        ]);
 
         $service = new DataToQueueService(QueueEnums::USER_ADD_SHORTCUT_ACTION);
         $service->push($data);
@@ -88,29 +115,7 @@ class UserController extends BaseController
 
 
 
-    /**
-     * @param $data
-     * @return array
-     * 过滤设备信息
-     */
-    public function filterDeviceInfo($data){
-        return array(
-            'ip'                    => $data['ip'] ?? '',
-            'ua'                    => $data['ua'] ?? '',
-            'muid'                  => $data['muid'] ?? '',
-            'oaid'                  => $data['oaid'] ?? '',
-            'device_brand'          => $data['device_brand'] ?? '',
-            'device_manufacturer'   => $data['device_manufacturer'] ?? '',
-            'device_model'          => $data['device_model'] ?? '',
-            'device_product'        => $data['device_product'] ?? '',
-            'device_os_version_name'=> $data['device_os_version_name'] ?? '',
-            'device_os_version_code'=> $data['device_os_version_code'] ?? '',
-            'device_platform_version_name' => $data['device_platform_version_name'] ?? '',
-            'device_platform_version_code' => $data['device_platform_version_code'] ?? '',
-            'android_id'            => $data['android_id'] ?? '',
-            'request_id'            => $data['request_id'] ?? ''
-        );
-    }
+
 
 
 }

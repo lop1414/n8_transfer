@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Common\Enums\ReportStatusEnum;
+use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\ErrorLogService;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class UserActionDataToDbService extends BaseService
 {
 
-    protected $queueEnum = QueueEnums::USER_ACTION;
+    protected $queueEnum;
 
     protected $model;
 
@@ -24,6 +25,24 @@ class UserActionDataToDbService extends BaseService
     public function __construct(){
         parent::__construct();
         $this->model = new UserActionLogModel();
+    }
+
+
+
+    public function setQueueEnum($queueEnum){
+        Functions::hasEnum(QueueEnums::class,$queueEnum);
+        $this->queueEnum = $queueEnum;
+        return $this;
+    }
+
+
+
+    /**
+     * @return mixed
+     * 获取队列枚举
+     */
+    public function getQueueEnum(){
+        return $this->queueEnum;
     }
 
 
@@ -119,12 +138,5 @@ class UserActionDataToDbService extends BaseService
 
 
 
-    /**
-     * @return mixed
-     * 获取队列枚举
-     */
-    public function getQueueEnum(){
-        return $this->queueEnum;
-    }
 
 }

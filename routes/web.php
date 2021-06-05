@@ -38,11 +38,11 @@ $router->group([
 
 
     $router->group(['prefix' => 'yw_kyy'], function () use ($router) {
-        $router->any('user', 'Open\YwKyy\UserController@distribute');
+        $router->get('user', 'Open\YwKyy\UserController@distribute');
 
         $router->group(['prefix' => 'match'], function () use ($router) {
-            $router->any('ocean', 'Admin\MatchDataController@ocean');
-            $router->any('kuaishou', 'Admin\MatchDataController@kuaishou');
+            $router->get('ocean', 'Admin\MatchDataController@ocean');
+            $router->get('kuaishou', 'Admin\MatchDataController@kuaishou');
         });
     });
 });

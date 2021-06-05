@@ -12,6 +12,7 @@ use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
+use App\Console\Commands\UserActionDataToDbCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -27,6 +28,8 @@ class Kernel extends ConsoleKernel
         CreateTableCommand::class,
         MakeCommandCommand::class,
 
+        // 队列行为数据入库
+        UserActionDataToDbCommand::class,
         // 拉取用户行为
         PullUserActionCommand::class,
         // 推送用户行为
@@ -41,6 +44,7 @@ class Kernel extends ConsoleKernel
         // 推送渠道扩展信息
         PushChannelExtendCommand::class,
 
+        // 补充用户信息
         FillUserActionInfoCommand::class
 
     ];
@@ -59,10 +63,12 @@ class Kernel extends ConsoleKernel
         //时间范围
         $dateTime = date('Y-m-d H:i:s',TIMESTAMP);
         //一分钟区间
-        $tmpTime = date('Y-m-d H:i:s',TIMESTAMP-60);
-        $oneMinuteRange = "'{$tmpTime}','{$dateTime}'";
+        $oneMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60)."','{$dateTime}'";
+        //二分钟区间
+        $twoMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*2)."','{$dateTime}'";
         //半小时区间
-        $halfHourRange = '"'.date('Y-m-d H:i:s',TIMESTAMP-60). '","'. $dateTime.'"';
+        $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
+
 
 
         //广告商点击数据上报
@@ -73,7 +79,7 @@ class Kernel extends ConsoleKernel
         $path = base_path(). '/app/Services/CommandsService.php';
         if(file_exists($path)){
             $commandsService = new \App\Services\CommandsService();
-            $commandsService->pullUserAction($schedule,$oneMinuteRange);
+            $commandsService->pullUserAction($schedule,$twoMinuteRange);
             $commandsService->pushUserAction($schedule,$halfHourRange);
         }
 

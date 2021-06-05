@@ -7,6 +7,14 @@ class TmpCommandsService
 {
 
 
+    /**
+     * @param $schedule
+     * 队列数据入库
+     */
+    public function userActionQueueDataToDb($schedule){
+#commands|user_action_queue_data_to_db#
+    }
+
 
     /**
      * @param $schedule
