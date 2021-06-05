@@ -62,6 +62,7 @@ class FillUserActionInfoService extends BaseService
                         $tmpUser = $userActionLogModel
                             ->setTableNameWithMonth($user['reg_time'])
                             ->where('open_id',$user['guid'])
+                            ->where('product_id',$this->product['id'])
                             ->where('type',UserActionTypeEnum::REG)
                             ->get();
 
