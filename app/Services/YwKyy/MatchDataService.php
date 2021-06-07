@@ -20,21 +20,24 @@ class MatchDataService extends BaseService
     protected $saveClickDataService;
 
 
-    protected $date;
+    protected $dateRange;
 
     public function __construct()
     {
         parent::__construct();
         $this->userActionLogModel = new UserActionLogModel();
         $this->saveClickDataService = new SaveClickDataService();
-        $this->date = date('Y-m-d');
+        $this->dateRange = [
+            'start' => date('Y-m-d',strtotime('-15 day')),
+            'end'   => date('Y-m-d')
+        ];
     }
 
 
 
     public function ocean($data){
         $cpChannelId = $data['channel_id'] ?: '';
-        $info = $this->getRegLogInfo($data['product_id'],$data['guid'],$cpChannelId);
+        $info = $this->getRegLogInfo($data['product_id'],$data['guid']);
         if(empty($info)) return;
 
         $requestId = $info['request_id'] ?: 'n8_'.md5(uniqid());
@@ -69,7 +72,7 @@ class MatchDataService extends BaseService
 
     public function kuaiShou($data){
         $cpChannelId = $data['channel_id'] ?: '';
-        $info = $this->getRegLogInfo($data['product_id'],$data['guid'],$cpChannelId);
+        $info = $this->getRegLogInfo($data['product_id'],$data['guid']);
         if(empty($info)) return;
 
         $requestId = $info['request_id'] ?: 'n8_'.md5(uniqid());
@@ -96,27 +99,28 @@ class MatchDataService extends BaseService
     /**
      * @param $productId
      * @param $openId
-     * @param $cpChannelId
      * @return mixed
      * 获取用户注册记录(最近2月)
      */
-    public function getRegLogInfo($productId,$openId,$cpChannelId){
+    public function getRegLogInfo($productId,$openId){
         $info = $this->userActionLogModel
-            ->setTableNameWithMonth($this->date)
+            ->setTableNameWithMonth($this->dateRange['start'])
             ->where('type',UserActionTypeEnum::REG)
             ->where('product_id',$productId)
             ->where('open_id',$openId)
-            ->where('cp_channel_id',$cpChannelId)
+            ->whereBetween('action_time',$this->dateRange)
             ->first();
 
-        if(empty($info)){
-            $date = date('Y-m-d',strtotime('-1 month',strtotime($this->date)));
+        if(empty($info)
+            && date('Y-m',strtotime($this->dateRange['start'])) != date('Y-m',strtotime($this->dateRange['end']))
+        ){
+
             $info = $this->userActionLogModel
-                ->setTableNameWithMonth($date)
+                ->setTableNameWithMonth($this->dateRange['end'])
                 ->where('type',UserActionTypeEnum::REG)
                 ->where('product_id',$productId)
                 ->where('open_id',$openId)
-                ->where('cp_channel_id',$cpChannelId)
+                ->whereBetween('action_time',$this->dateRange)
                 ->first();
         }
 
