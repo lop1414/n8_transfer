@@ -8,7 +8,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Common\Enums\ReportStatusEnum;
 use App\Models\BaiDuClickModel;
 
-class BaiduClickService extends AdvClickService
+class BaiDuClickService extends AdvClickService
 {
 
     protected $adv = AdvAliasEnum::BAI_DU;
