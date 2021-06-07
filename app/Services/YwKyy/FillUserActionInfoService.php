@@ -75,6 +75,7 @@ class FillUserActionInfoService extends BaseService
 
                         $item->cp_channel_id = $user['channel_id'];
                         $item->save();
+                        echo "渠道更新:".$item->open_id. "\n";
                     }
                 }
             }while(!$list->isEmpey());
