@@ -150,6 +150,16 @@ class UserRegActionService extends PullUserActionBaseService
             $clickData['open_id'] = $openId;
             $clickData['action_id'] = $openId;
             $clickData['type'] = $this->actionType;
+            if($adv != AdvAliasEnum::OCEAN){
+                if(!empty($item['click'])){
+                    $clickData['rawData'] = $item['click'];
+                }
+
+                if(!empty($item['forward'])){
+                    $clickData['rawData'] = $item['forward']['extend'];
+                }
+            }
+
             $this->saveAdvClickData($adv,$clickData);
         }
     }
