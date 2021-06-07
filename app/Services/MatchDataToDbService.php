@@ -84,17 +84,19 @@ class MatchDataToDbService extends BaseService
                     'cp_product_alias' => $data['cp_product_alias']
                 ]);
                 $product = $productMap[$k];
-
-                $data['data'] = $data;
+                $data['data'] = [
+                    'raw_data'  => $data['raw_data'],
+                    'decode_url'=> $data['decode_url'],
+                    'url_info'  => $data['url_info'],
+                ];
                 $data['product_id'] = $product['id'];
                 $this->model->create($data);
 
 
-                //修改行为数据 分发到各自service处理
+                //注册行为 分发到各自service处理
                 if($data['type'] == UserActionTypeEnum::REG){
-                    $advAlias = ucfirst(Functions::camelize($data['adv_alias']));
                     $cpType = ucfirst(Functions::camelize($product['cp_type']));
-                    $productType = ucfirst(Functions::camelize($product['product_type']));
+                    $productType = ucfirst(Functions::camelize($product['type']));
                     $class = "App\\Services\\{$cpType}{$productType}\\MatchDataService";
 
                     if(!class_exists($class)){
@@ -105,6 +107,8 @@ class MatchDataToDbService extends BaseService
                             'data' => "{$class} 类不存在",
                         ]);
                     }
+
+                    $advAlias = lcfirst(Functions::camelize($data['adv_alias']));
                     (new $class)->$advAlias($data);
                 }
 

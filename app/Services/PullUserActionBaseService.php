@@ -3,16 +3,15 @@
 namespace App\Services;
 
 
-use App\Common\Enums\AdvAliasEnum;
 use App\Common\Enums\MatcherEnum;
 use App\Common\Enums\ReportStatusEnum;
-use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
 use App\Models\UserActionLogModel;
 use App\Sdks\N8\N8Sdk;
+use App\Services\AdvClick\SaveClickDataService;
 
 
 class PullUserActionBaseService extends BaseService
@@ -47,7 +46,7 @@ class PullUserActionBaseService extends BaseService
     public $echoService;
 
 
-    protected $clickService;
+    protected $saveClickDataService;
 
 
     /**
@@ -62,7 +61,7 @@ class PullUserActionBaseService extends BaseService
         $this->model = new UserActionLogModel();
         $this->echoService = new ConsoleEchoService();
         $this->n8Sdk = new N8Sdk();
-
+        $this->saveClickDataService = new SaveClickDataService();
     }
 
 
@@ -172,6 +171,7 @@ class PullUserActionBaseService extends BaseService
 
 
 
+
     /**
      * @param $adv
      * @param $data
@@ -179,37 +179,10 @@ class PullUserActionBaseService extends BaseService
      * 保存广告点击数据
      */
     public function saveAdvClickData($adv,$data){
-        $service = $this->getClickService($adv);
-        $service->save($data);
+        $this->saveClickDataService->saveAdvClickData($adv,$data);
     }
 
 
-
-    /**
-     * @param $adv
-     * @return mixed
-     * @throws CustomException
-     * 分发各广告商ClickService
-     */
-    public function getClickService($adv){
-        if(empty($this->clickService[$adv])){
-            Functions::hasEnum(AdvAliasEnum::class,$adv);
-
-            $action = ucfirst(Functions::camelize($adv));
-            $class = "App\Services\AdvClick\\{$action}ClickService";
-
-            if(!class_exists($class)){
-                throw new CustomException([
-                    'code' => 'NOT_FOUND_CLASS',
-                    'message' => "未知的类:{$class}",
-                ]);
-            }
-
-            $this->clickService[$adv] = new $class;
-        }
-
-        return $this->clickService[$adv];
-    }
 
 
 

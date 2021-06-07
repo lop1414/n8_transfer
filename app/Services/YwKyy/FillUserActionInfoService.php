@@ -6,6 +6,7 @@ namespace App\Services\YwKyy;
 
 
 use App\Common\Enums\ReportStatusEnum;
+use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\UnionApiService;
@@ -33,12 +34,63 @@ class FillUserActionInfoService extends BaseService
     }
 
 
+
+    public function cpChannelId($startTime,$endTime){
+        $userActionLogModel = new UserActionLogModel();
+        $dateRange = [
+            date('Y-m-d',strtotime($startTime)),
+            date('Y-m-d',strtotime($endTime))
+        ];
+        $monthList = Functions::getMonthListByRange($dateRange,'Y-m-d');
+
+        $id = 0;
+        foreach ($monthList as $month){
+            do{
+                $list = $userActionLogModel
+                    ->setTableNameWithMonth($month)
+                    ->where('product_id',$this->product['id'])
+                    ->where('cp_channel_id','')
+                    ->where('id','>',$id)
+                    ->skip(0)
+                    ->take(1000)
+                    ->get();
+
+                foreach ($list as $item){
+                    $id = $item['id'];
+                    $tmp = $this->ywSdk->getUser([
+                        'guid'  => $item['open_id']
+                    ]);
+
+                    if(!empty($tmp['list'])){
+                        $user = $tmp['list'][0];
+                        //没有渠道
+                        if(empty($user['channel_id'])) continue;
+
+                        $channel = $this->getChannel($this->product['id'],$user['channel_id']);
+                        // 渠道创建时间 大于 注册时间
+                        if($channel['create_time'] > $item->action_time){
+                            echo "渠道创建时间 大于 注册时间:".$item->open_id. "\n";
+                            continue;
+                        }
+
+                        $item->cp_channel_id = $user['channel_id'];
+                        $item->save();
+                    }
+                }
+            }while(!$list->isEmpey());
+
+
+        }
+
+    }
+
+
     /**
      * 渠道
      * @param $startTime
      * @param $endTime
      */
-    public function cpChannelId($startTime,$endTime){
+    public function cpChannelIdOld($startTime,$endTime){
         $time = $startTime;
         $userActionLogModel = new UserActionLogModel();
         while($time < $endTime){
@@ -153,7 +205,7 @@ class FillUserActionInfoService extends BaseService
                     'open_id'       => $item['open_id'],
                     'action_time'   => $user['reg_time'],
                     'type'          => $item['type'],
-                    'cp_channel_id' => $item['type'],
+                    'cp_channel_id' => $item['channel_id'],
                     'request_id'    => $item['request_id'],
                     'ip'            => $item['ip'],
                     'data'          => $item['data'],
