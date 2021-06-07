@@ -78,7 +78,7 @@ class FillUserActionInfoService extends BaseService
                         echo "渠道更新:".$item->open_id. "\n";
                     }
                 }
-            }while(!$list->isEmpey());
+            }while(!$list->isEmpty());
 
 
         }
