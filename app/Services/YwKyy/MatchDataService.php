@@ -36,8 +36,8 @@ class MatchDataService extends BaseService
 
 
     public function ocean($data){
-        $cpChannelId = $data['channel_id'] ?: '';
-        $info = $this->getRegLogInfo($data['product_id'],$data['guid']);
+        $cpChannelId = $data['cp_channel_id'] ?: '';
+        $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
         if(empty($info)) return;
 
         $requestId = $info['request_id'] ?: 'n8_'.md5(uniqid());
@@ -51,17 +51,20 @@ class MatchDataService extends BaseService
                 'oaid_md5'     => '',
                 'os'           => $data['url_info']['os'] ?? '',
                 'click_at'     => $info['action_time'],
-                'ad_id'        => $data['aid'],
-                'creative_id'  => $data['cid'],
+                'ad_id'        => $data['data']['raw_data']['aid'],
+                'creative_id'  => $data['data']['raw_data']['cid'],
                 'creative_type'=> '',
-                'link'         => $data['decode_url'],
+                'link'         => '',
                 'request_id'   => $requestId,
-                'open_id'      => $data['guid'],
-                'action_id'    => $data['guid'],
+                'open_id'      => $data['open_id'],
+                'action_id'    => $data['open_id'],
                 'type'         => UserActionTypeEnum::REG,
+                'extends'      => [
+                    'match_data_id' => $data['match_data_id']
+                ]
             ]);
 
-        $info->request_id = $requestId;
+        $info->request_id = $info['request_id'];
         if(!empty($cpChannelId)){
             $info->cp_channel_id = $cpChannelId;
         }
@@ -71,19 +74,22 @@ class MatchDataService extends BaseService
 
 
     public function kuaiShou($data){
-        $cpChannelId = $data['channel_id'] ?: '';
-        $info = $this->getRegLogInfo($data['product_id'],$data['guid']);
+
+        $cpChannelId = $data['cp_channel_id'] ?: '';
+        $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
         if(empty($info)) return;
 
         $requestId = $info['request_id'] ?: 'n8_'.md5(uniqid());
+        $data['data']['request_id'] = $requestId;
+        $data['data']['match_data_id'] = $data['match_data_id'];
         $this->saveClickDataService
             ->saveAdvClickData(AdvAliasEnum::KUAI_SHOU,[
                 'ip'           => $info['ip'],
                 'ua'           => $info['extend']['ua'],
                 'click_at'     => $info['action_time'],
-                'request_id'   => $requestId,
                 'type'         => UserActionTypeEnum::REG,
-                'rawData'      => $data
+                'product_id'   => $data['product_id'],
+                'extends'      => $data['data'],
             ]);
 
         $info->request_id = $requestId;

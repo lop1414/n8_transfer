@@ -25,7 +25,7 @@ class MatchDataController extends BaseController
      */
     public function ocean(Request $request){
         $requestData = $request->all();
-        $data['raw_data'] = $requestData;
+        $data['data']['raw_data'] = $requestData;
         $data['cp_type'] = CpTypeEnums::YW;
         $data['adv_alias'] = AdvAliasEnum::OCEAN;
         $data['cp_product_alias'] = $requestData['appflag'];
@@ -45,8 +45,8 @@ class MatchDataController extends BaseController
         ];
 
         $data['type'] = $map[$convertType] ?? '';
-        $data['decode_url'] = $url;
-        $data['url_info'] = $urlInfo;
+        $data['data']['decode_url'] = $url;
+        $data['data']['url_info'] = $urlInfo;
         $service = new DataToQueueService(QueueEnums::OCEAN_MATCH_DATA);
         $service->push($data);
 
@@ -62,7 +62,7 @@ class MatchDataController extends BaseController
      */
     public function kuaishou(Request $request){
         $requestData = $request->all();
-        $data['raw_data'] = $requestData;
+        $data['data']['raw_data'] = $requestData;
         $data['cp_type'] = CpTypeEnums::YW;
         $data['adv_alias'] = AdvAliasEnum::KUAI_SHOU;
         $data['cp_product_alias'] = $requestData['appflag'];
@@ -79,8 +79,8 @@ class MatchDataController extends BaseController
             7 => UserActionTypeEnum::RETENT
         ];
         $data['type'] = $map[$convertType] ?? '';
-        $data['decode_url'] = $url;
-        $data['url_info'] = $urlInfo;
+        $data['data']['decode_url'] = $url;
+        $data['data']['url_info'] = $urlInfo;
         $service = new DataToQueueService(QueueEnums::KUAI_SHOU_MATCH_DATA);
         $service->push($data);
 

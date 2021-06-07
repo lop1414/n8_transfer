@@ -48,7 +48,7 @@ class OceanClickService extends AdvClickService
             'union_site'    => $data['union_site'] ?? '',
             'caid'          => $data['caid'] ?? '',
             'link'          => $data['link'] ?? '',
-            'extends'       => $data,
+            'extends'       => $data['extends'] ?? [],
             'status'        => ReportStatusEnum::WAITING
         ]);
     }
