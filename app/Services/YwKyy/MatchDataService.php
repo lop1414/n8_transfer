@@ -64,7 +64,7 @@ class MatchDataService extends BaseService
                 ]
             ]);
 
-        $info->request_id = $info['request_id'];
+        $info->request_id = $requestId;
         if(!empty($cpChannelId)){
             $info->cp_channel_id = $cpChannelId;
         }
