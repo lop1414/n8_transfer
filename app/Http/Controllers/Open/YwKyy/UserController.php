@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Open\YwKyy;
 
 
 use App\Common\Enums\CpTypeEnums;
+use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
 use App\Enums\QueueEnums;
@@ -25,24 +26,34 @@ class UserController extends BaseController
      * 分配行为
      */
     public function distribute(Request $request){
-        $requestData = $request->all();
-        $type = $requestData['type'];
+        try {
 
-        if($type == 'REGISTER'){
 
-            $this->reg($requestData);
-        }elseif ($type == 'ADD_DESKTOP'){
+            $requestData = $request->all();
+            $type = $requestData['type'];
 
-            $this->addShortcut($requestData);
-        }else{
-            throw new CustomException([
-                'code' => 'UNKNOWN_TYPE',
-                'message' => '未知类型:'.$type,
-                'log' => true,
-                'data' => $requestData,
-            ]);
+            if ($type == 'REGISTER') {
+
+                $this->reg($requestData);
+            } elseif ($type == 'ADD_DESKTOP') {
+
+                $this->addShortcut($requestData);
+            } else {
+                throw new CustomException([
+                    'code' => 'UNKNOWN_TYPE',
+                    'message' => '未知类型:' . $type,
+                    'log' => true,
+                    'data' => $requestData,
+                ]);
+            }
+            return $this->_response(0, 'success');
+        }catch (\Exception $e){
+
+            //日志
+            (new ErrorLogService())->catch($e);
+            return $this->_response($e->getCode(), 'fail:'.$e->getMessage());
         }
-        return $this->_response(0,'success');
+
     }
 
 
