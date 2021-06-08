@@ -33,9 +33,9 @@ class QueueEnums
 
     static public $list = [
         ['id' => self::USER_REG_ACTION,         'name' => '注册行为', 'type' => 'action'],
-        ['id' => self::USER_ORDER_ACTION,       'name' => '下单行为', 'type' => 'action'],
+        ['id' => self::USER_ORDER_ACTION,       'name' => '下单行为', 'type' => ''],
         ['id' => self::USER_LOGIN_ACTION,       'name' => '登陆行为', 'type' => ''],
-        ['id' => self::USER_ADD_SHORTCUT_ACTION,'name' => '加桌行为', 'type' => ''],
+        ['id' => self::USER_ADD_SHORTCUT_ACTION,'name' => '加桌行为', 'type' => 'action'],
         ['id' => self::USER_FOLLOW_ACTION,      'name' => '关注行为', 'type' => ''],
         ['id' => self::USER_READ_ACTION,        'name' => '阅读行为', 'type' => ''],
         ['id' => self::USER_COMPLETE_ORDER_ACTION,'name' => '完成订单', 'type' => ''],

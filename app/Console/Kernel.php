@@ -82,8 +82,10 @@ class Kernel extends ConsoleKernel
         $path = base_path(). '/app/Services/CommandsService.php';
         if(file_exists($path)){
             $commandsService = new \App\Services\CommandsService();
-            $commandsService->pullUserAction($schedule,$twoMinuteRange);
-            $commandsService->pushUserAction($schedule,$halfHourRange);
+            $commandsService->userActionQueueDataToDb($schedule);
+            $commandsService->matchQueueDataToDb($schedule);
+//            $commandsService->pullUserAction($schedule,$twoMinuteRange);
+//            $commandsService->pushUserAction($schedule,$halfHourRange);
         }
 
     }
