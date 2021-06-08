@@ -30,7 +30,7 @@ class MatchDataController extends BaseController
         $data['adv_alias'] = AdvAliasEnum::OCEAN;
         $data['cp_product_alias'] = $requestData['appflag'];
         $data['open_id'] = $requestData['guid'];
-        $data['cp_channel_id'] = $requestData['channel_id'] ?: '';
+        $data['cp_channel_id'] = $requestData['channel_id'] ?? '';
         $url = urldecode(base64_decode(urldecode($requestData['url'])));
         $urlInfo = $this->get_link_para($url);
 
@@ -67,7 +67,7 @@ class MatchDataController extends BaseController
         $data['adv_alias'] = AdvAliasEnum::KUAI_SHOU;
         $data['cp_product_alias'] = $requestData['appflag'];
         $data['open_id'] = $requestData['guid'];
-        $data['cp_channel_id'] = $requestData['channel_id'] ?: '';
+        $data['cp_channel_id'] = $requestData['channel_id'] ?? '';
         $url = urldecode(base64_decode(urldecode($requestData['url'])));
         $urlInfo = $this->get_link_para($url);
         // 转化行为

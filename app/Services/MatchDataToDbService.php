@@ -91,7 +91,7 @@ class MatchDataToDbService extends BaseService
                 $info = $this->model->create($data);
 
                 //注册行为 分发到各自service处理
-                if($data['type'] == UserActionTypeEnum::ADD_SHORTCUT){
+                if($data['type'] == UserActionTypeEnum::REG){
                     $data['match_data_id'] = $info['id'];
 
                     $cpType = ucfirst(Functions::camelize($product['cp_type']));
