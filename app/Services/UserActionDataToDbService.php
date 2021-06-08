@@ -85,7 +85,7 @@ class UserActionDataToDbService extends BaseService
                 ]);
                 $product = $productMap[$k];
                 $data['product_id'] = $product['id'];
-                $data['status'] = ReportStatusEnum::DONE;
+                $data['status'] = ReportStatusEnum::WAITING;
                 $data['matcher'] = $product['matcher'];
 
                 $model = $this->model->setTableNameWithMonth($data['action_time']);
