@@ -65,8 +65,9 @@ class UpdateUserActionLogService extends BaseService
 
         do{
             $list = $this->model
-                ->where('type',UserActionTypeEnum::REG)
+                ->where('type',UserActionTypeEnum::ADD_SHORTCUT)
                 ->where('product_id',$this->product['id'])
+                ->where('request_id','')
                 ->whereBetween('created_at',[$this->startTime,$this->endTime])
                 ->skip(0)
                 ->take($this->pageSize)
@@ -76,7 +77,7 @@ class UpdateUserActionLogService extends BaseService
                 //分发到各自service处理
                 $class = $this->getService();
                 $advAlias = lcfirst(Functions::camelize($item['adv_alias']));
-                $info = (new $class)->$advAlias($item,$this->product);
+                $info = (new $class)->$advAlias($item);
                 if(!empty($info)){
                     $item->request_id = $info['request_id'];
                     $item->save();
@@ -100,6 +101,7 @@ class UpdateUserActionLogService extends BaseService
                 'data' => "{$class} 类不存在",
             ]);
         }
+        return $class;
     }
 
 

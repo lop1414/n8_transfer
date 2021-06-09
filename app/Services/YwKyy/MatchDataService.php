@@ -37,18 +37,21 @@ class MatchDataService extends BaseService
 
 
 
-    public function ocean($data,$product){
+    public function ocean($data){
         $rawData = $data['data']['raw_data'];
         $cpChannelId = $data['cp_channel_id'];
-        $info = $this->getRegLogInfo($product['id'],$data['open_id']);
-        if(empty($info)) return;
+        $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
+        if(empty($info)){
+            echo "ocean:没有log: {$data['open_id']} \n";
+            return;
+        }
 
         if(!empty($info['request_id'])){
             $requestId = $info['request_id'];
             $click = (new OceanClickModel())->where('request_id',$requestId)->first();
             if(!empty($click)){
-                echo "更新过: {$info['open_id']}";
-                return ;
+                echo "ocean:更新过: {$info['open_id']} \n";
+                return $info;
             }
         }else{
             $requestId = 'n8_'.md5(uniqid());
@@ -82,23 +85,28 @@ class MatchDataService extends BaseService
         if(!empty($cpChannelId)){
             $info->cp_channel_id = $cpChannelId;
         }
-        return $info->save();
+        $info->save();
+        echo "ocean:更新成功: {$info['open_id']} \n";
+        return $info;
     }
 
 
 
-    public function kuaiShou($data,$product){
+    public function kuaiShou($data){
         $rawData = $data['data']['raw_data'];
         $cpChannelId = $data['cp_channel_id'];
-        $info = $this->getRegLogInfo($product['id'],$data['open_id']);
-        if(empty($info)) return;
+        $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
+        if(empty($info)){
+            echo "kuai_shou:没有log: {$data['open_id']} \n";
+            return;
+        }
 
         if(!empty($info['request_id'])){
             $requestId = $info['request_id'];
             $click = (new KuaiShouClickModel())->where('request_id',$requestId)->first();
             if(!empty($click)){
-                echo "更新过: {$info['open_id']}";
-                return ;
+                echo "kuai_shou:更新过: {$info['open_id']} \n";
+                return $info;
             }
         }else{
             $requestId = 'n8_'.md5(uniqid());
@@ -120,7 +128,10 @@ class MatchDataService extends BaseService
         if(!empty($cpChannelId)){
             $info->cp_channel_id = $cpChannelId;
         }
-        return $info->save();
+        $info->save();
+        echo "kuai_shou:更新成功: {$info['open_id']} \n";
+        return $info;
+
     }
 
 
@@ -130,15 +141,18 @@ class MatchDataService extends BaseService
      * @param $productId
      * @param $openId
      * @return mixed
-     * 获取用户注册记录(最近2月)
+     * 获取用户注册记录(最近15天)
      */
     public function getRegLogInfo($productId,$openId){
         $info = $this->userActionLogModel
-            ->setTableNameWithMonth($this->dateRange['start'])
+            ->setTableNameWithMonth($this->dateRange['end'])
             ->where('type',UserActionTypeEnum::REG)
             ->where('product_id',$productId)
             ->where('open_id',$openId)
-            ->whereBetween('action_time',$this->dateRange)
+            ->whereBetween('action_time',[
+                    $this->dateRange['start']. ' 00:00:00',
+                    $this->dateRange['end']. ' 23:59:59',
+                ])
             ->first();
 
         if(empty($info)
@@ -146,7 +160,7 @@ class MatchDataService extends BaseService
         ){
 
             $info = $this->userActionLogModel
-                ->setTableNameWithMonth($this->dateRange['end'])
+                ->setTableNameWithMonth($this->dateRange['start'])
                 ->where('type',UserActionTypeEnum::REG)
                 ->where('product_id',$productId)
                 ->where('open_id',$openId)
