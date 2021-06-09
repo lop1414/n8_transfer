@@ -185,7 +185,7 @@ class MatchDataService extends BaseService
         }
 
         $clickAt =  isset($data['data']['ts']) && !empty($data['data']['ts'])
-            ? date('Y-m-d H:i:s',$data['data']['ts'] / 1000)
+            ? date('Y-m-d H:i:s',intval($data['data']['ts']/1000))
             : $info['action_time'];
 
         $extends = $data['data'];
