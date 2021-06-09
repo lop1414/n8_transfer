@@ -3,7 +3,6 @@
 namespace App\Console;
 
 
-use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\FillUserActionInfoCommand;
 use App\Console\Commands\MakeCommandCommand;
