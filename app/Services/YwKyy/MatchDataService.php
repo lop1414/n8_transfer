@@ -8,6 +8,8 @@ namespace App\Services\YwKyy;
 use App\Common\Enums\AdvAliasEnum;
 use App\Common\Services\BaseService;
 use App\Enums\UserActionTypeEnum;
+use App\Models\KuaiShouClickModel;
+use App\Models\OceanClickModel;
 use App\Models\UserActionLogModel;
 use App\Services\AdvClick\SaveClickDataService;
 
@@ -35,12 +37,24 @@ class MatchDataService extends BaseService
 
 
 
-    public function ocean($data){
-        $cpChannelId = $data['cp_channel_id'] ?: '';
-        $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
+    public function ocean($data,$product){
+        $rawData = $data['data']['raw_data'];
+        $cpChannelId = $data['cp_channel_id'];
+        $info = $this->getRegLogInfo($product['id'],$data['open_id']);
         if(empty($info)) return;
 
-        $requestId = $info['request_id'] ?: 'n8_'.md5(uniqid());
+        if(!empty($info['request_id'])){
+            $requestId = $info['request_id'];
+            $click = (new OceanClickModel())->where('request_id',$requestId)->first();
+            if(!empty($click)){
+                echo "更新过: {$info['open_id']}";
+                return ;
+            }
+        }else{
+            $requestId = 'n8_'.md5(uniqid());
+        }
+
+
         $this->saveClickDataService
             ->saveAdvClickData(AdvAliasEnum::OCEAN,[
                 'ip'           => $info['ip'],
@@ -51,8 +65,8 @@ class MatchDataService extends BaseService
                 'oaid_md5'     => '',
                 'os'           => $data['url_info']['os'] ?? '',
                 'click_at'     => $info['action_time'],
-                'ad_id'        => $data['data']['raw_data']['aid'],
-                'creative_id'  => $data['data']['raw_data']['cid'],
+                'ad_id'        => $rawData['aid'],
+                'creative_id'  => $rawData['cid'],
                 'creative_type'=> '',
                 'link'         => '',
                 'request_id'   => $requestId,
@@ -60,7 +74,7 @@ class MatchDataService extends BaseService
                 'action_id'    => $data['open_id'],
                 'type'         => UserActionTypeEnum::REG,
                 'extends'      => [
-                    'match_data_id' => $data['match_data_id']
+                    'match_data_id' => $data['id']
                 ]
             ]);
 
@@ -68,20 +82,29 @@ class MatchDataService extends BaseService
         if(!empty($cpChannelId)){
             $info->cp_channel_id = $cpChannelId;
         }
-        $info->save();
+        return $info->save();
     }
 
 
 
-    public function kuaiShou($data){
-
-        $cpChannelId = $data['cp_channel_id'] ?: '';
-        $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
+    public function kuaiShou($data,$product){
+        $rawData = $data['data']['raw_data'];
+        $cpChannelId = $data['cp_channel_id'];
+        $info = $this->getRegLogInfo($product['id'],$data['open_id']);
         if(empty($info)) return;
 
-        $requestId = $info['request_id'] ?: 'n8_'.md5(uniqid());
-        $data['data']['request_id'] = $requestId;
-        $data['data']['match_data_id'] = $data['match_data_id'];
+        if(!empty($info['request_id'])){
+            $requestId = $info['request_id'];
+            $click = (new KuaiShouClickModel())->where('request_id',$requestId)->first();
+            if(!empty($click)){
+                echo "更新过: {$info['open_id']}";
+                return ;
+            }
+        }else{
+            $requestId = 'n8_'.md5(uniqid());
+        }
+
+        $rawData['match_data_id'] = $data['id'];
         $this->saveClickDataService
             ->saveAdvClickData(AdvAliasEnum::KUAI_SHOU,[
                 'ip'           => $info['ip'],
@@ -89,14 +112,15 @@ class MatchDataService extends BaseService
                 'click_at'     => $info['action_time'],
                 'type'         => UserActionTypeEnum::REG,
                 'product_id'   => $data['product_id'],
-                'extends'      => $data['data'],
+                'request_id'   => $requestId,
+                'extends'      => $rawData,
             ]);
 
         $info->request_id = $requestId;
         if(!empty($cpChannelId)){
             $info->cp_channel_id = $cpChannelId;
         }
-        $info->save();
+        return $info->save();
     }
 
 

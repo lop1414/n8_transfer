@@ -10,7 +10,6 @@ use App\Common\Services\SystemApi\UnionApiService;
 use App\Common\Tools\CustomException;
 use App\Common\Tools\CustomQueue;
 use App\Enums\QueueEnums;
-use App\Enums\UserActionTypeEnum;
 use App\Models\MatchDataModel;
 use Illuminate\Support\Facades\DB;
 
@@ -88,28 +87,8 @@ class MatchDataToDbService extends BaseService
                 $data['product_id'] = $product['id'];
 
 
-                $info = $this->model->create($data);
+                $this->model->create($data);
 
-                //注册行为 分发到各自service处理
-                if($data['type'] == UserActionTypeEnum::REG){
-                    $data['match_data_id'] = $info['id'];
-
-                    $cpType = ucfirst(Functions::camelize($product['cp_type']));
-                    $productType = ucfirst(Functions::camelize($product['type']));
-                    $class = "App\\Services\\{$cpType}{$productType}\\MatchDataService";
-
-                    if(!class_exists($class)){
-                        throw new CustomException([
-                            'code' => 'UNKNOWN_CLASS',
-                            'message' => '未知类',
-                            'log' => true,
-                            'data' => "{$class} 类不存在",
-                        ]);
-                    }
-
-                    $advAlias = lcfirst(Functions::camelize($data['adv_alias']));
-                    (new $class)->$advAlias($data);
-                }
 
                 DB::commit();
 

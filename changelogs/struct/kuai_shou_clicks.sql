@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 04/06/2021 14:32:53
+ Date: 08/06/2021 17:36:24
 */
 
 SET NAMES utf8mb4;
@@ -26,6 +26,7 @@ CREATE TABLE `kuai_shou_clicks` (
   `click_source` varchar(50) NOT NULL DEFAULT '' COMMENT '来源',
   `click_at` timestamp NULL DEFAULT NULL COMMENT '点击时间',
   `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+  `request_id` varchar(100) NOT NULL,
   `extends` text NOT NULL COMMENT '扩展字段',
   `status` varchar(50) NOT NULL COMMENT '上报状态',
   `fail_data` text COMMENT '失败数据',
@@ -33,7 +34,8 @@ CREATE TABLE `kuai_shou_clicks` (
   `updated_at` timestamp NULL DEFAULT NULL COMMENT '更新事件',
   PRIMARY KEY (`id`),
   KEY `click_at` (`click_at`) USING BTREE,
-  KEY `created_at` (`created_at`) USING BTREE
+  KEY `created_at` (`created_at`) USING BTREE,
+  KEY `request_id` (`request_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='快手点击表';
 
 SET FOREIGN_KEY_CHECKS = 1;

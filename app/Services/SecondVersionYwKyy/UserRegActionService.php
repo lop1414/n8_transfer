@@ -160,6 +160,10 @@ class UserRegActionService extends PullUserActionBaseService
                 }
             }
 
+            if($adv != AdvAliasEnum::OCEAN){
+                $clickData['extends'] = $clickData['rawData'];
+            }
+
             $this->saveAdvClickData($adv,$clickData);
         }
     }

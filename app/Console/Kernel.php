@@ -78,6 +78,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN." --time={$halfHourRange}")->cron('*/5 * * * *');
 
 
+
         //用户行为数据 拉取 及 上报
         $path = base_path(). '/app/Services/CommandsService.php';
         if(file_exists($path)){
@@ -87,6 +88,10 @@ class Kernel extends ConsoleKernel
 //            $commandsService->pullUserAction($schedule,$twoMinuteRange);
 //            $commandsService->pushUserAction($schedule,$halfHourRange);
         }
+
+
+        $schedule->command("update_user_action --cp_type=YW --product_type=KYY --time={$twoMinuteRange}")->cron('* * * * *');
+
 
     }
 
