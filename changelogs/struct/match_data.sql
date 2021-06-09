@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 05/06/2021 15:54:25
+ Date: 09/06/2021 09:42:26
 */
 
 SET NAMES utf8mb4;
@@ -28,6 +28,7 @@ CREATE TABLE `match_data` (
   `cp_channel_id` varchar(50) NOT NULL DEFAULT '' COMMENT '书城渠道ID',
   `adv_alias` varchar(50) NOT NULL COMMENT '广告商',
   `type` varchar(50) NOT NULL COMMENT '类型',
+  `request_id` varchar(100) NOT NULL DEFAULT '',
   `data` text NOT NULL COMMENT '扩展字段',
   `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT NULL COMMENT '更新事件',
