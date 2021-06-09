@@ -159,7 +159,7 @@ class UserRegActionService extends PullUserActionBaseService
                     $clickData['rawData'] = $item['forward']['extend'];
                 }
 
-                $clickData['extends'] = $clickData['rawData'];
+                $clickData['extends'] = $clickData['rawData'] ?? $clickData;
             }
 
 
