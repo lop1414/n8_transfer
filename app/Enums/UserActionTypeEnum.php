@@ -14,6 +14,7 @@ class UserActionTypeEnum
     const COMPLETE_ORDER = 'COMPLETE_ORDER';
     const RETENT = 'RETENT';
     const FORM = 'FORM';
+    const APP_PAY = 'APP_PAY';
 
     /**
      * @var string
@@ -35,5 +36,6 @@ class UserActionTypeEnum
         ['id' => self::COMPLETE_ORDER,'name' => '完成订单'],
         ['id' => self::RETENT,        'name' => '次留'],
         ['id' => self::FORM,         'name' => '表单预约'],
+        ['id' => self::APP_PAY,         'name' => 'APP内付费'],
     ];
 }

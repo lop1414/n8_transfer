@@ -43,7 +43,8 @@ class MatchDataController extends BaseController
                 1 => UserActionTypeEnum::ADD_SHORTCUT,
                 2 => UserActionTypeEnum::COMPLETE_ORDER,
                 3 => UserActionTypeEnum::FORM,
-                6 => UserActionTypeEnum::RETENT
+                6 => UserActionTypeEnum::RETENT,
+                23 => UserActionTypeEnum::APP_PAY
             ];
 
             $data['type'] = $map[$convertType] ?? '';
