@@ -15,6 +15,7 @@ class UserActionTypeEnum
     const RETENT = 'RETENT';
     const FORM = 'FORM';
     const APP_PAY = 'APP_PAY';
+    const SECOND_VERSION_REG = 'SECOND_VERSION_REG';
 
     /**
      * @var string
@@ -36,6 +37,7 @@ class UserActionTypeEnum
         ['id' => self::COMPLETE_ORDER,'name' => '完成订单'],
         ['id' => self::RETENT,        'name' => '次留'],
         ['id' => self::FORM,         'name' => '表单预约'],
-        ['id' => self::APP_PAY,         'name' => 'APP内付费'],
+        ['id' => self::APP_PAY,      'name' => 'APP内付费'],
+        ['id' => self::SECOND_VERSION_REG,      'name' => '二版注册匹配上报'],
     ];
 }

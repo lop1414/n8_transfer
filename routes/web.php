@@ -45,4 +45,9 @@ $router->group([
             $router->get('kuaishou', 'Open\YwKyy\MatchDataController@kuaishou');
         });
     });
+
+    $router->group(['prefix' => 'match'], function () use ($router) {
+        $router->get('second_version', 'Open\MatchDataController@secondVersion');
+    });
+
 });
