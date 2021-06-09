@@ -65,7 +65,7 @@ class UpdateUserActionLogService extends BaseService
 
         do{
             $list = $this->model
-                ->where('type',UserActionTypeEnum::ADD_SHORTCUT)
+                ->whereIn('type',[UserActionTypeEnum::ADD_SHORTCUT,UserActionTypeEnum::SECOND_VERSION_REG])
                 ->where('product_id',$this->product['id'])
                 ->where('request_id','')
                 ->whereBetween('created_at',[$this->startTime,$this->endTime])
