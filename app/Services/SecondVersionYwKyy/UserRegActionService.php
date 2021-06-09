@@ -158,11 +158,10 @@ class UserRegActionService extends PullUserActionBaseService
                 if(!empty($item['forward'])){
                     $clickData['rawData'] = $item['forward']['extend'];
                 }
-            }
 
-            if($adv != AdvAliasEnum::OCEAN){
                 $clickData['extends'] = $clickData['rawData'];
             }
+
 
             $this->saveAdvClickData($adv,$clickData);
         }
