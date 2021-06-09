@@ -13,6 +13,7 @@ use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
+use App\Console\Commands\UpdateUserActionLogCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -37,6 +38,8 @@ class Kernel extends ConsoleKernel
         PullUserActionCommand::class,
         // 推送用户行为
         PushUserActionCommand::class,
+        // 根据转发上报数据更新user_action_log
+        UpdateUserActionLogCommand::class,
 
         // 推送点击数据
         PushAdvClickCommand::class,
