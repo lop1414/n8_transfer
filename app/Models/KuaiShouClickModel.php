@@ -10,6 +10,7 @@ class KuaiShouClickModel extends BaseModel
         'click_source',
         'click_at',
         'channel_id',
+        'request_id',
         'extends',
         'status'
     ];
