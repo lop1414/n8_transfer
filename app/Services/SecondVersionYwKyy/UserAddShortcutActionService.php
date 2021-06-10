@@ -31,7 +31,7 @@ class UserAddShortcutActionService extends PullUserActionBaseService
         $this->save([
             'open_id'       => $rawData['guid'],
             'action_time'   => date('Y-m-d H:i:s',$rawData['time']),
-            'cp_channel_id' => $cpChannelId ?: 0,
+            'cp_channel_id' => $cpChannelId ?: '',
             'request_id'    => '',
             'ip'            => $rawData['ip'],
             'action_id'     => $rawData['guid'],
