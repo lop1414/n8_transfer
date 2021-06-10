@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Common\Enums\MatcherEnum;
 use App\Common\Enums\ReportStatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
@@ -114,12 +115,20 @@ class PushUserActionService extends BaseService
         foreach ($list as $item){
 
             try{
-                // 注册行为没有渠道
-                if($this->actionType == UserActionTypeEnum::REG && empty($item->cp_channel_id)){
-                    //时间差
-                    $diff = time() - strtotime($item->created_at);
-                    if($diff < 60*60*2){
-                        continue;
+                // 注册行为
+                if($this->actionType == UserActionTypeEnum::REG
+                    && (empty($item->cp_channel_id) || empty($item->request_id) )){
+
+                    //没有渠道 or 不是系统匹配且没有request_id
+                    if(
+                        empty($item->cp_channel_id)
+                        ||  ($item->matcher != MatcherEnum::SYS && empty($item->request_id))
+                    ){
+                        //时间差
+                        $diff = time() - strtotime($item->created_at);
+                        if($diff < 60*60*2){
+                            continue;
+                        }
                     }
                 }
                 $action = 'report';

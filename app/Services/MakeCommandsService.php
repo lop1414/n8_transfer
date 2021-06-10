@@ -121,28 +121,6 @@ class MakeCommandsService
                     $str .= $this->echoCommand($tmpCommand);
                 }
                 $str .= "\n";
-
-
-                // 阅文注册加桌数据 需从二版拿
-                if($cpType['id'] == CpTypeEnums::YW ){
-                    $str .= "        //{$cpType['name']}(二版)-{$productType}\n";
-
-                    $userActions = [UserActionTypeEnum::REG];
-
-                    if($productType == ProductTypeEnums::KYY){
-                        $userActions[] = UserActionTypeEnum::ADD_SHORTCUT;
-                    }
-                    //用户行为
-                    foreach($userActions as $userAction){
-                        $tmpCommand = "pull_user_action ";
-                        $tmpCommand .= "--cp_type={$cpType['id']} --product_type={$productType} ";
-                        $tmpCommand .= "--action_type={$userAction} ";
-                        $tmpCommand .= "--time={\$timeRange} ";
-                        $tmpCommand .= "--second_version=1";
-                        $str .= $this->echoCommand($tmpCommand);
-                    }
-                    $str .= "\n";
-                }
             }
         }
         return $str;

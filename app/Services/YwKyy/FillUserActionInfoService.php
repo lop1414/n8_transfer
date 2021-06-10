@@ -35,7 +35,7 @@ class FillUserActionInfoService extends BaseService
 
 
 
-    public function cpChannelId($startTime,$endTime){
+    public function cpChannelIdOld($startTime,$endTime){
         $userActionLogModel = new UserActionLogModel();
         $dateRange = [
             date('Y-m-d',strtotime($startTime)),
@@ -91,7 +91,7 @@ class FillUserActionInfoService extends BaseService
      * @param $startTime
      * @param $endTime
      */
-    public function cpChannelIdOld($startTime,$endTime){
+    public function cpChannelId($startTime,$endTime){
         $time = $startTime;
         $userActionLogModel = new UserActionLogModel();
         while($time < $endTime){
