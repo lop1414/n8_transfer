@@ -11,7 +11,7 @@
  Target Server Version : 50731
  File Encoding         : 65001
 
- Date: 07/06/2021 15:06:39
+ Date: 09/06/2021 19:24:22
 */
 
 SET NAMES utf8mb4;
@@ -26,6 +26,7 @@ CREATE TABLE `bai_du_clicks` (
   `click_source` varchar(50) NOT NULL DEFAULT '' COMMENT '来源',
   `click_at` timestamp NULL DEFAULT NULL COMMENT '点击时间',
   `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+  `request_id` varchar(100) NOT NULL,
   `extends` text NOT NULL COMMENT '扩展字段',
   `status` varchar(50) NOT NULL COMMENT '上报状态',
   `fail_data` text COMMENT '失败数据',
