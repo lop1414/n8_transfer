@@ -28,16 +28,21 @@ class UserAddShortcutActionService extends PullUserActionBaseService
     public function pullItem($item){
         $rawData = $item['extend'];
         $cpChannelId = $item['valid_info']['custom_alias'] ?? 0;
+
+        $actionTime = isset($rawData['time'])
+            ? date('Y-m-d H:i:s',$rawData['time'])
+            : $item['valid_info']['act_time'];
+
         $this->save([
             'open_id'       => $rawData['guid'],
-            'action_time'   => date('Y-m-d H:i:s',$rawData['time']),
+            'action_time'   => $actionTime,
             'cp_channel_id' => $cpChannelId ?: '',
             'request_id'    => '',
             'ip'            => $rawData['ip'],
             'action_id'     => $rawData['guid'],
             'matcher'       => $this->product['matcher'],
             'extend'        => $this->filterExtendInfo([
-                'ua'            => $rawData['extend']['ua'] ? base64_decode($rawData['extend']['ua']) : '',
+                'ua'            => isset($rawData['extend']['ua']) ? base64_decode($rawData['extend']['ua']) : '',
                 'muid'          => $rawData['user_info']['muid'] ?? '',
                 'android_id'    => $rawData['extend']['android_id'] ?? '',
             ])
