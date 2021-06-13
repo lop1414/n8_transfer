@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Common\Console\BaseCommand;
+use App\Common\Enums\CpTypeEnums;
+use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Services\ProductService;
@@ -45,9 +47,20 @@ class FillUserActionInfoCommand extends BaseCommand
         $productId    = $this->option('product_id');
         $type = $this->option('type');
         list($startTime,$endTime) = Functions::getTimeRange($time);
-        $product = (new ProductService())->get(['id'=>$productId]);
 
-        $this->$type($product[0],$startTime,$endTime);
+        $productList = (new ProductService())->get([
+            'cp_type' => CpTypeEnums::YW,
+            'type'    => ProductTypeEnums::KYY
+        ]);
+        foreach ($productList as $product){
+            //指定产品id
+            if(!empty($this->productId) && $productId != $product['id']){
+                continue;
+            }
+
+            echo $product['name']."\n";
+            $this->$type($product,$startTime,$endTime);
+        }
     }
 
 

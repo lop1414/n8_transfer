@@ -95,6 +95,10 @@ class Kernel extends ConsoleKernel
         $schedule->command("update_user_action --cp_type=YW --product_type=KYY --time={$twoMinuteRange}")->cron('* * * * *');
 
 
+        $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*10)."','".date('Y-m-d H:i:s',TIMESTAMP-60*5)."'";
+        $schedule->command("fill_user_action_info --type=channel --time={$tmp}")->cron('*/5 * * * *');
+
+
     }
 
 
