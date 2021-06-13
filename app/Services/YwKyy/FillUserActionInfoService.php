@@ -95,7 +95,7 @@ class FillUserActionInfoService extends BaseService
         $time = $startTime;
         $userActionLogModel = new UserActionLogModel();
         while($time < $endTime){
-            $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + 60*60);
+            $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + 60*5);
             $tmpEndTime = min($tmpEndTime,date('Y-m-d H:i:s'));
 
             echo("时间 : {$time} ~ {$tmpEndTime} \n");
