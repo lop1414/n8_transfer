@@ -54,12 +54,12 @@ class FillUserActionInfoCommand extends BaseCommand
         ]);
         foreach ($productList as $product){
             // 提示未授权的appflag 先跳过
-            if($productId == 94){
+            if($product['id'] == 94){
                 continue;
             }
 
             //指定产品id
-            if(!empty($this->productId) && $productId != $product['id']){
+            if(!empty($productId) && $productId != $product['id']){
                 continue;
             }
 
