@@ -65,7 +65,7 @@ class PushAdvClickCommand extends BaseCommand
         $this->startTime = $startTime;
         $this->endTime = $endTime;
 
-        $this->$action();
+         $this->lockRun([$this,$action],'push_adv_click:'.$advAlias,60*60,['log' => true]);
     }
 
 

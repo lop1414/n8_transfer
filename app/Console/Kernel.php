@@ -3,6 +3,7 @@
 namespace App\Console;
 
 
+use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\FillUserActionInfoCommand;
 use App\Console\Commands\MakeCommandCommand;
@@ -77,7 +78,7 @@ class Kernel extends ConsoleKernel
 
 
         //广告商点击数据上报
-//        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN." --time={$halfHourRange}")->cron('*/5 * * * *');
+        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN." --time={$halfHourRange}")->cron('* * * * *');
 
 
 
