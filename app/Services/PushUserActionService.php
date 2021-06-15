@@ -116,8 +116,7 @@ class PushUserActionService extends BaseService
 
             try{
                 // 注册行为
-                if($this->actionType == UserActionTypeEnum::REG
-                    && (empty($item->cp_channel_id) || empty($item->request_id) )){
+                if($this->actionType == UserActionTypeEnum::REG){
 
                     //没有渠道 or 不是系统匹配且没有request_id
                     if(

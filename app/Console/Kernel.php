@@ -88,7 +88,7 @@ class Kernel extends ConsoleKernel
             $commandsService->userActionQueueDataToDb($schedule);
             $commandsService->matchQueueDataToDb($schedule);
 //            $commandsService->pullUserAction($schedule,$twoMinuteRange);
-//            $commandsService->pushUserAction($schedule,$halfHourRange);
+            $commandsService->pushUserAction($schedule,$halfHourRange);
         }
 
 
