@@ -87,6 +87,7 @@ $app->routeMiddleware([
     'center_login_auth' => \App\Common\Middleware\CenterLoginAuth::class,
     'center_menu_auth' => \App\Common\Middleware\CenterMenuAuth::class,
     'admin_request_log' => \App\Common\Middleware\AdminRequestLog::class,
+    'proxy_api_auth' => \App\Http\Middleware\ProxyApiAuth::class,
 ]);
 /*
 |--------------------------------------------------------------------------

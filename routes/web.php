@@ -51,3 +51,16 @@ $router->group([
     });
 
 });
+
+
+// 代理
+$router->group([
+    'prefix' => 'proxy',
+    'middleware' => ['proxy_api_auth', 'access_control_allow_origin']
+], function () use ($router) {
+    // 阅文
+    $router->group(['prefix' => 'yw'], function () use ($router) {
+        $router->get('quickapp_user/select', 'Proxy\Yw\QuickappUserController@select');
+        $router->get('quickapp_order/select', 'Proxy\Yw\QuickappOrderController@select');
+    });
+});
