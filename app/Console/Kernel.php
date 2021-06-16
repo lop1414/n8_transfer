@@ -74,8 +74,8 @@ class Kernel extends ConsoleKernel
         $twoMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*2)."','{$dateTime}'";
         //半小时区间
         $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
-        //4小时区间
-        $fourHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*60*4)."','{$dateTime}'";
+        //2小时区间
+        $twoHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*60*2)."','{$dateTime}'";
 
 
 
@@ -91,7 +91,7 @@ class Kernel extends ConsoleKernel
             $commandsService->userActionQueueDataToDb($schedule);
             $commandsService->matchQueueDataToDb($schedule);
 //            $commandsService->pullUserAction($schedule,$twoMinuteRange);
-            $commandsService->pushUserAction($schedule,$fourHourRange);
+            $commandsService->pushUserAction($schedule,$twoHourRange);
         }
 
 

@@ -120,11 +120,11 @@ class PushUserActionService extends BaseService
 
                     //没有渠道 or 不是系统匹配且没有request_id
                     if(
-                        empty($item->cp_channel_id)
-                        ||  ($item->matcher != MatcherEnum::SYS && empty($item->request_id))
+                        empty($item['cp_channel_id'])
+                        ||  ($item['matcher'] != MatcherEnum::SYS && empty($item['request_id']))
                     ){
                         //时间差
-                        $diff = time() - strtotime($item->created_at);
+                        $diff = time() - strtotime($item['created_at']);
                         if($diff < 60*60*4){
                             continue;
                         }
