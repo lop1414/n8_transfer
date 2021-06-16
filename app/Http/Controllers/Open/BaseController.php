@@ -26,8 +26,7 @@ class BaseController extends OpenController
             'device_os_version_code'=> $data['device_os_version_code'] ?? '',
             'device_platform_version_name' => $data['device_platform_version_name'] ?? '',
             'device_platform_version_code' => $data['device_platform_version_code'] ?? '',
-            'android_id'            => $data['android_id'] ?? '',
-            'request_id'            => $data['request_id'] ?? ''
+            'android_id'            => $data['android_id'] ?? ''
         );
     }
 }
