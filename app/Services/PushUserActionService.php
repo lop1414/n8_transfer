@@ -132,7 +132,7 @@ class PushUserActionService extends BaseService
                 }
                 $action = 'report';
                 $action .= ucfirst(Functions::camelize($this->actionType));
-                $pushData = array_merge([
+                $pushData = array_merge($item['extend'],[
                     'product_alias' => $this->product['cp_product_alias'],
                     'cp_type'       => $this->product['cp_type'],
                     'open_id'       => $item['open_id'],
@@ -140,7 +140,7 @@ class PushUserActionService extends BaseService
                     'cp_channel_id' => $item['cp_channel_id'],
                     'ip'            => $item['ip'],
                     'request_id'    => $item['request_id']
-                ],$item['extend']);
+                ]);
 
                 $this->n8Sdk->setSecret($productMap[$item['product_id']]['secret']);
                 $this->n8Sdk->$action($pushData);
