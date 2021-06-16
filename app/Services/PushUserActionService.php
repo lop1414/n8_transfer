@@ -125,7 +125,7 @@ class PushUserActionService extends BaseService
                     ){
                         //时间差
                         $diff = time() - strtotime($item->created_at);
-                        if($diff < 60*60*2){
+                        if($diff < 60*60*4){
                             continue;
                         }
                     }

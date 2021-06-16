@@ -74,6 +74,8 @@ class Kernel extends ConsoleKernel
         $twoMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*2)."','{$dateTime}'";
         //半小时区间
         $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
+        //4小时区间
+        $fourHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*60*4)."','{$dateTime}'";
 
 
 
@@ -89,15 +91,15 @@ class Kernel extends ConsoleKernel
             $commandsService->userActionQueueDataToDb($schedule);
             $commandsService->matchQueueDataToDb($schedule);
 //            $commandsService->pullUserAction($schedule,$twoMinuteRange);
-            $commandsService->pushUserAction($schedule,$halfHourRange);
+            $commandsService->pushUserAction($schedule,$fourHourRange);
         }
 
 
         $schedule->command("update_user_action --cp_type=YW --product_type=KYY --time={$twoMinuteRange}")->cron('* * * * *');
 
 
-        $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*10)."','".date('Y-m-d H:i:s',TIMESTAMP-60*5)."'";
-        $schedule->command("fill_user_action_info --type=channel --time={$tmp}")->cron('*/5 * * * *');
+        $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*20)."','".date('Y-m-d H:i:s',TIMESTAMP-60*10)."'";
+        $schedule->command("fill_user_action_info --type=channel --time={$tmp}")->cron('*/10 * * * *');
 
 
     }
