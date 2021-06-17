@@ -3,7 +3,6 @@
 namespace App\Services\YwKyy;
 
 
-use App\Common\Enums\OrderTypeEnums;
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Yw\YwSdk;
@@ -11,20 +10,15 @@ use App\Services\ProductService;
 use App\Services\PullUserActionBaseService;
 
 
-class UserOrderActionService extends PullUserActionBaseService
+class UserCompleteOrderActionService extends PullUserActionBaseService
 {
 
-    protected $actionType = UserActionTypeEnum::ORDER;
+    protected $actionType = UserActionTypeEnum::COMPLETE_ORDER;
 
     protected $source = DataSourceEnums::CP;
 
     protected $ywSdk;
 
-    protected $orderTypeMap = [
-        1   => OrderTypeEnums::NORMAL,
-        2   => OrderTypeEnums::ANNUAL,
-        3   => OrderTypeEnums::PROP
-    ];
 
 
     public function setYwSdk(){
@@ -39,6 +33,7 @@ class UserOrderActionService extends PullUserActionBaseService
         $this->setYwSdk();
         $reqPara = [
             'coop_type'  => 11,
+            'order_status'  => 2,
             'start_time'  => strtotime($this->startTime),
             'end_time'  => strtotime($this->endTime),
             'page'   => 1
@@ -67,15 +62,13 @@ class UserOrderActionService extends PullUserActionBaseService
         $this->save([
             'product_id'    => $this->product['id'],
             'open_id'       => $item['guid'],
-            'action_time'   => $item['order_time'],
+            'action_time'   => $item['pay_time'],
             'cp_channel_id' => $item['channel_id'],
             'request_id'    => '',
             'ip'            => '',
             'action_id'     => $item['yworder_id'],
             'matcher'       => $this->product['matcher'],
             'extend'        => array_merge([
-                'amount'        => $item['amount'] * 100,
-                'type'          => $this->orderTypeMap[$item['order_type']],
                 'order_id'      => $item['yworder_id']
             ],$this->filterExtendInfo($item)),
         ],$item);
