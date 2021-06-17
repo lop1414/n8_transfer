@@ -98,8 +98,8 @@ class Kernel extends ConsoleKernel
         }
 
         // 阅文充值 查漏补缺
-        $schedule->command("pull_user_action --cp_type=YW --product_type=KYY --action_type=ORDER --time={$toDayRange}")->cron('* * * * *');
-        $schedule->command("pull_user_action --cp_type=YW --product_type=KYY --action_type=COMPLETE_ORDER --time={$toDayRange}")->cron('* * * * *');
+ //       $schedule->command("pull_user_action --cp_type=YW --product_type=KYY --action_type=ORDER --time={$toDayRange}")->cron('* * * * *');
+ //       $schedule->command("pull_user_action --cp_type=YW --product_type=KYY --action_type=COMPLETE_ORDER --time={$toDayRange}")->cron('* * * * *');
 
 
 
