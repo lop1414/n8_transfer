@@ -76,6 +76,9 @@ class Kernel extends ConsoleKernel
         $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
         //3小时区间
         $threeHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*60*3)."','{$dateTime}'";
+        //当天区间
+        $toDayRange =  "'".date('Y-m-d 00:00:00',TIMESTAMP)."','{$dateTime}'";
+
 
 
 
@@ -93,6 +96,11 @@ class Kernel extends ConsoleKernel
 //            $commandsService->pullUserAction($schedule,$twoMinuteRange);
             $commandsService->pushUserAction($schedule,$threeHourRange);
         }
+
+        // 阅文充值 查漏补缺
+        $schedule->command("pull_user_action --cp_type=YW --product_type=KYY --action_type=ORDER --time={$toDayRange}")->cron('* * * * *');
+        $schedule->command("pull_user_action --cp_type=YW --product_type=KYY --action_type=COMPLETE_ORDER --time={$toDayRange}")->cron('* * * * *');
+
 
 
         $schedule->command("update_user_action --cp_type=YW --product_type=KYY --time={$twoMinuteRange}")->cron('* * * * *');
