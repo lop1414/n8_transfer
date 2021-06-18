@@ -12,6 +12,7 @@ use App\Enums\QueueEnums;
 use App\Common\Services\DataToQueueService;
 use App\Enums\UserActionTypeEnum;
 use App\Http\Controllers\Open\BaseController;
+use App\Services\ForwardDataService;
 use Illuminate\Http\Request;
 
 class UserController extends BaseController
@@ -30,6 +31,8 @@ class UserController extends BaseController
 
 
             $requestData = $request->all();
+            $requestData['cp_type'] = CpTypeEnums::YW;
+            (new ForwardDataService())->toQueue($requestData);
             $type = $requestData['type'];
 
             if ($type == 'REGISTER') {
