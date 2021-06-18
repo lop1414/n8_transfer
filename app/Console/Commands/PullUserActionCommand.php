@@ -94,6 +94,7 @@ class PullUserActionCommand extends BaseCommand
         Functions::hasEnum(UserActionTypeEnum::class, $this->actionType);
 
         list($this->startTime,$this->endTime) = explode(",", $time);
+        $this->endTime = min($this->endTime,date('Y-m-d H:i:s'));
         Functions::checkTimeRange($this->startTime,$this->endTime);
 
 

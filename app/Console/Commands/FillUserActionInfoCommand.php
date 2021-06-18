@@ -47,6 +47,8 @@ class FillUserActionInfoCommand extends BaseCommand
         $productId    = $this->option('product_id');
         $type = $this->option('type');
         list($startTime,$endTime) = Functions::getTimeRange($time);
+        $endTime = min($endTime,date('Y-m-d H:i:s'));
+
 
         $productList = (new ProductService())->get([
             'cp_type' => CpTypeEnums::YW,

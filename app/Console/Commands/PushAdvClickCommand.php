@@ -48,8 +48,9 @@ class PushAdvClickCommand extends BaseCommand
 
     public function handle(){
         $time = $this->option('time');
-        list($startTime,$endTime) = explode(",", $time);
-        Functions::checkTimeRange($startTime,$endTime);
+        list($this->startTime,$this->endTime) = explode(",", $time);
+        $this->endTime = min($this->endTime,date('Y-m-d H:i:s'));
+        Functions::checkTimeRange($this->startTime,$this->endTime);
 
         $advAlias  = $this->option('adv_alias');
         Functions::hasEnum(AdvAliasEnum::class,$advAlias);
@@ -62,8 +63,6 @@ class PushAdvClickCommand extends BaseCommand
             ]);
         }
 
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
 
          $this->lockRun([$this,$action],'push_adv_click:'.$advAlias,60*60,['log' => true]);
     }
