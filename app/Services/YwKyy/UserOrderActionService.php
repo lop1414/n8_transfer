@@ -19,6 +19,8 @@ class UserOrderActionService extends PullUserActionBaseService
 
     protected $source = DataSourceEnums::CP;
 
+    protected $completeOrderService;
+
     protected $ywSdk;
 
     protected $orderTypeMap = [
@@ -28,10 +30,18 @@ class UserOrderActionService extends PullUserActionBaseService
     ];
 
 
+    public function __construct(){
+        parent::__construct();
+        $this->completeOrderService = new UserCompleteOrderActionService();
+    }
+
+
     public function setYwSdk(){
         if(empty($this->ywSdk)){
             $cpAccount = (new ProductService())->readCpAccount($this->product['cp_account_id']);
             $this->ywSdk = new YwSdk($this->product['cp_product_alias'],$cpAccount['account'],$cpAccount['cp_secret']);
+
+            $this->completeOrderService->setProduct($this->product);
         }
     }
 
@@ -80,6 +90,10 @@ class UserOrderActionService extends PullUserActionBaseService
                 'order_id'      => $item['yworder_id']
             ],$this->filterExtendInfo($item)),
         ],$item);
+
+        if($item['order_status'] == 2){
+            $this->completeOrderService->pullItem($item);
+        }
     }
 
 
