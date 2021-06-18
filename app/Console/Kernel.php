@@ -81,6 +81,8 @@ class Kernel extends ConsoleKernel
         $oneMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60)."','{$dateTime}'";
         //二分钟区间
         $twoMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*2)."','{$dateTime}'";
+        //三分钟区间
+        $threeMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*3)."','{$dateTime}'";
         //半小时区间
         $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
         //3小时区间
@@ -101,7 +103,7 @@ class Kernel extends ConsoleKernel
             $commandsService = new \App\Services\CommandsService();
             $commandsService->userActionQueueDataToDb($schedule);
             $commandsService->matchQueueDataToDb($schedule);
-            $commandsService->pullUserAction($schedule,$twoMinuteRange);
+            $commandsService->pullUserAction($schedule,$threeMinuteRange);
             $commandsService->pushUserAction($schedule,$threeHourRange);
         }
 
