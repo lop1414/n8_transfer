@@ -104,8 +104,8 @@ class Kernel extends ConsoleKernel
 
         // 阅文充值 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";
-        $schedule->command("yw_kyy:check_order --time={$tmpRange}")->cron('* * * * *');
-        $schedule->command("yw_kyy:check_complete_order --time={$tmpRange}")->cron('* * * * *');
+        $schedule->command("yw_kyy:check_order --time={$tmpRange}")->cron('2 * * * *');
+        $schedule->command("yw_kyy:check_complete_order --time={$tmpRange}")->cron('2 * * * *');
 
 
 
