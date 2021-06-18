@@ -104,7 +104,7 @@ class PullUserActionBaseService extends BaseService
             ]);
         }
         $this->startTime = $startTime;
-        $this->endTime = $endTime;
+        $this->endTime = min($endTime,date('Y-m-d H:i:s'));
     }
 
 
