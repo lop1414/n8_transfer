@@ -6,6 +6,7 @@ namespace App\Console;
 use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\FillUserActionInfoCommand;
+use App\Console\Commands\ForwardDataCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
@@ -57,7 +58,9 @@ class Kernel extends ConsoleKernel
 
         // 阅文快应用
         CheckOrderCommand::class,
-        CheckCompleteOrderCommand::class
+        CheckCompleteOrderCommand::class,
+        // 转发数据
+        ForwardDataCommand::class
 
     ];
 
@@ -116,6 +119,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("fill_user_action_info --type=channel --time={$tmp}")->cron('*/10 * * * *');
 
 
+        $schedule->command("forward_data")->cron('* * * * *');
     }
 
 

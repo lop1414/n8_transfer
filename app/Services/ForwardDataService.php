@@ -38,7 +38,7 @@ class ForwardDataService extends BaseService
             try{
                 $k = $this->getMapKey([
                     'cp_type'          => $data['cp_type'],
-                    'cp_product_alias' => $data['cp_product_alias']
+                    'cp_product_alias' => $data['appflag']
                 ]);
                 $product = $productMap[$k];
                 if(!$this->isForward($product['operator'])){
