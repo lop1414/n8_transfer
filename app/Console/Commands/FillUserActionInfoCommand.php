@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Common\Console\BaseCommand;
 use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
+use App\Common\Enums\StatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Services\ProductService;
@@ -52,7 +53,8 @@ class FillUserActionInfoCommand extends BaseCommand
 
         $productList = (new ProductService())->get([
             'cp_type' => CpTypeEnums::YW,
-            'type'    => ProductTypeEnums::KYY
+            'type'    => ProductTypeEnums::KYY,
+            'status'  => StatusEnum::ENABLE
         ]);
         foreach ($productList as $product){
             // 提示未授权的appflag 先跳过
