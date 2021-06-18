@@ -6,6 +6,7 @@ namespace App\Services\YwKyy;
 use App\Common\Enums\OrderTypeEnums;
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
+use App\Models\UserActionLogModel;
 use App\Sdks\Yw\YwSdk;
 use App\Services\ProductService;
 use App\Services\PullUserActionBaseService;
@@ -79,6 +80,32 @@ class UserOrderActionService extends PullUserActionBaseService
                 'order_id'      => $item['yworder_id']
             ],$this->filterExtendInfo($item)),
         ],$item);
+    }
+
+
+    public function check(){
+        $this->setYwSdk();
+        $reqPara = [
+            'coop_type'  => 11,
+            'start_time'  => strtotime($this->startTime),
+            'end_time'  => strtotime($this->endTime)
+        ];
+        $tmp = $this->ywSdk->getOrders($reqPara);
+        $total =  $tmp['total_count'];
+
+        $dbCount = (new UserActionLogModel())
+            ->setTableNameWithMonth($this->startTime)
+            ->whereBetween('action_time',[$this->startTime,$this->endTime])
+            ->where('product_id',$this->product['id'])
+            ->where('type',$this->actionType)
+            ->count();
+
+        if($total != $dbCount){
+            $diff = $total - $dbCount;
+            echo " 相差{$diff} \n";
+            $this->pull();
+        }
+
     }
 
 
