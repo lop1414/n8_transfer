@@ -114,7 +114,7 @@ class UserOrderActionService extends PullUserActionBaseService
             ->where('type',$this->actionType)
             ->count();
 
-        if($total != $dbCount){
+        if($total > $dbCount){
             $diff = $total - $dbCount;
             echo " 相差{$diff} \n";
             $this->endTime = date('Y-m-d H:i:s',$reqPara['end_time'] + 1);

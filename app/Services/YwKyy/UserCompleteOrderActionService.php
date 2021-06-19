@@ -93,7 +93,7 @@ class UserCompleteOrderActionService extends PullUserActionBaseService
             ->where('type',$this->actionType)
             ->count();
 
-        if($total != $dbCount){
+        if($total > $dbCount){
             $diff = $total - $dbCount;
             echo " 相差{$diff} \n";
             $this->pull();
