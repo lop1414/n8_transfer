@@ -115,6 +115,7 @@ class PullUserActionBaseService extends BaseService
      */
     public function setProduct($info){
         $this->product = $info;
+        return $this;
     }
 
 

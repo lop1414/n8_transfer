@@ -105,7 +105,7 @@ class CheckOrderCommand extends BaseCommand
 
             $this->consoleEchoService->echo("产品 : {$product['name']}\n\n\n");
 
-            $service->setProduct($product);
+            $tmpService = $service->setProduct($product);
 
             $time = $this->startTime;
             while($time < $this->endTime){
@@ -113,8 +113,8 @@ class CheckOrderCommand extends BaseCommand
 
                 $this->consoleEchoService->echo("时间 : {$time} ~ {$tmpEndTime}");
 
-                $service->setTimeRange($time, $tmpEndTime);
-                $service->check();
+                $tmpService->setTimeRange($time, $tmpEndTime);
+                $tmpService->check();
 
                 $time = $tmpEndTime;
             }
