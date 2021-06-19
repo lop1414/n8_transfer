@@ -44,6 +44,12 @@ class FillUserActionInfoCommand extends BaseCommand
      * @throws \App\Common\Tools\CustomException
      */
     public function handle(){
+        $this->lockRun(function (){
+            $this->action();
+        },'fill_user_action_info',60*60,['log' => true]);
+    }
+
+    public function action(){
         $time    = $this->option('time');
         $productId    = $this->option('product_id');
         $type = $this->option('type');
@@ -57,10 +63,6 @@ class FillUserActionInfoCommand extends BaseCommand
             'status'  => StatusEnum::ENABLE
         ]);
         foreach ($productList as $product){
-            // 提示未授权的appflag 先跳过
-            if($product['id'] == 94){
-                continue;
-            }
 
             //指定产品id
             if(!empty($productId) && $productId != $product['id']){
