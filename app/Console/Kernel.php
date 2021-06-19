@@ -16,7 +16,6 @@ use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UpdateUserActionLogCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
-use App\Console\Commands\YwKyy\CheckCompleteOrderCommand;
 use App\Console\Commands\YwKyy\CheckOrderCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -58,7 +57,6 @@ class Kernel extends ConsoleKernel
 
         // 阅文快应用
         CheckOrderCommand::class,
-        CheckCompleteOrderCommand::class,
         // 转发数据
         ForwardDataCommand::class
 
