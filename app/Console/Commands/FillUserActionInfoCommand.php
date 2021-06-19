@@ -46,7 +46,7 @@ class FillUserActionInfoCommand extends BaseCommand
     public function handle(){
         $this->lockRun(function (){
             $this->action();
-        },'fill_user_action_info',60*60,['log' => true]);
+        },'fill_user_action_info',60*30,['log' => true]);
     }
 
     public function action(){

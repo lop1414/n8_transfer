@@ -46,7 +46,7 @@ class ForwardDataCommand extends BaseCommand
 
         $this->lockRun(function (){
             (new ForwardDataService())->forward();
-        },'forward_data',60*30,['log' => true]);
+        },'forward_data',60*60*2,['log' => true]);
     }
 
 
