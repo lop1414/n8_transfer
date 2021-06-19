@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
+use App\Common\Enums\StatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Services\SystemApi\UnionApiService;
@@ -45,7 +46,8 @@ class PushChannelBaseService extends BaseService
     public function getProductList(){
         return (new ProductService())->get([
             'cp_type'   => $this->cpType,
-            'type'      => $this->productType
+            'type'      => $this->productType,
+            'status'    => StatusEnum::ENABLE
         ]);
     }
 

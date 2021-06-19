@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 根据转发过来的匹配数据 更新用户注册行为数据
+ */
 namespace App\Console\Commands;
 
 use App\Common\Console\BaseCommand;
