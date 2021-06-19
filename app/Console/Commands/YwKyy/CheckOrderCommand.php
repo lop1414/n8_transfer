@@ -90,7 +90,6 @@ class CheckOrderCommand extends BaseCommand
 
 
     public function action(){
-        $service = new UserOrderActionService();
         $productList = (new ProductService())->get([
             'cp_type' => CpTypeEnums::YW,
             'type'    => ProductTypeEnums::KYY,
@@ -105,7 +104,7 @@ class CheckOrderCommand extends BaseCommand
 
             $this->consoleEchoService->echo("产品 : {$product['name']}\n\n\n");
 
-            $tmpService = $service->setProduct($product);
+            $tmpService = (new UserOrderActionService())->setProduct($product);
 
             $time = $this->startTime;
             while($time < $this->endTime){
