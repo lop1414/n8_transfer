@@ -17,7 +17,7 @@ class PushUserActionCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'push_user_action {--cp_type=} {--product_type=} {--action_type=} {--time=} {--product_id=}';
+    protected $signature = 'push_user_action {--cp_type=} {--product_type=} {--action_type=} {--time=} {--time_interval=} {--product_id=}';
 
     /**
      * 命令描述
@@ -83,6 +83,7 @@ class PushUserActionCommand extends BaseCommand
         $this->actionType = $this->option('action_type');
         $time = $this->option('time');
         $this->productId = $this->option('product_id');
+        $timeInterval = $this->option('time_interval');
 
         Functions::hasEnum(CpTypeEnums::class, $this->cpType);
         Functions::hasEnum(ProductTypeEnums::class, $this->productType);
@@ -91,6 +92,12 @@ class PushUserActionCommand extends BaseCommand
         list($this->startTime,$this->endTime) = explode(",", $time);
         $this->endTime = min($this->endTime,date('Y-m-d H:i:s'));
         Functions::checkTimeRange($this->startTime,$this->endTime);
+
+        // 设置值
+        if(!empty($timeInterval)){
+            $this->timeInterval = $timeInterval;
+        }
+
 
         $lockKey = "push|{$this->cpType}|{$this->productType}|{$this->actionType}";
 
