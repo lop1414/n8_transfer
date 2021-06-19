@@ -103,7 +103,7 @@ class Kernel extends ConsoleKernel
             $commandsService = new \App\Services\CommandsService();
             $commandsService->userActionQueueDataToDb($schedule);
             $commandsService->matchQueueDataToDb($schedule);
-            $commandsService->pullUserAction($schedule,$halfHourRange);
+//            $commandsService->pullUserAction($schedule,$tenMinuteRange);
             $commandsService->pushUserAction($schedule,$threeHourRange);
         }
 
