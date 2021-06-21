@@ -2,7 +2,7 @@
 /**
  * 补充用户行为信息 临时脚本
  */
-namespace App\Services\YwKyy;
+namespace App\Services;
 
 
 use App\Common\Enums\ProductTypeEnums;
