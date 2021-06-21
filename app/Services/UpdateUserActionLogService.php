@@ -74,8 +74,7 @@ class UpdateUserActionLogService extends BaseService
                 ->get();
 
             foreach ($list as $item){
-                //分发到各自service处理
-                $class = $this->getService();
+                $class = (new MatchDataService());
                 $advAlias = lcfirst(Functions::camelize($item['adv_alias']));
                 $info = (new $class)->$advAlias($item);
                 if(!empty($info)){
@@ -88,21 +87,6 @@ class UpdateUserActionLogService extends BaseService
     }
 
 
-
-    public function getService(){
-        $cpType = ucfirst(Functions::camelize($this->product['cp_type']));
-        $productType = ucfirst(Functions::camelize($this->product['type']));
-        $class = "App\\Services\\{$cpType}{$productType}\\MatchDataService";
-        if(!class_exists($class)){
-            throw new CustomException([
-                'code' => 'UNKNOWN_CLASS',
-                'message' => '未知类',
-                'log' => true,
-                'data' => "{$class} 类不存在",
-            ]);
-        }
-        return $class;
-    }
 
 
 

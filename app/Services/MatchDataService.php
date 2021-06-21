@@ -2,7 +2,7 @@
 /**
  * 匹配数据处理 更新注册行为数据
  */
-namespace App\Services\YwKyy;
+namespace App\Services;
 
 
 use App\Common\Enums\AdvAliasEnum;
@@ -188,17 +188,15 @@ class MatchDataService extends BaseService
             ? date('Y-m-d H:i:s',intval($data['data']['ts']/1000))
             : $info['action_time'];
 
-        $extends = $data['data'];
-        $extends['match_data_id'] = $data['id'];
         $this->saveClickDataService
             ->saveAdvClickData(AdvAliasEnum::BAI_DU,[
-                'ip'           => $data['data']['ip'],
-                'ua'           => $data['data']['ua'],
+                'ip'           => $data['ip'],
+                'ua'           => $data['ua'],
                 'click_at'     => $clickAt,
                 'type'         => UserActionTypeEnum::REG,
                 'product_id'   => $data['product_id'],
                 'request_id'   => $requestId,
-                'extends'      => $extends,
+                'extends'      => array_merge($data,['match_data_id' => $data['id']]),
             ]);
 
         $info->request_id = $requestId;
@@ -220,28 +218,23 @@ class MatchDataService extends BaseService
      * 获取用户注册记录(最近15天)
      */
     public function getRegLogInfo($productId,$openId){
-        $info = $this->userActionLogModel
-            ->setTableNameWithMonth($this->dateRange['end'])
+
+        $query = $this->userActionLogModel
             ->where('type',UserActionTypeEnum::REG)
             ->where('product_id',$productId)
             ->where('open_id',$openId)
             ->whereBetween('action_time',[
-                    $this->dateRange['start']. ' 00:00:00',
-                    $this->dateRange['end']. ' 23:59:59',
-                ])
-            ->first();
+                $this->dateRange['start']. ' 00:00:00',
+                $this->dateRange['end']. ' 23:59:59',
+            ]);
+
+        $info = $query->setTableNameWithMonth($this->dateRange['end'])->first();
 
         if(empty($info)
             && date('Y-m',strtotime($this->dateRange['start'])) != date('Y-m',strtotime($this->dateRange['end']))
         ){
 
-            $info = $this->userActionLogModel
-                ->setTableNameWithMonth($this->dateRange['start'])
-                ->where('type',UserActionTypeEnum::REG)
-                ->where('product_id',$productId)
-                ->where('open_id',$openId)
-                ->whereBetween('action_time',$this->dateRange)
-                ->first();
+            $info = $query->setTableNameWithMonth($this->dateRange['start'])->first();
         }
 
         return $info;

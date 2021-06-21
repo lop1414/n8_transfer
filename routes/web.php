@@ -46,6 +46,10 @@ $router->group([
         });
     });
 
+    $router->group(['prefix' => 'yw_h5'], function () use ($router) {
+        $router->get('user', 'Open\YwH5\UserController@reg');
+    });
+
     $router->group(['prefix' => 'match'], function () use ($router) {
         $router->get('second_version', 'Open\MatchDataController@secondVersion');
     });
