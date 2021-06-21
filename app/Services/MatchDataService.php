@@ -188,15 +188,17 @@ class MatchDataService extends BaseService
             ? date('Y-m-d H:i:s',intval($data['data']['ts']/1000))
             : $info['action_time'];
 
+        $extends = $data['data'];
+        $extends['match_data_id'] = $data['id'];
         $this->saveClickDataService
             ->saveAdvClickData(AdvAliasEnum::BAI_DU,[
-                'ip'           => $data['ip'],
-                'ua'           => $data['ua'],
+                'ip'           => $data['data']['ip'],
+                'ua'           => $data['data']['ua'],
                 'click_at'     => $clickAt,
                 'type'         => UserActionTypeEnum::REG,
                 'product_id'   => $data['product_id'],
                 'request_id'   => $requestId,
-                'extends'      => array_merge($data,['match_data_id' => $data['id']]),
+                'extends'      => $extends,
             ]);
 
         $info->request_id = $requestId;
