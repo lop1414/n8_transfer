@@ -18,7 +18,7 @@ use App\Sdks\Yw\YwSdk;
 use App\Services\ProductService;
 
 
-class FillUserActionInfoService extends BaseService
+class YwFillUserActionInfoService extends BaseService
 {
 
     protected $product;
@@ -117,8 +117,12 @@ class FillUserActionInfoService extends BaseService
             do{
                 if($this->product['type'] == ProductTypeEnums::KYY){
                     $tmp = $this->ywSdk->getUser($para);
+                    $regTimeField = 'reg_time';
+                    $openIdField = 'guid';
                 }else{
                     $tmp = $this->ywSdk->getWxUser($para);
+                    $regTimeField = 'create_time';
+                    $openIdField = 'openid';
                 }
 
                 $count = $tmp['total_count'];
@@ -126,8 +130,8 @@ class FillUserActionInfoService extends BaseService
                 foreach($tmp['list'] as $user){
                     try{
                         $tmpUser = $userActionLogModel
-                            ->setTableNameWithMonth($user['reg_time'] ?? $user['create_time'])
-                            ->where('open_id',$user['guid'])
+                            ->setTableNameWithMonth($user[$regTimeField])
+                            ->where('open_id',$user[$openIdField])
                             ->where('product_id',$this->product['id'])
                             ->where('type',UserActionTypeEnum::REG)
                             ->get();

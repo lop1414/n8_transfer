@@ -4,12 +4,11 @@ namespace App\Console\Commands;
 
 use App\Common\Console\BaseCommand;
 use App\Common\Enums\CpTypeEnums;
-use App\Common\Enums\ProductTypeEnums;
 use App\Common\Enums\StatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Services\ProductService;
-use App\Services\YwKyy\FillUserActionInfoService;
+use App\Services\YwKyy\YwFillUserActionInfoService;
 
 class FillUserActionInfoCommand extends BaseCommand
 {
@@ -75,7 +74,7 @@ class FillUserActionInfoCommand extends BaseCommand
 
 
     public function channel($product,$startTime,$endTime){
-        (new FillUserActionInfoService())
+        (new YwFillUserActionInfoService())
             ->setProduct($product)
             ->cpChannelId($startTime,$endTime);
     }
