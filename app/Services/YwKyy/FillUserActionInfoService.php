@@ -5,6 +5,7 @@
 namespace App\Services\YwKyy;
 
 
+use App\Common\Enums\ProductTypeEnums;
 use App\Common\Enums\ReportStatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
@@ -57,9 +58,16 @@ class FillUserActionInfoService extends BaseService
 
                 foreach ($list as $item){
                     $id = $item['id'];
-                    $tmp = $this->ywSdk->getUser([
-                        'guid'  => $item['open_id']
-                    ]);
+                    if($this->product['type'] == ProductTypeEnums::KYY){
+                        $tmp = $this->ywSdk->getUser([
+                            'guid'  => $item['open_id']
+                        ]);
+                    }else{
+                        $tmp = $this->ywSdk->getWxUser([
+                            'guid'  => $item['open_id']
+                        ]);
+                    }
+
 
                     if(!empty($tmp['list'])){
                         $user = $tmp['list'][0];

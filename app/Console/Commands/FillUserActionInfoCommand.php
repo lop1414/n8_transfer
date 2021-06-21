@@ -59,7 +59,6 @@ class FillUserActionInfoCommand extends BaseCommand
 
         $productList = (new ProductService())->get([
             'cp_type' => CpTypeEnums::YW,
-            'type'    => ProductTypeEnums::KYY,
             'status'  => StatusEnum::ENABLE
         ]);
         foreach ($productList as $product){

@@ -12,4 +12,11 @@ trait User
         return $this->apiRequest($uri,$param);
     }
 
+
+    public function getWxUser($param){
+        $uri = 'cpapi/WxUserInfo/QueryUserInfo';
+
+        return $this->apiRequest($uri,$param);
+    }
+
 }
