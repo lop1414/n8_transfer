@@ -62,14 +62,14 @@ class UpdateUserActionLogService extends BaseService
 
 
     public function reg(){
-
+        $page = 0;
         do{
             $list = $this->model
                 ->whereIn('type',[UserActionTypeEnum::ADD_SHORTCUT,UserActionTypeEnum::SECOND_VERSION_REG])
                 ->where('product_id',$this->product['id'])
                 ->where('request_id','')
                 ->whereBetween('created_at',[$this->startTime,$this->endTime])
-                ->skip(0)
+                ->skip($page * $this->pageSize)
                 ->take($this->pageSize)
                 ->get();
 
@@ -83,6 +83,7 @@ class UpdateUserActionLogService extends BaseService
                 }
             }
 
+            $page += 1;
         }while(!$list->isEmpty());
     }
 
