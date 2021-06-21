@@ -221,22 +221,32 @@ class MatchDataService extends BaseService
      */
     public function getRegLogInfo($productId,$openId){
 
-        $query = $this->userActionLogModel
+        $info = $this->userActionLogModel
+            ->setTableNameWithMonth($this->dateRange['end'])
             ->where('type',UserActionTypeEnum::REG)
             ->where('product_id',$productId)
             ->where('open_id',$openId)
             ->whereBetween('action_time',[
                 $this->dateRange['start']. ' 00:00:00',
                 $this->dateRange['end']. ' 23:59:59',
-            ]);
+            ])
+            ->first();
 
-        $info = $query->setTableNameWithMonth($this->dateRange['end'])->first();
 
         if(empty($info)
             && date('Y-m',strtotime($this->dateRange['start'])) != date('Y-m',strtotime($this->dateRange['end']))
         ){
 
-            $info = $query->setTableNameWithMonth($this->dateRange['start'])->first();
+            $info = $this->userActionLogModel
+                ->setTableNameWithMonth($this->dateRange['start'])
+                ->where('type',UserActionTypeEnum::REG)
+                ->where('product_id',$productId)
+                ->where('open_id',$openId)
+                ->whereBetween('action_time',[
+                    $this->dateRange['start']. ' 00:00:00',
+                    $this->dateRange['end']. ' 23:59:59',
+                ])
+                ->first();
         }
 
         return $info;
