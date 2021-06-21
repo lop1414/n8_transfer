@@ -84,7 +84,9 @@ class UpdateUserActionLogCommand extends BaseCommand
 
 
         Functions::hasEnum(CpTypeEnums::class, $this->cpType);
-        Functions::hasEnum(ProductTypeEnums::class, $this->productType);
+        if(!empty($this->productType)){
+            Functions::hasEnum(ProductTypeEnums::class, $this->productType);
+        }
 
         list($this->startTime,$this->endTime) = explode(",", $time);
         $this->endTime = min($this->endTime,date('Y-m-d H:i:s'));
@@ -111,10 +113,11 @@ class UpdateUserActionLogCommand extends BaseCommand
 
     public function action(){
         $service = new UpdateUserActionLogService();
-        $productList = (new ProductService())->get([
-            'cp_type' => $this->cpType,
-            'type'    => $this->productType
-        ]);
+        $para['cp_type'] =  $this->cpType;
+        if(!empty($this->productType)){
+            $para['type'] = $this->productType;
+        }
+        $productList = (new ProductService())->get($para);
 
         foreach ($productList as $product){
             //指定产品id
