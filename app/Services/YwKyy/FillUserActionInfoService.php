@@ -115,7 +115,12 @@ class FillUserActionInfoService extends BaseService
             ];
             $currentCount = 0;
             do{
-                $tmp = $this->ywSdk->getUser($para);
+                if($this->product['type'] == ProductTypeEnums::KYY){
+                    $tmp = $this->ywSdk->getUser($para);
+                }else{
+                    $tmp = $this->ywSdk->getWxUser($para);
+                }
+
                 $count = $tmp['total_count'];
                 $currentCount += count($tmp['list']);
                 foreach($tmp['list'] as $user){
