@@ -59,7 +59,7 @@ class UserFollowActionService extends PullUserActionBaseService
             $this->save([
                 'product_id'    => $this->product['id'],
                 'open_id'       => $item['openid'],
-                'action_time'   => $item['create_time'],
+                'action_time'   => $item['subscribe_time'],
                 'cp_channel_id' => $item['channel_id'],
                 'request_id'    => '',
                 'ip'            => '',
