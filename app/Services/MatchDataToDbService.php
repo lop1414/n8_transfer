@@ -77,7 +77,6 @@ class MatchDataToDbService extends BaseService
         while ($data = $queue->pull()) {
 
             try{
-                DB::beginTransaction();
                 $k = $this->getMapKey([
                     'cp_type'          => $data['cp_type'],
                     'cp_product_alias' => $data['cp_product_alias']
@@ -90,11 +89,9 @@ class MatchDataToDbService extends BaseService
                 $this->model->create($data);
 
 
-                DB::commit();
 
             }catch (CustomException $e){
 
-                DB::rollBack();
 
 
                 //日志
@@ -110,7 +107,6 @@ class MatchDataToDbService extends BaseService
                 (new ConsoleEchoService())->error("自定义异常 {code:{$e->getCode()},msg:{$e->getMessage()}}");
             }catch (\Exception $e){
 
-                DB::rollBack();
 
                 //日志
                 (new ErrorLogService())->catch($e);
