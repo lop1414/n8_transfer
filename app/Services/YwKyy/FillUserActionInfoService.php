@@ -126,7 +126,7 @@ class FillUserActionInfoService extends BaseService
                 foreach($tmp['list'] as $user){
                     try{
                         $tmpUser = $userActionLogModel
-                            ->setTableNameWithMonth($user['reg_time'])
+                            ->setTableNameWithMonth($user['reg_time'] ?? $user['create_time'])
                             ->where('open_id',$user['guid'])
                             ->where('product_id',$this->product['id'])
                             ->where('type',UserActionTypeEnum::REG)
