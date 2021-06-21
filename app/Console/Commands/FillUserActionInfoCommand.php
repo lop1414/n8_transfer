@@ -8,7 +8,7 @@ use App\Common\Enums\StatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Services\ProductService;
-use App\Services\YwKyy\YwFillUserActionInfoService;
+use App\Services\YwFillUserActionInfoService;
 
 class FillUserActionInfoCommand extends BaseCommand
 {
