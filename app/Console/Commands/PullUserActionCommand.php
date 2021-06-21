@@ -125,7 +125,7 @@ class PullUserActionCommand extends BaseCommand
         $productList = (new ProductService())->get([
             'cp_type' => $this->cpType,
             'type'    => $this->productType,
-//            'status'  => StatusEnum::ENABLE
+            'status'  => StatusEnum::ENABLE
         ]);
 
         foreach ($productList as $product){
