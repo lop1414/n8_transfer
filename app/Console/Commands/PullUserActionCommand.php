@@ -120,20 +120,23 @@ class PullUserActionCommand extends BaseCommand
 
 
     public function action(){
+
         $service = $this->getService();
         $productList = (new ProductService())->get([
             'cp_type' => $this->cpType,
             'type'    => $this->productType,
-            'status'  => StatusEnum::ENABLE
+//            'status'  => StatusEnum::ENABLE
         ]);
 
         foreach ($productList as $product){
+            $this->consoleEchoService->echo("产品 : {$product['name']}\n");
             //指定产品id
             if(!empty($this->productId) && $this->productId != $product['id']){
+                echo "   不是指定产品\n\n\n";
                 continue;
             }
 
-            $this->consoleEchoService->echo("产品 : {$product['name']}\n\n\n");
+
 
             $service->setProduct($product);
 
