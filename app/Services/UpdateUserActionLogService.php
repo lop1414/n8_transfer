@@ -74,9 +74,8 @@ class UpdateUserActionLogService extends BaseService
                 ->get();
 
             foreach ($list as $item){
-                $class = (new MatchDataService());
                 $advAlias = lcfirst(Functions::camelize($item['adv_alias']));
-                $info = (new $class)->$advAlias($item);
+                $info = (new MatchDataService())->$advAlias($item);
                 if(!empty($info)){
                     $item->request_id = $info['request_id'];
                     $item->save();
