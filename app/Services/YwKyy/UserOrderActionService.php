@@ -37,12 +37,10 @@ class UserOrderActionService extends PullUserActionBaseService
 
 
     public function setYwSdk(){
-        if(empty($this->ywSdk)){
-            $cpAccount = (new ProductService())->readCpAccount($this->product['cp_account_id']);
-            $this->ywSdk = new YwSdk($this->product['cp_product_alias'],$cpAccount['account'],$cpAccount['cp_secret']);
+        $cpAccount = (new ProductService())->readCpAccount($this->product['cp_account_id']);
+        $this->ywSdk = new YwSdk($this->product['cp_product_alias'],$cpAccount['account'],$cpAccount['cp_secret']);
+        $this->completeOrderService->setProduct($this->product);
 
-            $this->completeOrderService->setProduct($this->product);
-        }
     }
 
 
