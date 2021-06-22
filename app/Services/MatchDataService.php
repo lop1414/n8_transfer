@@ -113,6 +113,15 @@ class MatchDataService extends BaseService
         if(!empty($cpChannelId)){
             $info->cp_channel_id = $cpChannelId;
         }
+        if(empty($info->ip)){
+            $info->ip = $data['data']['ip'] ?? '';
+            $ua = $data['data']['ua'] ?? '';
+            if(!empty($ua)){
+                $infoExtend = $info->extend;
+                $infoExtend['ua'] = $ua;
+                $info->extend = $infoExtend;
+            }
+        }
         $info->save();
         echo "ocean:更新成功: {$info['open_id']} \n";
         return $info;
