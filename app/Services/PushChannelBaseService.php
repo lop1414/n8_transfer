@@ -56,11 +56,15 @@ class PushChannelBaseService extends BaseService
     public function productItem($product){}
 
 
-    public function run(){
+    public function run($productId = null){
         $productList = $this->getProductList();
 
         foreach ($productList as $product){
-            echo $product['name']. "\n";
+            if(!empty($productId) && $product['id'] != $productId){
+                continue;
+            }else{
+                echo $product['name']. "\n";
+            }
 
             try{
                 $this->productItem($product);
