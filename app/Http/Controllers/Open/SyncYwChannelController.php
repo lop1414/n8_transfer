@@ -37,7 +37,7 @@ class SyncYwChannelController extends BaseController
                 $tmpEndDate = date('Y-m-d',  strtotime('+1 day',strtotime($date)));
 
 
-                $service->setDateRange($date,$tmpEndDate)->run($product['id']);
+                $service->setDateRange($date,$tmpEndDate)->productItem($product);
 
                 $date = $tmpEndDate;
             }
