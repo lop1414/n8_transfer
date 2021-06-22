@@ -54,6 +54,8 @@ $router->group([
         $router->get('second_version', 'Open\MatchDataController@secondVersion');
     });
 
+    $router->get('sync_yw_channel', 'Open\SyncYwChannelController@sync');
+
 });
 
 
