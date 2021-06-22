@@ -62,8 +62,6 @@ class PushChannelBaseService extends BaseService
         foreach ($productList as $product){
             if(!empty($productId) && $product['id'] != $productId){
                 continue;
-            }else{
-                echo $product['name']. "\n";
             }
 
             try{
