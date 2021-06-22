@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\YwKyy;
+namespace App\Console\Commands\Yw;
 
 use App\Common\Console\BaseCommand;
 use App\Common\Enums\CpTypeEnums;
@@ -9,7 +9,6 @@ use App\Common\Enums\StatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Services\ProductService;
-use App\Services\YwKyy\UserOrderActionService;
 
 class CheckOrderCommand extends BaseCommand
 {
@@ -17,7 +16,7 @@ class CheckOrderCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'yw_kyy:check_order {--time=} {--time_interval=} {--product_id=}';
+    protected $signature = 'yw:check_order {--time=} {--time_interval=} {--product_id=}';
 
 
     /**
@@ -92,10 +91,10 @@ class CheckOrderCommand extends BaseCommand
     public function action(){
         $productList = (new ProductService())->get([
             'cp_type' => CpTypeEnums::YW,
-            'type'    => ProductTypeEnums::KYY,
             'status'  => StatusEnum::ENABLE
         ]);
 
+        $tmpService = null;
         foreach ($productList as $product){
             //指定产品id
             if(!empty($this->productId) && $this->productId != $product['id']){
@@ -104,7 +103,11 @@ class CheckOrderCommand extends BaseCommand
 
             $this->consoleEchoService->echo("产品 : {$product['name']}\n\n\n");
 
-            $tmpService = (new UserOrderActionService())->setProduct($product);
+            if($product['type'] == ProductTypeEnums::KYY){
+                $tmpService = (new \App\Services\YwKyy\UserOrderActionService())->setProduct($product);
+            }elseif($product['type'] == ProductTypeEnums::H5){
+                $tmpService = (new \App\Services\YwH5\UserOrderActionService())->setProduct($product);
+            }
 
             $time = $this->startTime;
             while($time < $this->endTime){

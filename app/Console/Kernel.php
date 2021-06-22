@@ -16,7 +16,7 @@ use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UpdateUserActionLogCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
-use App\Console\Commands\YwKyy\CheckOrderCommand;
+use App\Console\Commands\Yw\CheckOrderCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -107,7 +107,7 @@ class Kernel extends ConsoleKernel
 
         // 阅文充值 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";
-        $schedule->command("yw_kyy:check_order --time={$tmpRange}")->cron('2 * * * *');
+        $schedule->command("yw:check_order --time={$tmpRange}")->cron('2 * * * *');
 
 
 

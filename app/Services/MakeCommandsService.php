@@ -107,10 +107,15 @@ class MakeCommandsService
                 $userActionList = $this->userActionMap[$productType];
                 foreach($userActionList as $userAction){
 
+                    // 目前先对接阅文
+                    if( $cpType['id'] != CpTypeEnums::YW){
+                        continue;
+                    }
+
                     // 跳过阅文注册、加桌行为
                     if(
                         $cpType['id'] == CpTypeEnums::YW
-                        && in_array($userAction,[UserActionTypeEnum::REG,UserActionTypeEnum::ADD_SHORTCUT])){
+                        && in_array($userAction,[UserActionTypeEnum::REG,UserActionTypeEnum::ADD_SHORTCUT,UserActionTypeEnum::COMPLETE_ORDER])){
                         continue;
                     }
 
