@@ -43,7 +43,7 @@ class SyncYwChannelController extends BaseController
             }
 
         }
-
+        return $this->success([]);
     }
 
 }
