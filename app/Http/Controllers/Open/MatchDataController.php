@@ -40,7 +40,7 @@ class MatchDataController extends BaseController
             $data['cp_type'] = $requestData['cp_type'];
             $data['cp_product_alias'] = $requestData['cp_product_alias'];
             $data['open_id'] = $requestData['open_id'];
-            $data['cp_channel_id'] = $requestData['cp_channel_id'];
+            $data['cp_channel_id'] = $requestData['cp_channel_id'] ?? '';
 
             // 转化行为
             $data['type'] = UserActionTypeEnum::SECOND_VERSION_REG;
