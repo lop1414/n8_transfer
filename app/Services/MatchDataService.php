@@ -223,16 +223,14 @@ class MatchDataService extends BaseService
 
 
 
-
     /**
      * @param $productId
      * @param $openId
-     * @throws \App\Common\Tools\CustomException
-     * 获取用户注册记录
+     * @return mixed
+     * 获取用户注册记录(最近15天)
      */
     public function getRegLogInfo($productId,$openId){
-
-        $monthList = Functions::getMonthListByRange([$this->dateRange['start'],$this->dateRange['end']]);
+        $monthList = Functions::getMonthListByRange('2019-10-01',$this->dateRange['end']]);
         arsort($monthList);
         foreach ($monthList as $month){
             $info = $this->userActionLogModel
@@ -251,6 +249,36 @@ class MatchDataService extends BaseService
         }
 
         return;
+
+        $info = $this->userActionLogModel
+            ->setTableNameWithMonth($this->dateRange['end'])
+            ->where('type',UserActionTypeEnum::REG)
+            ->where('product_id',$productId)
+            ->where('open_id',$openId)
+            ->whereBetween('action_time',[
+                $this->dateRange['start']. ' 00:00:00',
+                $this->dateRange['end']. ' 23:59:59',
+            ])
+            ->first();
+
+
+        if(empty($info)
+            && date('Y-m',strtotime($this->dateRange['start'])) != date('Y-m',strtotime($this->dateRange['end']))
+        ){
+
+            $info = $this->userActionLogModel
+                ->setTableNameWithMonth($this->dateRange['start'])
+                ->where('type',UserActionTypeEnum::REG)
+                ->where('product_id',$productId)
+                ->where('open_id',$openId)
+                ->whereBetween('action_time',[
+                    $this->dateRange['start']. ' 00:00:00',
+                    $this->dateRange['end']. ' 23:59:59',
+                ])
+                ->first();
+        }
+
+        return $info;
     }
 
 }
