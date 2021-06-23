@@ -23,7 +23,7 @@ class MakeCommandsService
         ProductTypeEnums::H5 => [
             UserActionTypeEnum::REG,
 //            UserActionTypeEnum::READ,
-//            UserActionTypeEnum::FOLLOW,
+            UserActionTypeEnum::FOLLOW,
 //            UserActionTypeEnum::LOGIN,
             UserActionTypeEnum::ORDER,
             UserActionTypeEnum::COMPLETE_ORDER
