@@ -232,7 +232,7 @@ class MatchDataService extends BaseService
      */
     public function getRegLogInfo($productId,$openId){
 
-        $monthList = Functions::getMonthListByRange($this->dateRange['start'],$this->dateRange['end']);
+        $monthList = Functions::getMonthListByRange([$this->dateRange['start'],$this->dateRange['end']]);
         arsort($monthList);
         foreach ($monthList as $month){
             $info = $this->userActionLogModel
