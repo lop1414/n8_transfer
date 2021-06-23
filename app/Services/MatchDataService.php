@@ -131,7 +131,7 @@ class MatchDataService extends BaseService
 
 
     public function kuaiShou($data){
-        $rawData = $data['data']['raw_data'];
+        $rawData = $data['data'];
         $cpChannelId = $data['cp_channel_id'];
         $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
         if(empty($info)){
@@ -150,12 +150,16 @@ class MatchDataService extends BaseService
             $requestId = 'n8_'.md5(uniqid());
         }
 
+        $clickAt =  isset($data['data']['ts'])
+            ? date('Y-m-d H:i:s',intval($data['data']['ts']/1000))
+            : $info['action_time'];
+
         $rawData['match_data_id'] = $data['id'];
         $this->saveClickDataService
             ->saveAdvClickData(AdvAliasEnum::KUAI_SHOU,[
                 'ip'           => $info['ip'],
                 'ua'           => $info['extend']['ua'],
-                'click_at'     => $info['action_time'],
+                'click_at'     => $clickAt,
                 'type'         => UserActionTypeEnum::REG,
                 'product_id'   => $data['product_id'],
                 'request_id'   => $requestId,
