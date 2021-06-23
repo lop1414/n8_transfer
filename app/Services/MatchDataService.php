@@ -70,7 +70,7 @@ class MatchDataService extends BaseService
                 'ad_id'        => $data['data']['link_info']['adid'] ?? '',
                 'creative_id'  => $data['data']['link_info']['creativeid'] ?? '',
                 'creative_type'=> $data['data']['link_info']['creativetype'] ?? '',
-                'link'         => $data['data']['link'],
+                'link'         => $data['data']['link'] ?? '',
                 'request_id'   => $requestId,
                 'open_id'      => $data['open_id'],
                 'action_id'    => $data['open_id']
