@@ -6,6 +6,7 @@ namespace App\Services;
 
 
 use App\Common\Enums\AdvAliasEnum;
+use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Enums\UserActionTypeEnum;
 use App\Models\KuaiShouClickModel;
@@ -222,32 +223,20 @@ class MatchDataService extends BaseService
 
 
 
+
     /**
      * @param $productId
      * @param $openId
-     * @return mixed
-     * 获取用户注册记录(最近15天)
+     * @throws \App\Common\Tools\CustomException
+     * 获取用户注册记录
      */
     public function getRegLogInfo($productId,$openId){
 
-        $info = $this->userActionLogModel
-            ->setTableNameWithMonth($this->dateRange['end'])
-            ->where('type',UserActionTypeEnum::REG)
-            ->where('product_id',$productId)
-            ->where('open_id',$openId)
-            ->whereBetween('action_time',[
-                $this->dateRange['start']. ' 00:00:00',
-                $this->dateRange['end']. ' 23:59:59',
-            ])
-            ->first();
-
-
-        if(empty($info)
-            && date('Y-m',strtotime($this->dateRange['start'])) != date('Y-m',strtotime($this->dateRange['end']))
-        ){
-
+        $monthList = Functions::getMonthListByRange($this->dateRange['start'],$this->dateRange['end']);
+        arsort($monthList);
+        foreach ($monthList as $month){
             $info = $this->userActionLogModel
-                ->setTableNameWithMonth($this->dateRange['start'])
+                ->setTableNameWithMonth($month)
                 ->where('type',UserActionTypeEnum::REG)
                 ->where('product_id',$productId)
                 ->where('open_id',$openId)
@@ -256,9 +245,12 @@ class MatchDataService extends BaseService
                     $this->dateRange['end']. ' 23:59:59',
                 ])
                 ->first();
+            if(!empty($info)){
+                return $info;
+            }
         }
 
-        return $info;
+        return;
     }
 
 }
