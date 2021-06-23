@@ -239,7 +239,7 @@ class MatchDataService extends BaseService
                 ->where('product_id',$productId)
                 ->where('open_id',$openId)
                 ->whereBetween('action_time',[
-                    $this->dateRange['start']. ' 00:00:00',
+                    '2019-10-01 00:00:00',
                     $this->dateRange['end']. ' 23:59:59',
                 ])
                 ->first();
