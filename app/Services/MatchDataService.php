@@ -230,7 +230,7 @@ class MatchDataService extends BaseService
      * 获取用户注册记录(最近15天)
      */
     public function getRegLogInfo($productId,$openId){
-        $monthList = Functions::getMonthListByRange('2019-10-01',$this->dateRange['end']]);
+        $monthList = Functions::getMonthListByRange(['2019-10-01',$this->dateRange['end']]);
         arsort($monthList);
         foreach ($monthList as $month){
             $info = $this->userActionLogModel
