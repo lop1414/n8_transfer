@@ -117,12 +117,13 @@ class PushUserActionService extends BaseService
             try{
                 // 注册行为
                 if($this->actionType == UserActionTypeEnum::REG){
+                    //没有渠道
+                    if(empty($item['cp_channel_id'])){
+                        continue;
+                    }
 
-                    //没有渠道 or 不是系统匹配且没有request_id
-                    if(
-                        empty($item['cp_channel_id'])
-                        ||  ($item['matcher'] != MatcherEnum::SYS && empty($item['request_id']))
-                    ){
+                    //不是系统匹配且没有request_id
+                    if($item['matcher'] != MatcherEnum::SYS && empty($item['request_id'])){
                         //时间差
                         $diff = time() - strtotime($item['created_at']);
                         if($diff < 60*60*2){
