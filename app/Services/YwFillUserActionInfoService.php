@@ -88,6 +88,7 @@ class YwFillUserActionInfoService extends BaseService
                             ->where('open_id',$cpUser[$openIdField])
                             ->where('product_id',$this->product['id'])
                             ->where('type',UserActionTypeEnum::REG)
+                            ->where('cp_channel_id','!=','')
                             ->get();
 
 
