@@ -78,7 +78,10 @@ class YwFillUserActionInfoService extends BaseService
                     try{
                         //没有渠道
                         $cpChannelId = empty($cpUser['channel_id']) ? '': $cpUser['channel_id'];
-                        if(empty($cpChannelId)) continue;
+                        if(empty($cpChannelId)){
+                            echo "没有渠道\n";
+                            continue;
+                        }
 
                         $tmpUser = $userActionLogModel
                             ->setTableNameWithMonth($cpUser[$regTimeField])
@@ -91,7 +94,10 @@ class YwFillUserActionInfoService extends BaseService
                         $channel = $this->getChannel($this->product['id'],$cpChannelId);
 
                         foreach ($tmpUser as $modelUser){
-                            if(!empty($modelUser->cp_channel_id)) continue;
+                            if(!empty($modelUser->cp_channel_id)){
+                                echo "已有渠道，无需补充\n";
+                                continue;
+                            }
 
                             // 渠道创建时间 大于 注册时间
                             if($channel['create_time'] > $modelUser->action_time){
