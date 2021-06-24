@@ -22,4 +22,24 @@ trait Spread
         return $this->apiRequest($uri,$param);
     }
 
+
+    public function getPageSpreadPromotionList($page,$recycle = 0){
+        $uri = 'spread/getPromotionList';
+        $param = [
+            'type'      => 1,
+            'channeltype' => 1,
+            'startdate' => '',
+            'enddate'   => '',
+            'recycle'   => $recycle,
+            'name'      => '',
+            'id'        => '',
+            'page'      => $page,
+            'page_name' => ''
+        ];
+        return $this->apiRequest($uri,$param);
+    }
+
+
+
+
 }

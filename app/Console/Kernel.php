@@ -13,6 +13,7 @@ use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\PullUserActionCommand;
+use App\Console\Commands\PushPageChannelCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UpdateUserActionLogCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
@@ -48,6 +49,7 @@ class Kernel extends ConsoleKernel
 
         // 推送渠道
         PushChannelCommand::class,
+        PushPageChannelCommand::class,
 
         // 推送渠道扩展信息
         PushChannelExtendCommand::class,
