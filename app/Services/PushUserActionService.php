@@ -148,6 +148,7 @@ class PushUserActionService extends BaseService
         $monthList = Functions::getMonthListByRange(['2019-10-01',date('Y-m-d')],'Y-m-01 00:00:00');
 
         foreach ($monthList as $month){
+            echo $month. "\n";
             do{
                 $list =  $this->model
                     ->setTableNameWithMonth($month)
