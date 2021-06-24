@@ -115,7 +115,7 @@ class Kernel extends ConsoleKernel
 
 
         //阅文 补充用户行为的渠道信息等
-        $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*20)."','".date('Y-m-d H:i:s',TIMESTAMP-60*10)."'";
+        $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*12)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";
         $schedule->command("fill_user_action_info --time={$tmp}")->cron('*/10 * * * *');
 
 
