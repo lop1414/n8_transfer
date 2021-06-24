@@ -6,16 +6,14 @@ namespace App\Services;
 
 
 use App\Common\Enums\ProductTypeEnums;
-use App\Common\Enums\ReportStatusEnum;
-use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\UnionApiService;
 use App\Common\Tools\CustomException;
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 use App\Sdks\Yw\YwSdk;
-use App\Services\ProductService;
 
 
 class YwFillUserActionInfoService extends BaseService
@@ -44,6 +42,12 @@ class YwFillUserActionInfoService extends BaseService
     public function cpChannelId($startTime,$endTime){
         $time = $startTime;
         $userActionLogModel = new UserActionLogModel();
+        $saveActionService = (new PullUserActionBaseService())
+            ->setProduct($this->product)
+            ->setActionType(UserActionTypeEnum::REG)
+            ->setSource(DataSourceEnums::CP_PULL);
+
+        $reportNoChannelDiffTime = (new PushUserActionService())->getReportNoChannelDiffTime();
         while($time < $endTime){
             $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + 60*5);
             $tmpEndTime = min($tmpEndTime,date('Y-m-d H:i:s'));
@@ -69,18 +73,19 @@ class YwFillUserActionInfoService extends BaseService
 
                 $count = $tmp['total_count'];
                 $currentCount += count($tmp['list']);
-                foreach($tmp['list'] as $user){
+                foreach($tmp['list'] as $cpUser){
                     try{
+                        //没有渠道
+                        $cpChannelId = empty($cpUser['channel_id']) ? '': $cpUser['channel_id'];
+                        if(empty($cpChannelId)) continue;
+
                         $tmpUser = $userActionLogModel
-                            ->setTableNameWithMonth($user[$regTimeField])
-                            ->where('open_id',$user[$openIdField])
+                            ->setTableNameWithMonth($cpUser[$regTimeField])
+                            ->where('open_id',$cpUser[$openIdField])
                             ->where('product_id',$this->product['id'])
                             ->where('type',UserActionTypeEnum::REG)
                             ->get();
 
-                        //没有渠道
-                        $cpChannelId = empty($user['channel_id']) ? '': $user['channel_id'];
-                        if(empty($cpChannelId)) continue;
 
                         $channel = $this->getChannel($this->product['id'],$cpChannelId);
 
@@ -92,9 +97,22 @@ class YwFillUserActionInfoService extends BaseService
                                 echo "渠道创建时间 大于 注册时间:".$modelUser->open_id. "\n";
                                 continue;
                             }
-                            $modelUser->cp_channel_id = $user['channel_id'];
-                            $modelUser->save();
-                            echo "渠道更新:".$modelUser->open_id. "\n";
+
+                            //时间差 小于一个小时 行为还未上报 更新数据
+                            $diff = time() - strtotime($modelUser['action_time']);
+                            if($diff <= $reportNoChannelDiffTime){
+                                $modelUser->cp_channel_id = $cpUser['channel_id'];
+                                $modelUser->save();
+                                echo "渠道更新:".$modelUser->open_id. "\n";
+                            }else{
+                                $data = $modelUser->toArray();
+                                $data['cp_channel_id'] = $cpUser['channel_id'];
+                                $cpUser['action_log_id'] = $data['id'];
+                                $saveActionService->save($data,$cpUser);
+
+                                echo "创建新的注册行为:".$modelUser->open_id. "\n";
+                            }
+
                         }
                     }catch(CustomException $e){
                         (new ErrorLogService())->catch($e);

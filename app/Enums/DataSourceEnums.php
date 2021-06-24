@@ -12,6 +12,7 @@ class DataSourceEnums
 {
     const CP = 'CP';
     const SECOND_VERSION = 'SECOND_VERSION';
+    const CP_PULL = 'CP_PULL';
 
 
 
@@ -25,6 +26,7 @@ class DataSourceEnums
 
     static public $list = [
         ['id' => self::CP,        'name' => '书城'],
+        ['id' => self::CP_PULL,        'name' => '书城接口检测'],
         ['id' => self::SECOND_VERSION,  'name' => '二版'],
     ];
 

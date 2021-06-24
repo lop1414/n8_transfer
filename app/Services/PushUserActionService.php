@@ -47,12 +47,23 @@ class PushUserActionService extends BaseService
     protected $n8Sdk;
 
 
+    /**
+     * @var float|int
+     * 上报没有渠道的注册行为 时间差 （没有渠道等1小时后再报）
+     */
+    protected $reportNoChannelDiffTime = 60 * 60;
+
 
     public function __construct(){
         parent::__construct();
         $this->model = new UserActionLogModel();
         $this->n8Sdk = new N8Sdk();
 
+    }
+
+
+    public function getReportNoChannelDiffTime(){
+        return $this->reportNoChannelDiffTime;
     }
 
 
@@ -119,7 +130,11 @@ class PushUserActionService extends BaseService
                 if($this->actionType == UserActionTypeEnum::REG){
                     //没有渠道
                     if(empty($item['cp_channel_id'])){
-                        continue;
+                        //时间差
+                        $diff = time() - strtotime($item['action_time']);
+                        if($diff <= $this->reportNoChannelDiffTime){
+                            continue;
+                        }
                     }
 
                     //不是系统匹配且没有request_id
