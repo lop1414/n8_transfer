@@ -54,6 +54,13 @@ class PushUserActionService extends BaseService
     protected $reportNoChannelDiffTime = 60 * 60;
 
 
+    /**
+     * @var
+     * 产品映射
+     */
+    protected $productMap;
+
+
     public function __construct(){
         parent::__construct();
         $this->model = new UserActionLogModel();
@@ -111,6 +118,10 @@ class PushUserActionService extends BaseService
 
 
 
+    public function setProductMap(){
+        $product = (new ProductService())->get();
+        $this->productMap = array_column($product,null,'id');
+    }
 
 
     /**
@@ -120,69 +131,101 @@ class PushUserActionService extends BaseService
 
         $list = $this->getReportUserActionList();
 
-        $product = (new ProductService())->get();
-        $productMap = array_column($product,null,'id');
+        $this->setProductMap();
 
         foreach ($list as $item){
 
-            try{
-                // 注册行为
-                if($this->actionType == UserActionTypeEnum::REG){
-                    //没有渠道
-                    if(empty($item['cp_channel_id'])){
-                        //时间差
-                        $diff = time() - strtotime($item['action_time']);
-                        if($diff <= $this->reportNoChannelDiffTime){
-                            continue;
-                        }
-                    }
+          $this->pushItem($item);
+        }
+    }
 
-                    //不是系统匹配且没有request_id
-                    if($item['matcher'] != MatcherEnum::SYS && empty($item['request_id'])){
-                        //时间差
-                        $diff = time() - strtotime($item['created_at']);
-                        if($diff < 60*60*2){
-                            continue;
-                        }
+
+    /**
+     * @throws CustomException
+     * 上报所有
+     */
+    public function pushAll(){
+        $monthList = Functions::getMonthListByRange(['2019-10-01',date('Y-m-d')],'Y-m-01 00:00:00');
+
+        foreach ($monthList as $month){
+            do{
+                $list =  $this->model
+                    ->setTableNameWithMonth($month)
+                    ->where('product_id',$this->product['id'])
+                    ->where('type',$this->actionType)
+                    ->where('status',ReportStatusEnum::WAITING)
+                    ->skip(0)
+                    ->take(1000)
+                    ->orderBy('action_time')
+                    ->get();
+
+                foreach ($list as $item){
+
+                    $this->pushItem($item);
+                }
+            }while(!$list->isEmpty());
+        }
+    }
+
+
+    protected function pushItem($item){
+        try{
+            // 注册行为
+            if($this->actionType == UserActionTypeEnum::REG){
+                //没有渠道
+                if(empty($item['cp_channel_id'])){
+                    //时间差
+                    $diff = time() - strtotime($item['action_time']);
+                    if($diff <= $this->reportNoChannelDiffTime){
+                        return;
                     }
                 }
-                $action = 'report';
-                $action .= ucfirst(Functions::camelize($this->actionType));
-                $pushData = array_merge($item['extend'],[
-                    'product_alias' => $this->product['cp_product_alias'],
-                    'cp_type'       => $this->product['cp_type'],
-                    'open_id'       => $item['open_id'],
-                    'action_time'   => $item['action_time'],
-                    'cp_channel_id' => $item['cp_channel_id'],
-                    'ip'            => $item['ip'],
-                    'request_id'    => $item['request_id']
-                ]);
 
-                $this->n8Sdk->setSecret($productMap[$item['product_id']]['secret']);
-                $this->n8Sdk->$action($pushData);
-                $item->status = ReportStatusEnum::DONE;
-
-            }catch(CustomException $e){
-                $errorInfo = $e->getErrorInfo(true);
-
-                $item->fail_data = $errorInfo;
-                $item->status = ReportStatusEnum::FAIL;
-                echo $errorInfo['message']. "\n";
-
-            }catch(\Exception $e){
-
-                $errorInfo = [
-                    'code'      => $e->getCode(),
-                    'message'   => $e->getMessage()
-                ];
-
-                $item->fail_data = $errorInfo;
-                $item->status = ReportStatusEnum::FAIL;
-                echo $e->getMessage(). "\n";
+                //不是系统匹配且没有request_id
+                if($item['matcher'] != MatcherEnum::SYS && empty($item['request_id'])){
+                    //时间差
+                    $diff = time() - strtotime($item['created_at']);
+                    if($diff < 60*60*2){
+                        return;
+                    }
+                }
             }
+            $action = 'report';
+            $action .= ucfirst(Functions::camelize($this->actionType));
+            $pushData = array_merge($item['extend'],[
+                'product_alias' => $this->product['cp_product_alias'],
+                'cp_type'       => $this->product['cp_type'],
+                'open_id'       => $item['open_id'],
+                'action_time'   => $item['action_time'],
+                'cp_channel_id' => $item['cp_channel_id'],
+                'ip'            => $item['ip'],
+                'request_id'    => $item['request_id']
+            ]);
 
-            $item->save();
+            $this->n8Sdk->setSecret($this->productMap[$item['product_id']]['secret']);
+            $this->n8Sdk->$action($pushData);
+            $item->status = ReportStatusEnum::DONE;
+
+        }catch(CustomException $e){
+            $errorInfo = $e->getErrorInfo(true);
+
+            $item->fail_data = $errorInfo;
+            $item->status = ReportStatusEnum::FAIL;
+            echo $errorInfo['message']. "\n";
+
+        }catch(\Exception $e){
+
+            $errorInfo = [
+                'code'      => $e->getCode(),
+                'message'   => $e->getMessage()
+            ];
+
+            $item->fail_data = $errorInfo;
+            $item->status = ReportStatusEnum::FAIL;
+            echo $e->getMessage(). "\n";
         }
+
+        $item->save();
     }
 
 

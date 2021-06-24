@@ -18,7 +18,7 @@ class PushUserActionCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'push_user_action {--cp_type=} {--product_type=} {--action_type=} {--time=} {--time_interval=} {--product_id=}';
+    protected $signature = 'push_user_action {--cp_type=} {--product_type=} {--action_type=} {--is_all=} {--time=} {--time_interval=} {--product_id=}';
 
     /**
      * 命令描述
@@ -65,6 +65,11 @@ class PushUserActionCommand extends BaseCommand
      */
     protected $startTime,$endTime;
 
+    /**
+     * @var
+     * 推送所有
+     */
+    protected $isAll;
 
     /**
      * Create a new command instance.
@@ -83,6 +88,7 @@ class PushUserActionCommand extends BaseCommand
         $this->productType = $this->option('product_type');
         $this->actionType = $this->option('action_type');
         $time = $this->option('time');
+        $this->isAll = $this->option('is_all');
         $this->productId = $this->option('product_id');
         $timeInterval = $this->option('time_interval');
 
@@ -90,9 +96,12 @@ class PushUserActionCommand extends BaseCommand
         Functions::hasEnum(ProductTypeEnums::class, $this->productType);
         Functions::hasEnum(UserActionTypeEnum::class, $this->actionType);
 
-        list($this->startTime,$this->endTime) = explode(",", $time);
-        $this->endTime = min($this->endTime,date('Y-m-d H:i:s'));
-        Functions::checkTimeRange($this->startTime,$this->endTime);
+        if($this->isAll != 1){
+            list($this->startTime,$this->endTime) = explode(",", $time);
+            $this->endTime = min($this->endTime,date('Y-m-d H:i:s'));
+            Functions::checkTimeRange($this->startTime,$this->endTime);
+        }
+
 
         // 设置值
         if(!empty($timeInterval)){
@@ -131,17 +140,22 @@ class PushUserActionCommand extends BaseCommand
 
             $service->setProduct($product);
 
-            $time = $this->startTime;
-            while($time < $this->endTime){
-                $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + $this->timeInterval);
+            if($this->isAll == 1){
+                $service->pushAll();
+            }else{
+                $time = $this->startTime;
+                while($time < $this->endTime){
+                    $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + $this->timeInterval);
 
-                $this->consoleEchoService->echo("时间 : {$time} ~ {$tmpEndTime}");
+                    $this->consoleEchoService->echo("时间 : {$time} ~ {$tmpEndTime}");
 
-                $service->setTimeRange($time, $tmpEndTime);
-                $service->push();
+                    $service->setTimeRange($time, $tmpEndTime);
+                    $service->push();
 
-                $time = $tmpEndTime;
+                    $time = $tmpEndTime;
+                }
             }
+
         }
     }
 
