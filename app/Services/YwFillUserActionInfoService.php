@@ -73,6 +73,7 @@ class YwFillUserActionInfoService extends BaseService
 
                 $count = $tmp['total_count'];
                 $currentCount += count($tmp['list']);
+                echo '总数：'.count($tmp['list'])."\n";
                 foreach($tmp['list'] as $cpUser){
                     try{
                         //没有渠道
