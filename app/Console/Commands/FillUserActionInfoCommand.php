@@ -16,7 +16,7 @@ class FillUserActionInfoCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'fill_user_action_info {--time=} {--product_id=} {--type=}';
+    protected $signature = 'fill_user_action_info {--time=} {--product_id=}';
 
     /**
      * 命令描述
@@ -51,7 +51,6 @@ class FillUserActionInfoCommand extends BaseCommand
     public function action(){
         $time    = $this->option('time');
         $productId    = $this->option('product_id');
-        $type = $this->option('type');
         list($startTime,$endTime) = Functions::getTimeRange($time);
         $endTime = min($endTime,date('Y-m-d H:i:s'));
 
@@ -68,15 +67,10 @@ class FillUserActionInfoCommand extends BaseCommand
             }
 
             echo $product['name']."\n";
-            $this->$type($product,$startTime,$endTime);
+            (new YwFillUserActionInfoService())
+                ->setProduct($product)
+                ->cpChannelId($startTime,$endTime);
         }
-    }
-
-
-    public function channel($product,$startTime,$endTime){
-        (new YwFillUserActionInfoService())
-            ->setProduct($product)
-            ->cpChannelId($startTime,$endTime);
     }
 
 

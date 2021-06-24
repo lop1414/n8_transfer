@@ -36,64 +36,6 @@ class YwFillUserActionInfoService extends BaseService
 
 
 
-    public function cpChannelIdOld($startTime,$endTime){
-        $userActionLogModel = new UserActionLogModel();
-        $dateRange = [
-            date('Y-m-d',strtotime($startTime)),
-            date('Y-m-d',strtotime($endTime))
-        ];
-        $monthList = Functions::getMonthListByRange($dateRange,'Y-m-d');
-
-        $id = 0;
-        foreach ($monthList as $month){
-            do{
-                $list = $userActionLogModel
-                    ->setTableNameWithMonth($month)
-                    ->where('product_id',$this->product['id'])
-                    ->where('cp_channel_id','')
-                    ->where('id','>',$id)
-                    ->skip(0)
-                    ->take(1000)
-                    ->get();
-
-                foreach ($list as $item){
-                    $id = $item['id'];
-                    if($this->product['type'] == ProductTypeEnums::KYY){
-                        $tmp = $this->ywSdk->getUser([
-                            'guid'  => $item['open_id']
-                        ]);
-                    }else{
-                        $tmp = $this->ywSdk->getWxUser([
-                            'guid'  => $item['open_id']
-                        ]);
-                    }
-
-
-                    if(!empty($tmp['list'])){
-                        $user = $tmp['list'][0];
-                        //没有渠道
-                        if(empty($user['channel_id'])) continue;
-
-                        $channel = $this->getChannel($this->product['id'],$user['channel_id']);
-                        // 渠道创建时间 大于 注册时间
-                        if($channel['create_time'] > $item->action_time){
-                            echo "渠道创建时间 大于 注册时间:".$item->open_id. "\n";
-                            continue;
-                        }
-
-                        $item->cp_channel_id = $user['channel_id'];
-                        $item->save();
-                        echo "渠道更新:".$item->open_id. "\n";
-                    }
-                }
-            }while(!$list->isEmpty());
-
-
-        }
-
-    }
-
-
     /**
      * 渠道
      * @param $startTime

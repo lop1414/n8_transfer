@@ -114,8 +114,9 @@ class Kernel extends ConsoleKernel
         $schedule->command("update_user_action --cp_type=YW --time={$twoMinuteRange}")->cron('* * * * *');
 
 
+        //阅文 补充用户行为的渠道信息等
         $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*20)."','".date('Y-m-d H:i:s',TIMESTAMP-60*10)."'";
-        $schedule->command("fill_user_action_info --type=channel --time={$tmp}")->cron('*/10 * * * *');
+        $schedule->command("fill_user_action_info --time={$tmp}")->cron('*/10 * * * *');
 
 
         $schedule->command("forward_data")->cron('* * * * *');
