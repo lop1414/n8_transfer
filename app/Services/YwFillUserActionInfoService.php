@@ -143,44 +143,5 @@ class YwFillUserActionInfoService extends BaseService
 
 
 
-    /**
-     * 注册时间
-     */
-    public function actionTime(){
-        $list = (new UserActionLogModel())
-            ->setTableNameWithMonth('1970-01-01')
-            ->where('product_id',$this->product['id'])
-            ->where('type',UserActionTypeEnum::REG)
-            ->get();
-
-        foreach ($list as $item){
-            $tmp = $this->ywSdk->getUser([
-                'guid'  => $item['open_id']
-            ]);
-            if(!empty($tmp['list'])){
-                $user = $tmp['list'][0];
-                //注册时间
-                (new UserActionLogModel())->setTableNameWithMonth($user['reg_time'])->create([
-                    'product_id'    => $item['product_id'],
-                    'open_id'       => $item['open_id'],
-                    'action_time'   => $user['reg_time'],
-                    'type'          => $item['type'],
-                    'cp_channel_id' => $item['channel_id'],
-                    'request_id'    => $item['request_id'],
-                    'ip'            => $item['ip'],
-                    'data'          => $item['data'],
-                    'status'        => ReportStatusEnum::WAITING,
-                    'action_id'     => $item['action_id'],
-                    'matcher'       => $item['matcher'],
-                ]);
-                $item->delete();
-
-            }
-        }
-    }
-
-
-
-
 
 }
