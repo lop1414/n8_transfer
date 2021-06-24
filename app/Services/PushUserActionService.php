@@ -206,7 +206,7 @@ class PushUserActionService extends BaseService
             $this->n8Sdk->setSecret($this->productMap[$item['product_id']]['secret']);
             $this->n8Sdk->$action($pushData);
             $item->status = ReportStatusEnum::DONE;
-
+            echo $item['open_id'].":上报成功\n";
         }catch(CustomException $e){
             $errorInfo = $e->getErrorInfo(true);
 

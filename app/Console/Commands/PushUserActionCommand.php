@@ -136,7 +136,7 @@ class PushUserActionCommand extends BaseCommand
                 continue;
             }
 
-            $this->consoleEchoService->echo("产品 : {$product['name']}\n\n\n");
+            $this->consoleEchoService->echo("产品 : {$product['name']}\n\n");
 
             $service->setProduct($product);
 
