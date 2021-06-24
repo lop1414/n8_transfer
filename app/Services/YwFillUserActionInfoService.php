@@ -85,7 +85,7 @@ class YwFillUserActionInfoService extends BaseService
 
                         $tmpUser = $userActionLogModel
                             ->setTableNameWithMonth($cpUser[$regTimeField])
-                            ->where('open_id',"$cpUser[$openIdField]")
+                            ->where('open_id',strval($cpUser[$openIdField]))
                             ->where('product_id',$this->product['id'])
                             ->where('type',UserActionTypeEnum::REG)
                             ->where('cp_channel_id','')
