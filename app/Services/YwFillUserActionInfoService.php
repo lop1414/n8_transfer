@@ -14,6 +14,7 @@ use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 use App\Sdks\Yw\YwSdk;
+use App\Services\YwH5\UserFollowActionService;
 
 
 class YwFillUserActionInfoService extends BaseService
@@ -25,10 +26,21 @@ class YwFillUserActionInfoService extends BaseService
 
     protected $channelMap;
 
+    protected $userFollowActionService;
+
+
+
+
+    public function __construct(){
+        parent::__construct();
+        $this->userFollowActionService = new UserFollowActionService();
+    }
+
     public function setProduct($product){
         $this->product = $product;
         $this->product['cp_account'] = (new ProductService())->readCpAccount($this->product['cp_account_id']);
         $this->ywSdk = new YwSdk($this->product['cp_product_alias'],$this->product['cp_account']['account'],$this->product['cp_account']['cp_secret']);
+        $this->userFollowActionService->setProduct($this->product);
         return $this;
     }
 
@@ -76,6 +88,12 @@ class YwFillUserActionInfoService extends BaseService
                 echo '总数：'.count($tmp['list'])."\n";
                 foreach($tmp['list'] as $cpUser){
                     try{
+                        // 微信H5
+                        if($this->product['type'] == ProductTypeEnums::H5 && $cpUser['is_subscribe'] == 1){
+                            echo "补关注行为:{$cpUser[$openIdField]} \n";
+                            $this->userFollowActionService->pullItem($cpUser);
+                        }
+
                         //没有渠道
                         $cpChannelId = empty($cpUser['channel_id']) ? '': $cpUser['channel_id'];
                         if(empty($cpChannelId)){
