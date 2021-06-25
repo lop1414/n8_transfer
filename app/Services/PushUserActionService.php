@@ -156,17 +156,21 @@ STR;
         $pushUserActionService = new PushUserActionService();
 
         foreach ($tableList as $tableName){
-            echo $tableName. "\n";
+            $query = $this->model
+                ->setTable($tableName)
+                ->when($this->actionType,function ($query,$actionType){
+                    return $query->where('type',$actionType);
+                })
+                ->when($this->product,function ($query,$product){
+                    return $query->where('product_id',$product['id']);
+                })
+                ->where('status',ReportStatusEnum::WAITING);
+
+            $total = $query->count();
+            echo $tableName. " 总数：{$total}\n";
+
             do{
-                $list =  $this->model
-                    ->setTable($tableName)
-                    ->when($this->actionType,function ($query,$actionType){
-                        return $query->where('type',$actionType);
-                    })
-                    ->when($this->product,function ($query,$product){
-                        return $query->where('product_id',$product['id']);
-                    })
-                    ->where('status',ReportStatusEnum::WAITING)
+                $list =  $query
                     ->skip(0)
                     ->take(1000)
                     ->orderBy('action_time')
