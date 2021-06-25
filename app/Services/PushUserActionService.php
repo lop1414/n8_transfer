@@ -65,7 +65,7 @@ class PushUserActionService extends BaseService
         parent::__construct();
         $this->model = new UserActionLogModel();
         $this->n8Sdk = new N8Sdk();
-
+        $this->setProductMap();
     }
 
 
@@ -88,6 +88,13 @@ class PushUserActionService extends BaseService
     }
 
 
+    public function setProductMap(){
+
+        $product = (new ProductService())->get();
+        $this->productMap = array_column($product,null,'id');
+
+    }
+
 
     /**
      * @param $startTime
@@ -109,19 +116,15 @@ class PushUserActionService extends BaseService
 
 
     /**
-     * @param $info
+     * @param $productId
+     * @return $this
      * 设置产品
      */
-    public function setProduct($info){
-        $this->product = $info;
+    public function setProduct($productId){
+        $this->product = $this->productMap[$productId];
+        return $this;
     }
 
-
-
-    public function setProductMap(){
-        $product = (new ProductService())->get();
-        $this->productMap = array_column($product,null,'id');
-    }
 
 
     /**
@@ -131,8 +134,6 @@ class PushUserActionService extends BaseService
 
         $list = $this->getReportUserActionList();
 
-        $this->setProductMap();
-
         foreach ($list as $item){
 
           $this->pushItem($item);
@@ -140,56 +141,12 @@ class PushUserActionService extends BaseService
     }
 
 
-    /**
-     * @throws CustomException
-     * 上报所有
-     */
-    public function pushAll(){
-        $monthList = Functions::getMonthListByRange(['2019-10-01',date('Y-m-d')],'Y-m-01 00:00:00');
 
-        foreach ($monthList as $month){
-            echo $month. "\n";
-            do{
-                $list =  $this->model
-                    ->setTableNameWithMonth($month)
-                    ->where('product_id',$this->product['id'])
-                    ->where('type',$this->actionType)
-                    ->where('status',ReportStatusEnum::WAITING)
-                    ->skip(0)
-                    ->take(1000)
-                    ->orderBy('action_time')
-                    ->get();
-
-                foreach ($list as $item){
-
-                    $this->pushItem($item);
-                }
-            }while(!$list->isEmpty());
-        }
-    }
-
-
-    protected function pushItem($item){
+    public function pushItem($item){
         try{
             // 注册行为
-            if($this->actionType == UserActionTypeEnum::REG){
-                //没有渠道
-                if(empty($item['cp_channel_id'])){
-                    //时间差
-                    $diff = time() - strtotime($item['action_time']);
-                    if($diff <= $this->reportNoChannelDiffTime){
-                        return;
-                    }
-                }
-
-                //不是系统匹配且没有request_id
-                if($item['matcher'] != MatcherEnum::SYS && empty($item['request_id'])){
-                    //时间差
-                    $diff = time() - strtotime($item['created_at']);
-                    if($diff < 60*60*2){
-                        return;
-                    }
-                }
+            if($this->actionType == UserActionTypeEnum::REG && !$this->reportValid($item)){
+                return;
             }
             $action = 'report';
             $action .= ucfirst(Functions::camelize($this->actionType));
@@ -206,7 +163,7 @@ class PushUserActionService extends BaseService
             $this->n8Sdk->setSecret($this->productMap[$item['product_id']]['secret']);
             $this->n8Sdk->$action($pushData);
             $item->status = ReportStatusEnum::DONE;
-            echo $item['open_id'].":上报成功\n";
+
         }catch(CustomException $e){
             $errorInfo = $e->getErrorInfo(true);
 
@@ -227,6 +184,33 @@ class PushUserActionService extends BaseService
         }
 
         $item->save();
+    }
+
+
+
+    /**
+     * @param $item
+     * @return bool
+     * 上报验证
+     */
+    public function reportValid($item){
+        //没有渠道
+        if(empty($item['cp_channel_id'])){
+            $diff = time() - strtotime($item['action_time']);
+            if($diff <= $this->reportNoChannelDiffTime){
+                return false;
+            }
+        }
+
+        //不是系统匹配且没有request_id
+        if($item['matcher'] != MatcherEnum::SYS && empty($item['request_id'])){
+            $diff = time() - strtotime($item['created_at']);
+            if($diff < 60*60*2){
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
