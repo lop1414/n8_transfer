@@ -106,23 +106,26 @@ class UserActionDataToDbService extends BaseService
 
                 var_dump($e->getErrorInfo());
 
-                // echo
-                (new ConsoleEchoService())->error("自定义异常 {code:{$e->getCode()},msg:{$e->getMessage()}}");
             }catch (\Exception $e){
 
                 DB::rollBack();
 
-                //日志
-                (new ErrorLogService())->catch($e);
 
-                $queue->item['exception'] = $e->getMessage();
-                $queue->item['code'] = $e->getCode();
-                $rePushData[] = $queue->item;
+                //未命中唯一索引
+                if($e->getCode() != 23000){
+                    //日志
+                    (new ErrorLogService())->catch($e);
+                    $queue->item['exception'] = $e->getMessage();
+                    $queue->item['code'] = $e->getCode();
+                    $rePushData[] = $queue->item;
+                    echo $e->getMessage()."\n";
 
-                var_dump($e->getMessage());
 
-                // echo
-                (new ConsoleEchoService())->error("异常 {code:{$e->getCode()},msg:{$e->getMessage()}}");
+                }else{
+                    echo "  命中唯一索引 \n";
+                }
+
+
             }
         }
 
