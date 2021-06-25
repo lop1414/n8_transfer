@@ -32,27 +32,6 @@ class PushAllUserRegActionCommand extends BaseCommand
 
 
     /**
-     * @var
-     * 书城类型
-     */
-    protected $cpType;
-
-    /**
-     * @var
-     * 产品类型
-     */
-    protected $productType;
-
-    /**
-     * @var
-     * 产品id
-     */
-    protected $productId;
-
-
-
-
-    /**
      * Create a new command instance.
      *
      * @return void
@@ -65,12 +44,6 @@ class PushAllUserRegActionCommand extends BaseCommand
 
 
     public function handle(){
-        $this->cpType = $this->option('cp_type');
-        $this->productType = $this->option('product_type');
-        $this->productId = $this->option('product_id');
-
-        Functions::hasEnum(CpTypeEnums::class, $this->cpType);
-        Functions::hasEnum(ProductTypeEnums::class, $this->productType);
 
 
         $lockKey = "push_all_user_reg_action";
