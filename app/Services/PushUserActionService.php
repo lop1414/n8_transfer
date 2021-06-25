@@ -169,11 +169,13 @@ STR;
             $total = $query->count();
             echo $tableName. " 总数：{$total}\n";
 
+            $lastMaxId = 0;
             do{
                 $list =  $query
+                    ->where('id','>',$lastMaxId)
                     ->skip(0)
                     ->take(1000)
-                    ->orderBy('action_time')
+                    ->orderBy('id')
                     ->get();
 
                 foreach ($list as $item){
@@ -181,7 +183,10 @@ STR;
                         ->setProduct($item['product_id'])
                         ->setActionType($item['type'])
                         ->pushItem($item);
+
+                    $lastMaxId = $item['id'];
                 }
+
             }while(!$list->isEmpty());
         }
     }
