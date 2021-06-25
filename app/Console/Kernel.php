@@ -10,7 +10,6 @@ use App\Console\Commands\ForwardDataCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
-use App\Console\Commands\PushAllUserRegActionCommand;
 use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\PullUserActionCommand;
@@ -42,7 +41,6 @@ class Kernel extends ConsoleKernel
         PullUserActionCommand::class,
         // 推送用户行为
         PushUserActionCommand::class,
-        PushAllUserRegActionCommand::class,
         // 根据转发上报数据更新user_action_log
         UpdateUserActionLogCommand::class,
 
@@ -98,16 +96,20 @@ class Kernel extends ConsoleKernel
         $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN." --time={$halfHourRange}")->cron('* * * * *');
 
 
-
-        //用户行为数据 拉取 及 上报
+        //用户行为数据 拉取
         $path = base_path(). '/app/Services/CommandsService.php';
         if(file_exists($path)){
             $commandsService = new \App\Services\CommandsService();
             $commandsService->userActionQueueDataToDb($schedule);
             $commandsService->matchQueueDataToDb($schedule);
             $commandsService->pullUserAction($schedule,$tenMinuteRange);
-            $commandsService->pushUserAction($schedule,$threeHourRange);
         }
+
+        // 用户行为数据上报
+        $schedule->command("push_user_action --is_all=1")->cron('* * * * *');
+
+
+
 
         // 阅文充值 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";

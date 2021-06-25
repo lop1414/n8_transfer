@@ -11,6 +11,7 @@ use App\Common\Tools\CustomException;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 use App\Sdks\N8\N8Sdk;
+use Illuminate\Support\Facades\DB;
 
 
 class PushUserActionService extends BaseService
@@ -23,13 +24,6 @@ class PushUserActionService extends BaseService
      */
     protected $actionType;
 
-
-
-    /**
-     * @var
-     * 时间区间
-     */
-    protected $startTime,$endTime;
 
 
     /**
@@ -77,15 +71,8 @@ class PushUserActionService extends BaseService
     public function setActionType($type){
         $this->actionType = $type;
         return $this;
-
     }
 
-    /**
-     * @return mixed
-     */
-    public function getActionType(){
-        return $this->actionType;
-    }
 
 
     public function setProductMap(){
@@ -95,23 +82,6 @@ class PushUserActionService extends BaseService
 
     }
 
-
-    /**
-     * @param $startTime
-     * @param $endTime
-     * @throws CustomException
-     * 设置时间区间
-     */
-    public function setTimeRange($startTime,$endTime){
-        if(date('m',strtotime($startTime)) != date('m',strtotime($startTime))){
-            throw new CustomException([
-                'code' => 'DATE_TIME_ERROR',
-                'message' => '月份不一致',
-            ]);
-        }
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
-    }
 
 
 
@@ -127,12 +97,34 @@ class PushUserActionService extends BaseService
 
 
 
+
     /**
+     * @param $startTime
+     * @param $endTime
+     * @throws CustomException
      * 上报
      */
-    public function push(){
+    public function push($startTime,$endTime){
 
-        $list = $this->getReportUserActionList();
+        if(date('m',strtotime($startTime)) != date('m',strtotime($endTime))){
+            throw new CustomException([
+                'code' => 'DATE_TIME_ERROR',
+                'message' => '月份不一致',
+            ]);
+        }
+
+        $list = $this->model
+            ->setTableNameWithMonth($startTime)
+            ->when($this->actionType,function ($query,$actionType){
+                return $query->where('type',$actionType);
+            })
+            ->when($this->product,function ($query,$product){
+                return $query->where('product_id',$product['id']);
+            })
+            ->where('status',ReportStatusEnum::WAITING)
+            ->whereBetween('action_time',[$startTime,$endTime])
+            ->orderBy('action_time')
+            ->get();
 
         foreach ($list as $item){
 
@@ -142,14 +134,66 @@ class PushUserActionService extends BaseService
 
 
 
+    /**
+     * 上报所有
+     */
+    public function pushAll(){
+        $sql = <<<STR
+SELECT
+	`table_name`
+FROM
+	information_schema.TABLES
+WHERE
+	TABLE_SCHEMA = 'n8_transfer'
+	AND `table_name` LIKE 'user_action_logs_20%'
+ORDER BY
+	`table_name`
+	DESC
+STR;
+        $tableList = DB::select($sql);
+        $tableList = array_column(json_decode(json_encode($tableList),true),'table_name');
+
+        $pushUserActionService = new PushUserActionService();
+
+        foreach ($tableList as $tableName){
+            echo $tableName. "\n";
+            do{
+                $list =  $this->model
+                    ->setTable($tableName)
+                    ->when($this->actionType,function ($query,$actionType){
+                        return $query->where('type',$actionType);
+                    })
+                    ->when($this->product,function ($query,$product){
+                        return $query->where('product_id',$product['id']);
+                    })
+                    ->where('status',ReportStatusEnum::WAITING)
+                    ->skip(0)
+                    ->take(1000)
+                    ->orderBy('action_time')
+                    ->get();
+
+                foreach ($list as $item){
+                    $pushUserActionService
+                        ->setProduct($item['product_id'])
+                        ->setActionType($item['type'])
+                        ->pushItem($item);
+                }
+            }while(!$list->isEmpty());
+        }
+    }
+
+
+
+
+
     public function pushItem($item){
         try{
             // 注册行为
-            if($this->actionType == UserActionTypeEnum::REG && !$this->reportValid($item)){
+            if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
                 return;
             }
             $action = 'report';
-            $action .= ucfirst(Functions::camelize($this->actionType));
+            $action .= ucfirst(Functions::camelize($item['type']));
             $pushData = array_merge($item['extend'],[
                 'product_alias' => $this->product['cp_product_alias'],
                 'cp_type'       => $this->product['cp_type'],
@@ -214,22 +258,5 @@ class PushUserActionService extends BaseService
     }
 
 
-
-
-    /**
-     * @return mixed
-     * 获取需要上报行为数据列表
-     */
-    public function getReportUserActionList(){
-
-        return $this->model
-            ->setTableNameWithMonth($this->startTime)
-            ->whereBetween('action_time',[$this->startTime,$this->endTime])
-            ->where('product_id',$this->product['id'])
-            ->where('type',$this->actionType)
-            ->where('status',ReportStatusEnum::WAITING)
-            ->orderBy('action_time')
-            ->get();
-    }
 
 }

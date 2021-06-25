@@ -35,14 +35,5 @@ class TmpCommandsService
     }
 
 
-    /**
-     * @param $schedule
-     * @param $timeRange
-     * 推送用户行为
-     */
-    public function pushUserAction($schedule,$timeRange){
-#commands|push_user_action#
-    }
-
 
 }

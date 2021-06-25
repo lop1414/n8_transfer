@@ -40,6 +40,12 @@ class UserActionLogModel extends BaseModel
     }
 
 
+    public function setTableName($name){
+        $this->table = $name;
+        return $this;
+    }
+
+
     /**
      * @param $value
      * @return array
