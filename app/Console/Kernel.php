@@ -10,6 +10,7 @@ use App\Console\Commands\ForwardDataCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
+use App\Console\Commands\PushAllUserRegActionCommand;
 use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\PullUserActionCommand;
@@ -41,6 +42,7 @@ class Kernel extends ConsoleKernel
         PullUserActionCommand::class,
         // 推送用户行为
         PushUserActionCommand::class,
+        PushAllUserRegActionCommand::class,
         // 根据转发上报数据更新user_action_log
         UpdateUserActionLogCommand::class,
 
