@@ -110,20 +110,11 @@ class YwFillUserActionInfoService extends BaseService
                             ->where('cp_channel_id','')
                             ->get();
 
-
-                        $channel = $this->getChannel($this->product['id'],$cpChannelId);
-
                         foreach ($tmpUser as $modelUser){
                             if(!empty($modelUser->cp_channel_id)){
                                 echo "已有渠道，无需补充\n";
                                 continue;
                             }
-
-                            // 渠道创建时间 大于 注册时间
-//                            if($channel['create_time'] > $modelUser->action_time){
-//                                echo "渠道创建时间 大于 注册时间:".$modelUser->open_id. "\n";
-//                                continue;
-//                            }
 
                             //时间差 小于一个小时 行为还未上报 更新数据
                             $diff = time() - strtotime($modelUser['action_time']);
@@ -170,23 +161,6 @@ class YwFillUserActionInfoService extends BaseService
             $time = $tmpEndTime;
         }
     }
-
-
-
-    public function getChannel($productId,$cpChannelId){
-        $key = $productId.'_'.$cpChannelId;
-
-        if(!isset($this->channelMap[$key]) && !empty($this->channelMap[$key])){
-            $this->channelMap[$key] =  (new UnionApiService())->apiReadChannel([
-                'product_id'    => $productId,
-                'cp_channel_id' => $cpChannelId
-            ]);
-        }
-
-        return $this->channelMap[$key];
-    }
-
-
 
 
 
