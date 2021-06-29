@@ -96,7 +96,7 @@ class YwFillUserActionInfoService extends BaseService
                         }
 
                         //没有渠道
-                        $cpChannelId = empty($cpUser['channel_id']) ? '': $cpUser['channel_id'];
+                        $cpChannelId = $cpUser['channel_id'];
                         if(empty($cpChannelId)){
                             echo "没有渠道\n";
                             continue;
@@ -120,10 +120,10 @@ class YwFillUserActionInfoService extends BaseService
                             }
 
                             // 渠道创建时间 大于 注册时间
-                            if($channel['create_time'] > $modelUser->action_time){
-                                echo "渠道创建时间 大于 注册时间:".$modelUser->open_id. "\n";
-                                continue;
-                            }
+//                            if($channel['create_time'] > $modelUser->action_time){
+//                                echo "渠道创建时间 大于 注册时间:".$modelUser->open_id. "\n";
+//                                continue;
+//                            }
 
                             //时间差 小于一个小时 行为还未上报 更新数据
                             $diff = time() - strtotime($modelUser['action_time']);
