@@ -6,6 +6,7 @@ namespace App\Services;
 
 
 use App\Common\Enums\ProductTypeEnums;
+use App\Common\Enums\ReportStatusEnum;
 use App\Common\Services\BaseService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\UnionApiService;
@@ -128,6 +129,7 @@ class YwFillUserActionInfoService extends BaseService
                             $diff = time() - strtotime($modelUser['action_time']);
                             if($diff <= $reportNoChannelDiffTime){
                                 $modelUser->cp_channel_id = $cpUser['channel_id'];
+                                $modelUser->status = ReportStatusEnum::WAITING;
                                 $modelUser->save();
                                 echo "渠道更新:".$modelUser->open_id. "\n";
                             }else{
