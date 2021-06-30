@@ -39,6 +39,7 @@ $router->group([
 
     $router->group(['prefix' => 'yw_kyy'], function () use ($router) {
         $router->get('user', 'Open\YwKyy\UserController@distribute');
+        $router->post('user', 'Open\YwKyy\UserController@distribute');
 
         $router->group(['prefix' => 'match'], function () use ($router) {
             $router->get('ocean', 'Open\YwKyy\MatchDataController@ocean');
