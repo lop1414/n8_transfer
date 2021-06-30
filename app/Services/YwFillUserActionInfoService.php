@@ -91,8 +91,7 @@ class YwFillUserActionInfoService extends BaseService
                     try{
                         // 微信H5
                         if($this->product['type'] == ProductTypeEnums::H5 && $cpUser['is_subscribe'] == 1){
-                            echo "补关注行为:{$cpUser[$openIdField]} \n";
-                            $this->userFollowActionService->pullItem($cpUser);
+                            $this->fillFollowAction($cpUser[$openIdField],$cpUser);
                         }
 
                         //没有渠道
@@ -172,5 +171,30 @@ class YwFillUserActionInfoService extends BaseService
     }
 
 
+
+    protected function fillFollowAction($openId,$cpUser){
+        try{
+            echo "补关注行为:{$openId} \n";
+            $this->userFollowActionService->pullItem($cpUser);
+
+        }catch(CustomException $e){
+            (new ErrorLogService())->catch($e);
+
+            //日志
+            $errorInfo = $e->getErrorInfo(true);
+            echo $errorInfo['message']. "\n";
+
+        }catch (\Exception $e){
+
+            //未命中唯一索引
+            if($e->getCode() != 23000){
+                //日志
+                (new ErrorLogService())->catch($e);
+                echo $e->getMessage()."\n";
+            }else{
+                echo "  关注行为命中唯一索引 \n";
+            }
+        }
+    }
 
 }
