@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Common\Enums\MatcherEnum;
+use App\Common\Enums\OperatorEnum;
 use App\Common\Enums\ReportStatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
@@ -197,25 +198,33 @@ STR;
 
     public function pushItem($item){
         try{
-            // 注册行为
-            if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
+            // 运营方不是系统 无需上报
+            if($this->product['operator'] != OperatorEnum::SYS){
+                $item->status = ReportStatusEnum::NOT_REPORT;
                 return;
-            }
-            $action = 'report';
-            $action .= ucfirst(Functions::camelize($item['type']));
-            $pushData = array_merge($item['extend'],[
-                'product_alias' => $this->product['cp_product_alias'],
-                'cp_type'       => $this->product['cp_type'],
-                'open_id'       => $item['open_id'],
-                'action_time'   => $item['action_time'],
-                'cp_channel_id' => $item['cp_channel_id'],
-                'ip'            => $item['ip'],
-                'request_id'    => $item['request_id']
-            ]);
+            }else{
+                // 注册行为
+                if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
+                    return;
+                }
+                $action = 'report';
+                $action .= ucfirst(Functions::camelize($item['type']));
+                $pushData = array_merge($item['extend'],[
+                    'product_alias' => $this->product['cp_product_alias'],
+                    'cp_type'       => $this->product['cp_type'],
+                    'open_id'       => $item['open_id'],
+                    'action_time'   => $item['action_time'],
+                    'cp_channel_id' => $item['cp_channel_id'],
+                    'ip'            => $item['ip'],
+                    'request_id'    => $item['request_id']
+                ]);
 
-            $this->n8Sdk->setSecret($this->productMap[$item['product_id']]['secret']);
-            $this->n8Sdk->$action($pushData);
-            $item->status = ReportStatusEnum::DONE;
+                $this->n8Sdk->setSecret($this->productMap[$item['product_id']]['secret']);
+                $this->n8Sdk->$action($pushData);
+                $item->status = ReportStatusEnum::DONE;
+            }
+
+
 
         }catch(CustomException $e){
             $errorInfo = $e->getErrorInfo(true);
