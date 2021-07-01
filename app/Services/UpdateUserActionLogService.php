@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
+use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
 use App\Enums\UserActionTypeEnum;
 use App\Models\MatchDataModel;
@@ -74,12 +75,34 @@ class UpdateUserActionLogService extends BaseService
                 ->get();
 
             foreach ($list as $item){
-                $advAlias = lcfirst(Functions::camelize($item['adv_alias']));
-                $info = (new MatchDataService())->$advAlias($item);
-                if(!empty($info)){
-                    $item->request_id = $info['request_id'];
-                    $item->save();
+                try{
+                    $advAlias = lcfirst(Functions::camelize($item['adv_alias']));
+                    $info = (new MatchDataService())->$advAlias($item);
+                    if(!empty($info)){
+                        $item->request_id = $info['request_id'];
+                        $item->save();
+                    }
+
+                }catch(CustomException $e){
+                    (new ErrorLogService())->catch($e);
+
+                    //日志
+                    $errorInfo = $e->getErrorInfo(true);
+                    echo $errorInfo['message']. "\n";
+
+                }catch (\Exception $e){
+
+                    //未命中唯一索引
+                    if($e->getCode() != 23000){
+                        //日志
+                        (new ErrorLogService())->catch($e);
+                        echo $e->getMessage()."\n";
+                    }else{
+                        echo "  命中唯一索引 \n";
+                    }
+
                 }
+
             }
 
             $page += 1;
