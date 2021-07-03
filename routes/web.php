@@ -56,6 +56,7 @@ $router->group([
     });
 
     $router->get('sync_yw_channel', 'Open\SyncYwChannelController@sync');
+    $router->get('push_channel_relation_ocean_ad', 'Open\ChannelRelationAdController@ocean');
 
 });
 
