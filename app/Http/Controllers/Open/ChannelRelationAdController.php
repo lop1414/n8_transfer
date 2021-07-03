@@ -22,7 +22,7 @@ class ChannelRelationAdController extends BaseController
 
         $reqData['adv_alias'] = AdvAliasEnum::OCEAN;
 
-        $service = new DataToQueueService(QueueEnums::PUSH_OCEAN_AD);
+        $service = new DataToQueueService(QueueEnums::PUSH_CHANNEL_AD);
         $service->push($reqData);
         return $this->_response(0,'success');
     }
