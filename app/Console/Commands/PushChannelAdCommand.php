@@ -78,6 +78,7 @@ class PushChannelAdCommand extends BaseCommand
 
             try{
                 $channel = (new UnionApiService())->apiReadChannel(['id' => $data['channel_id']]);
+                unset($channel['extends']);
                 if($data['adv_alias'] == AdvAliasEnum::OCEAN){
                     (new AdvOceanApiService())->apiUpdateChannelAd(
                         $data['channel_id'],
