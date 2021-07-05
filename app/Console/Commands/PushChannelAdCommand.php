@@ -4,9 +4,10 @@ namespace App\Console\Commands;
 
 use App\Common\Console\BaseCommand;
 use App\Common\Enums\AdvAliasEnum;
-use App\Common\Services\ConsoleEchoService;
+use App\Common\Enums\PlatformEnum;
 use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\AdvOceanApiService;
+use App\Common\Services\SystemApi\UnionApiService;
 use App\Common\Tools\CustomException;
 use App\Common\Tools\CustomQueue;
 use App\Enums\QueueEnums;
@@ -65,7 +66,7 @@ class PushChannelAdCommand extends BaseCommand
 
         $this->lockRun(function (){
             $this->action();
-        },'push_channel_ad',60*60,['log' => true]);
+        },'push_channel_ad',60*60*2,['log' => true]);
     }
 
 
@@ -76,9 +77,14 @@ class PushChannelAdCommand extends BaseCommand
         while ($data = $queue->pull()){
 
             try{
-
+                $channel = (new UnionApiService())->apiReadChannel(['id' => $data['channel_id']]);
                 if($data['adv_alias'] == AdvAliasEnum::OCEAN){
-                    (new AdvOceanApiService())->apiUpdateChannelAd($data['channel_id'],$data['ad_ids']);
+                    (new AdvOceanApiService())->apiUpdateChannelAd(
+                        $data['channel_id'],
+                        $data['ad_ids'],
+                        PlatformEnum::DEFAULT,
+                        $channel
+                    );
                 }
 
 

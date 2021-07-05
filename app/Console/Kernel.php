@@ -10,6 +10,7 @@ use App\Console\Commands\ForwardDataCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
+use App\Console\Commands\PushChannelAdCommand;
 use App\Console\Commands\PushChannelCommand;
 use App\Console\Commands\PushChannelExtendCommand;
 use App\Console\Commands\PullUserActionCommand;
@@ -60,7 +61,10 @@ class Kernel extends ConsoleKernel
         // 阅文快应用
         CheckOrderCommand::class,
         // 转发数据
-        ForwardDataCommand::class
+        ForwardDataCommand::class,
+
+        // 转发渠道计划信息
+        PushChannelAdCommand::class,
 
     ];
 
@@ -87,9 +91,6 @@ class Kernel extends ConsoleKernel
         $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
         //3小时区间
         $threeHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*60*3)."','{$dateTime}'";
-
-
-
 
 
         //广告商点击数据上报
@@ -126,6 +127,7 @@ class Kernel extends ConsoleKernel
 
 
         $schedule->command("forward_data")->cron('* * * * *');
+        $schedule->command("push_channel_ad")->cron('* * * * *');
     }
 
 
