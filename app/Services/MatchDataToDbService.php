@@ -41,8 +41,11 @@ class MatchDataToDbService extends BaseService
 
         $productMap = $productService->getProductMap();
 
-        $queue->setConsumeHook(function ($data) use ($productMap){
-            $k =  $data['cp_type']. '_'.$data['cp_product_alias'];
+        $queue->setConsumeHook(function ($data) use ($productMap,$productService){
+            $k = $productService->getMapKey([
+                'cp_type'          => $data['cp_type'],
+                'cp_product_alias' => $data['cp_product_alias']
+            ]);
 
             $product = $productMap[$k];
 
