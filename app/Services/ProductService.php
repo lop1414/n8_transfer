@@ -45,7 +45,7 @@ class ProductService extends BaseService
         $productMap = [];
 
         foreach ($products as $product){
-            $key = $this->getMapKey($product);
+            $key = $this->getMapKey($product['cp_type'],$product['cp_product_alias']);
             $productMap[$key] = $product;
         }
         return $productMap;
@@ -54,8 +54,8 @@ class ProductService extends BaseService
 
 
 
-    public function getMapKey($product){
-        return $product['cp_type'].'_'. $product['cp_product_alias'];
+    public function getMapKey($cpType,$cpProductAlias){
+        return $cpType.'_'. $cpProductAlias;
     }
 
 

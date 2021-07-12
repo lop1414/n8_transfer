@@ -38,10 +38,7 @@ class ForwardDataService extends BaseService
         while ($data = $queue->pull()) {
 
             try{
-                $k = $productService->getMapKey([
-                    'cp_type'          => $data['cp_type'],
-                    'cp_product_alias' => $data['appflag']
-                ]);
+                $k = $productService->getMapKey($data['cp_type'], $data['appflag']);
                 $product = $productMap[$k];
                 if(!$this->isForward($product['operator'])){
                     continue;
