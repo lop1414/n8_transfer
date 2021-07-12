@@ -6,7 +6,6 @@ use App\Common\Enums\OperatorEnum;
 use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\ErrorLogService;
-use App\Common\Services\SystemApi\UnionApiService;
 use App\Common\Tools\CustomException;
 use App\Common\Tools\CustomQueue;
 use App\Enums\QueueEnums;
@@ -32,14 +31,12 @@ class ForwardDataService extends BaseService
     public function forward(){
         $queue = new CustomQueue($this->queueEnums);
 
-        $productService = new ProductService();
-        $productMap = $productService->getProductMap();
+        $productService = (new ProductService())->setMap();
         $rePushData = [];
         while ($data = $queue->pull()) {
 
             try{
-                $k = $productService->getMapKey($data['cp_type'], $data['appflag']);
-                $product = $productMap[$k];
+                $product = $productService->readByMap($data['cp_type'], $data['appflag']);
                 if(!$this->isForward($product['operator'])){
                     continue;
                 }

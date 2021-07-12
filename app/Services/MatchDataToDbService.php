@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
-use App\Common\Services\SystemApi\UnionApiService;
-use App\Common\Tools\CustomException;
 use App\Common\Tools\CustomQueue;
 use App\Enums\QueueEnums;
 use App\Models\MatchDataModel;
@@ -37,14 +35,11 @@ class MatchDataToDbService extends BaseService
 
         $queue = new CustomQueue($this->queueEnum);
 
-        $productService = new ProductService();
+        $productService = (new ProductService())->setMap();
 
-        $productMap = $productService->getProductMap();
 
-        $queue->setConsumeHook(function ($data) use ($productMap,$productService){
-            $k = $productService->getMapKey($data['cp_type'], $data['cp_product_alias']);
-
-            $product = $productMap[$k];
+        $queue->setConsumeHook(function ($data) use ($productService){
+            $product = $productService->readByMap($data['cp_type'], $data['cp_product_alias']);
 
             $data['product_id'] = $product['id'];
 
