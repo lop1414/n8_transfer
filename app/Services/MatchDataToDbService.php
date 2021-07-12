@@ -4,14 +4,11 @@ namespace App\Services;
 
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
-use App\Common\Services\ConsoleEchoService;
-use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\UnionApiService;
 use App\Common\Tools\CustomException;
 use App\Common\Tools\CustomQueue;
 use App\Enums\QueueEnums;
 use App\Models\MatchDataModel;
-use Illuminate\Support\Facades\DB;
 
 class MatchDataToDbService extends BaseService
 {
@@ -36,19 +33,6 @@ class MatchDataToDbService extends BaseService
 
 
 
-    /**
-     * @return mixed
-     * 获取队列枚举
-     */
-    public function getQueueEnum(){
-        return $this->queueEnum;
-    }
-
-
-    public function getMapKey($product){
-        return $product['cp_type'].'_'. $product['cp_product_alias'];
-    }
-
 
     /**
      * @return array
@@ -60,7 +44,7 @@ class MatchDataToDbService extends BaseService
         $productMap = [];
 
         foreach ($products as $product){
-            $key = $this->getMapKey($product);
+            $key = $product['cp_type'].'_'. $product['cp_product_alias'];
             $productMap[$key] = $product;
         }
         return $productMap;
@@ -73,60 +57,18 @@ class MatchDataToDbService extends BaseService
         $queue = new CustomQueue($this->queueEnum);
         $productMap = $this->getProductMap();
 
-        $rePushData = [];
-        while ($data = $queue->pull()) {
+        $queue->setConsumeHook(function ($data) use ($productMap){
+            $k =  $data['cp_type']. '_'.$data['cp_product_alias'];
 
-            try{
-                $k = $this->getMapKey([
-                    'cp_type'          => $data['cp_type'],
-                    'cp_product_alias' => $data['cp_product_alias']
-                ]);
-                $product = $productMap[$k];
+            $product = $productMap[$k];
 
-                $data['product_id'] = $product['id'];
+            $data['product_id'] = $product['id'];
 
+            (new MatchDataModel())->create($data);
+        });
 
-                $this->model->create($data);
+        $queue->consume();
 
-
-
-            }catch (CustomException $e){
-
-
-
-                //日志
-                (new ErrorLogService())->catch($e);
-
-                $queue->item['exception'] = $e->getErrorInfo();
-                $queue->item['code'] = $e->getCode();
-                $rePushData[] = $queue->item;
-
-                var_dump($e->getErrorInfo());
-
-                // echo
-                (new ConsoleEchoService())->error("自定义异常 {code:{$e->getCode()},msg:{$e->getMessage()}}");
-            }catch (\Exception $e){
-
-
-                //日志
-                (new ErrorLogService())->catch($e);
-
-                $queue->item['exception'] = $e->getMessage();
-                $queue->item['code'] = $e->getCode();
-                $rePushData[] = $queue->item;
-
-                var_dump($e->getMessage());
-
-                // echo
-                (new ConsoleEchoService())->error("异常 {code:{$e->getCode()},msg:{$e->getMessage()}}");
-            }
-        }
-
-        // 数据重回队列
-        foreach ($rePushData as $item){
-            $queue->setItem($item);
-            $queue->rePush();
-        }
     }
 
 
