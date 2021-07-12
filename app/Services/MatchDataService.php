@@ -234,26 +234,6 @@ class MatchDataService extends BaseService
      * 获取用户注册记录(最近15天)
      */
     public function getRegLogInfo($productId,$openId){
-        $monthList = Functions::getMonthListByRange(['2019-10-01',$this->dateRange['end']]);
-        arsort($monthList);
-        foreach ($monthList as $month){
-            $info = $this->userActionLogModel
-                ->setTableNameWithMonth($month)
-                ->where('type',UserActionTypeEnum::REG)
-                ->where('product_id',$productId)
-                ->where('open_id',$openId)
-                ->whereBetween('action_time',[
-                    '2019-10-01 00:00:00',
-                    $this->dateRange['end']. ' 23:59:59',
-                ])
-                ->first();
-            if(!empty($info)){
-                return $info;
-            }
-        }
-
-        return;
-
         $info = $this->userActionLogModel
             ->setTableNameWithMonth($this->dateRange['end'])
             ->where('type',UserActionTypeEnum::REG)
