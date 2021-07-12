@@ -33,29 +33,13 @@ class MatchDataToDbService extends BaseService
 
 
 
-
-    /**
-     * @return array
-     * @throws CustomException
-     * 获取产品映射
-     */
-    public function getProductMap(){
-        $products = (new UnionApiService())->apiGetProduct();
-        $productMap = [];
-
-        foreach ($products as $product){
-            $key = $product['cp_type'].'_'. $product['cp_product_alias'];
-            $productMap[$key] = $product;
-        }
-        return $productMap;
-    }
-
-
-
     public function run(){
 
         $queue = new CustomQueue($this->queueEnum);
-        $productMap = $this->getProductMap();
+
+        $productService = new ProductService();
+
+        $productMap = $productService->getProductMap();
 
         $queue->setConsumeHook(function ($data) use ($productMap){
             $k =  $data['cp_type']. '_'.$data['cp_product_alias'];

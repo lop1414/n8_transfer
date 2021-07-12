@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Common\Services\BaseService;
 use App\Common\Services\SystemApi\UnionApiService;
+use App\Common\Tools\CustomException;
 
 
 class ProductService extends BaseService
@@ -30,6 +31,31 @@ class ProductService extends BaseService
      */
     public function readCpAccount($id){
         return  (new UnionApiService())->apiReadCpAccount($id);
+    }
+
+
+
+    /**
+     * @return array
+     * @throws CustomException
+     * 获取产品映射
+     */
+    public function getProductMap(){
+        $products = (new UnionApiService())->apiGetProduct();
+        $productMap = [];
+
+        foreach ($products as $product){
+            $key = $this->getMapKey($product);
+            $productMap[$key] = $product;
+        }
+        return $productMap;
+    }
+
+
+
+
+    public function getMapKey($product){
+        return $product['cp_type'].'_'. $product['cp_product_alias'];
     }
 
 

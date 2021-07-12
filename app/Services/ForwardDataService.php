@@ -31,12 +31,14 @@ class ForwardDataService extends BaseService
 
     public function forward(){
         $queue = new CustomQueue($this->queueEnums);
-        $productMap = $this->getProductMap();
+
+        $productService = new ProductService();
+        $productMap = $productService->getProductMap();
         $rePushData = [];
         while ($data = $queue->pull()) {
 
             try{
-                $k = $this->getMapKey([
+                $k = $productService->getMapKey([
                     'cp_type'          => $data['cp_type'],
                     'cp_product_alias' => $data['appflag']
                 ]);
@@ -88,28 +90,6 @@ class ForwardDataService extends BaseService
             $queue->setItem($item);
             $queue->rePush();
         }
-    }
-
-
-    /**
-     * @return array
-     * @throws CustomException
-     * 获取产品映射
-     */
-    public function getProductMap(){
-        $products = (new UnionApiService())->apiGetProduct();
-        $productMap = [];
-
-        foreach ($products as $product){
-            $key = $this->getMapKey($product);
-            $productMap[$key] = $product;
-        }
-        return $productMap;
-    }
-
-
-    public function getMapKey($product){
-        return $product['cp_type'].'_'. $product['cp_product_alias'];
     }
 
 }
