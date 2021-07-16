@@ -153,7 +153,6 @@ ORDER BY
 STR;
         $tableList = DB::select($sql);
         $tableList = array_column(json_decode(json_encode($tableList),true),'table_name');
-
         $pushUserActionService = new PushUserActionService();
 
         foreach ($tableList as $tableName){
@@ -170,13 +169,13 @@ STR;
             $total = $query->count();
             echo $tableName. " 总数：{$total}\n";
 
-            $lastMaxId = 0;
+            $lastMaxTime = '1970-01-01 00:00:00';
             do{
                 $list =  $query
-                    ->where('id','>',$lastMaxId)
+                    ->where('action_time','>',$lastMaxTime)
                     ->skip(0)
                     ->take(1000)
-                    ->orderBy('id')
+                    ->orderBy('action_time')
                     ->get();
 
                 foreach ($list as $item){
@@ -185,7 +184,7 @@ STR;
                         ->setActionType($item['type'])
                         ->pushItem($item);
 
-                    $lastMaxId = $item['id'];
+                    $lastMaxTime = $item['action_time'];
                 }
 
             }while(!$list->isEmpty());
