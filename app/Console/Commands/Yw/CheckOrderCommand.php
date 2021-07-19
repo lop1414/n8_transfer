@@ -112,7 +112,6 @@ class CheckOrderCommand extends BaseCommand
             $time = $this->startTime;
             while($time < $this->endTime){
                 $tmpEndTime = date('Y-m-d H:i:s',  strtotime($time) + $this->timeInterval);
-                $tmpEndTime = min($tmpEndTime,date('Y-m-d H:i:s'));
 
                 $this->consoleEchoService->echo("时间 : {$time} ~ {$tmpEndTime}");
 
