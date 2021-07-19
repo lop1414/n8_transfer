@@ -73,6 +73,10 @@ class UserOrderActionService extends PullUserActionBaseService
     public function pullItem($item)
     {
 
+        if($item['order_status'] == 2){
+            $this->completeOrderService->pullItem($item);
+        }
+
         $this->save([
             'product_id'    => $this->product['id'],
             'open_id'       => $item['guid'],
@@ -88,10 +92,6 @@ class UserOrderActionService extends PullUserActionBaseService
                 'order_id'      => $item['yworder_id']
             ],$this->filterExtendInfo($item)),
         ],$item);
-
-        if($item['order_status'] == 2){
-            $this->completeOrderService->pullItem($item);
-        }
     }
 
 
