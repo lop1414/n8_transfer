@@ -28,5 +28,15 @@ class ChannelRelationAdController extends BaseController
     }
 
 
+    public function baidu(Request $request){
+        $reqData = $request->all();
+
+        $reqData['adv_alias'] = AdvAliasEnum::BAI_DU;
+
+        $service = new DataToQueueService(QueueEnums::PUSH_CHANNEL_AD);
+        $service->push($reqData);
+        return $this->_response(0,'success');
+    }
+
 
 }
