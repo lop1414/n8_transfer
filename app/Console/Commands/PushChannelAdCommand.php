@@ -92,7 +92,7 @@ class PushChannelAdCommand extends BaseCommand
                 }elseif ($data['adv_alias'] == AdvAliasEnum::BAI_DU){
                     (new AdvBdApiService())->apiUpdateChannelAdgroup(
                         $data['channel_id'],
-                        $data['ad_ids'],
+                        $data['adgroup_ids'],
                         PlatformEnum::DEFAULT,
                         $channel
                     );
