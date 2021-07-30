@@ -7,6 +7,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Tools\CustomException;
+use App\Services\AdvClick\BaiDuClickService;
 use App\Services\AdvClick\OceanClickService;
 use App\Services\CreateTableService;
 
@@ -70,6 +71,11 @@ class PushAdvClickCommand extends BaseCommand
 
     public function ocean(){
         (new OceanClickService())->setTimeRange($this->startTime,$this->endTime)->push();
+    }
+
+
+    public function baidu(){
+        (new BaiDuClickService())->setTimeRange($this->startTime,$this->endTime)->push();
     }
 
 

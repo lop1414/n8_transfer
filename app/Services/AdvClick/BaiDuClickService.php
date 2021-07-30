@@ -6,6 +6,7 @@ namespace App\Services\AdvClick;
 
 use App\Common\Enums\AdvAliasEnum;
 use App\Common\Enums\ReportStatusEnum;
+use App\Common\Services\SystemApi\AdvBdApiService;
 use App\Models\BaiDuClickModel;
 
 class BaiDuClickService extends AdvClickService
@@ -13,10 +14,14 @@ class BaiDuClickService extends AdvClickService
 
     protected $adv = AdvAliasEnum::BAI_DU;
 
+    protected $advBdApiService;
+
 
     public function __construct(){
         parent::__construct();
         $this->model = new BaiDuClickModel();
+        $this->advBdApiService = new AdvBdApiService();
+
     }
 
 
@@ -34,6 +39,30 @@ class BaiDuClickService extends AdvClickService
 
 
 
-    public function pushItem($item){}
+    public function pushItem($item){
+        $tmp = $item->toArray();
+        $extends = $tmp['extends'];
+        $data = [
+            'campaign_id' => '',
+            'adgroup_id'  => $extends['ad_id'] ?? '',
+            'creative_id' => $extends['creative_id'] ?? '',
+            'channel_id'  => $tmp['channel_id'],
+            'request_id'  => $tmp['request_id'],
+            'muid'        => $extends['muid'],
+            'android_id'  => $extends['android_id'],
+            'oaid'        => $extends['oaid'],
+            'os'          => $extends['os'],
+            'oaid_md5'    => $extends['oaid_md5'],
+            'ip'          => $extends['ip'],
+            'ua'          => $extends['ua'],
+            'click_at'    => strtotime($tmp['click_at']). '000',
+            'callback_url'=> '',
+            'model'       => '',
+            'combid'      => '',
+            'link'        => $extends['link'],
+        ];
+
+        $this->advBdApiService->apiCreateClick($data,$item['click_source']);
+    }
 
 }
