@@ -59,7 +59,7 @@ class BaiDuClickService extends AdvClickService
             'callback_url'=> '',
             'model'       => '',
             'combid'      => '',
-            'link'        => $extends['link'],
+            'link'        => $extends['link'] ?? '',
         ];
 
         $this->advBdApiService->apiCreateClick($data,$item['click_source']);
