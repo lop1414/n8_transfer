@@ -42,6 +42,9 @@ class BaiDuClickService extends AdvClickService
     public function pushItem($item){
         $tmp = $item->toArray();
         $extends = $tmp['extends'];
+        if(!empty($extends['extends'])){
+            $extends = $extends['extends'];
+        }
         $data = [
             'campaign_id' => '',
             'adgroup_id'  => $extends['ad_id'] ?? '',
