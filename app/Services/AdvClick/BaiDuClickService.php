@@ -46,7 +46,9 @@ class BaiDuClickService extends AdvClickService
             $extends = $extends['extends'];
         }
         $creativeId = $extends['creative_id'] ?? '';
-        $creativeId = empty($creativeId) && !empty($extends['c_id']) ? $extends['c_id'] : '';
+        if(empty($creativeId) && !empty($extends['c_id'])){
+            $creativeId =  $extends['c_id'];
+        }
 
         $data = [
             'campaign_id' => '',
