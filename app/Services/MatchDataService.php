@@ -130,7 +130,7 @@ class MatchDataService extends BaseService
 
 
 
-    public function kuaiShou($data){
+    public function ks($data){
         $rawData = $data['data'];
         $cpChannelId = $data['cp_channel_id'];
         $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
@@ -178,7 +178,7 @@ class MatchDataService extends BaseService
 
 
 
-    public function baiDu($data){
+    public function bd($data){
 
         $cpChannelId = $data['cp_channel_id'];
         $info = $this->getRegLogInfo($data['product_id'],$data['open_id']);
