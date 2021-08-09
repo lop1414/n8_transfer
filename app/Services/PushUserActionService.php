@@ -203,9 +203,10 @@ STR;
                 return;
             }else{
 
-                if(!$this->reportValid($item)){
+                if(!!!$this->reportValid($item)){
                     return;
                 }
+
                 $action = 'report';
                 $action .= ucfirst(Functions::camelize($item['type']));
                 $pushData = array_merge($item['extend'],[
@@ -256,17 +257,12 @@ STR;
      */
     public function reportValid($item){
         // 不是注册行为
-        echo $item['id']. "\n";
-        if($item['type'] != UserActionTypeEnum::REG){
-            echo "不是注册行为 true";
-            return true;
-        }
+        if($item['type'] != UserActionTypeEnum::REG) return true;
 
         //没有渠道
         if(empty($item['cp_channel_id'])){
             $diff = time() - strtotime($item['action_time']);
             if($diff <= $this->reportNoChannelDiffTime){
-                echo "没有cp_channel_id false";
                 return false;
             }
         }
@@ -275,7 +271,6 @@ STR;
         if($item['matcher'] != MatcherEnum::SYS && empty($item['request_id'])){
             $diff = time() - strtotime($item['created_at']);
             if($diff < 60*60*2){
-                echo "不是系统匹配且没有request_id false";
                 return false;
             }
         }
