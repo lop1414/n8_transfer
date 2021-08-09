@@ -181,7 +181,7 @@ STR;
                 foreach ($list as $item){
                     // 注册行为
                     if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
-                        return;
+                        continue;
                     }
                     $pushUserActionService
                         ->setProduct($item['product_id'])
