@@ -94,7 +94,7 @@ class UserRegActionService extends PullUserActionBaseService
         $info->cp_channel_id = $item['channel_id'];
         $data =  $info->data;
         // 补充信息
-        $data['replenish'] = ['channel_id',$item['channel_id']];
+        $data['replenish'] = ['cp_channel_id',$item['channel_id']];
         $this->data = $data;
         $this->status = ReportStatusEnum::WAITING;
         $info->save();
