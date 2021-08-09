@@ -202,8 +202,8 @@ STR;
                 $item->status = ReportStatusEnum::NOT_REPORT;
                 return;
             }else{
-                // 注册行为
-                if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
+
+                if(!$this->reportValid($item)){
                     return;
                 }
                 $action = 'report';
@@ -255,6 +255,9 @@ STR;
      * 上报验证
      */
     public function reportValid($item){
+        // 不是注册行为
+        if($item['type'] != UserActionTypeEnum::REG) return true;
+
         //没有渠道
         if(empty($item['cp_channel_id'])){
             $diff = time() - strtotime($item['action_time']);
