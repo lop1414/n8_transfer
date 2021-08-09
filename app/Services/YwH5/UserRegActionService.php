@@ -3,6 +3,7 @@
 namespace App\Services\YwH5;
 
 
+use App\Common\Enums\ReportStatusEnum;
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Yw\YwSdk;
@@ -91,6 +92,11 @@ class UserRegActionService extends PullUserActionBaseService
         if(empty($info)) return;
 
         $info->cp_channel_id = $item['channel_id'];
+        $data =  $info->data;
+        // 补充信息
+        $data['replenish'] = ['channel_id',$item['channel_id']];
+        $this->data = $data;
+        $this->status = ReportStatusEnum::WAITING;
         $info->save();
     }
 

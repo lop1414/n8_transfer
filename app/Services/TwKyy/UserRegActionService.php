@@ -4,6 +4,7 @@ namespace App\Services\TwKyy;
 
 
 use App\Common\Enums\CpTypeEnums;
+use App\Common\Enums\ReportStatusEnum;
 use App\Enums\UserActionTypeEnum;
 use App\Models\ConfigModel;
 use App\Sdks\Tw\TwSdk;
@@ -89,9 +90,26 @@ class UserRegActionService extends PullUserActionBaseService
             'matcher'       => $this->product['matcher']
         ],$item);
 
+    }
 
 
+    public function updateItem($item){
+        if(empty($item['channel_id'])) return;
 
+        $info = $this->model->setTableNameWithMonth($item['reg_time'])
+            ->where('cp_channel_id','')
+            ->where('open_id',$item['openid'])
+            ->where('action_time',$item['reg_time'])
+            ->first();
+        if(empty($info)) return;
+
+        $info->cp_channel_id = $item['channel_id'];
+        $data =  $info->data;
+        // 补充信息
+        $data['replenish'] = ['channel_id',$item['channel_id']];
+        $this->data = $data;
+        $this->status = ReportStatusEnum::WAITING;
+        $info->save();
     }
 
 
