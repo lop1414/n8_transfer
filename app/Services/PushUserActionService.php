@@ -200,10 +200,9 @@ STR;
             // 运营方不是系统 无需上报
             if($this->product['operator'] != OperatorEnum::SYS){
                 $item->status = ReportStatusEnum::NOT_REPORT;
-                return;
             }else{
 
-                if(!!!$this->reportValid($item)){
+                if(!$this->reportValid($item)){
                     return;
                 }
 
