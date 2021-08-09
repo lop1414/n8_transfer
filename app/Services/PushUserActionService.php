@@ -179,10 +179,6 @@ STR;
                     ->get();
 
                 foreach ($list as $item){
-                    // 注册行为
-                    if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
-                        continue;
-                    }
                     $pushUserActionService
                         ->setProduct($item['product_id'])
                         ->setActionType($item['type'])
@@ -207,9 +203,9 @@ STR;
                 return;
             }else{
                 // 注册行为
-               // if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
-               //     return;
-               // }
+                if($item['type'] == UserActionTypeEnum::REG && !$this->reportValid($item)){
+                    return;
+                }
                 $action = 'report';
                 $action .= ucfirst(Functions::camelize($item['type']));
                 $pushData = array_merge($item['extend'],[
