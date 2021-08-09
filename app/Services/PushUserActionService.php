@@ -169,13 +169,13 @@ STR;
             $total = $query->count();
             echo $tableName. " 总数：{$total}\n";
 
-            $lastMaxTime = '1970-01-01 00:00:00';
+            $lastMaxId = 0;
             do{
                 $list =  $query
-                    ->where('action_time','>',$lastMaxTime)
+                    ->where('id','>',$lastMaxId)
                     ->skip(0)
                     ->take(1000)
-                    ->orderBy('action_time')
+                    ->orderBy('id','asc')
                     ->get();
 
                 foreach ($list as $item){
@@ -184,7 +184,7 @@ STR;
                         ->setActionType($item['type'])
                         ->pushItem($item);
 
-                    $lastMaxTime = $item['action_time'];
+                    $lastMaxId = $item['id'];
                 }
 
             }while(!$list->isEmpty());
