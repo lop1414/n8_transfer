@@ -11,7 +11,7 @@ use App\Models\KuaiShouClickModel;
 class KuaiShouClickService extends AdvClickService
 {
 
-    protected $adv = AdvAliasEnum::KUAI_SHOU;
+    protected $adv = AdvAliasEnum::KS;
 
 
     public function __construct(){

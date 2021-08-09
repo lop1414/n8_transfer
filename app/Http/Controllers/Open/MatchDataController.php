@@ -26,8 +26,8 @@ class MatchDataController extends BaseController
         try {
             $advMap = [
                 'JRTT'  => AdvAliasEnum::OCEAN,
-                'BAIDU' => AdvAliasEnum::BAI_DU,
-                'KUAISHOU' => AdvAliasEnum::KUAI_SHOU,
+                'BAIDU' => AdvAliasEnum::BD,
+                'KUAISHOU' => AdvAliasEnum::KS,
             ];
             $requestData = $request->all();
 

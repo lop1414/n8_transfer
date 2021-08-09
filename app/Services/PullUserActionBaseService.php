@@ -152,6 +152,7 @@ class PullUserActionBaseService extends BaseService
                     echo $e->getMessage()."\n";
                 }else{
                     echo "  命中唯一索引 \n";
+                    $this->updateItem($item);
                 }
 
             }
@@ -170,6 +171,12 @@ class PullUserActionBaseService extends BaseService
 
     public function pullItem($item){}
 
+
+    /**
+     * @param $item
+     * 拉取后更新
+     */
+    public function updateItem($item){}
 
 
 

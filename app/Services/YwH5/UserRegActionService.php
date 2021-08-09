@@ -80,6 +80,21 @@ class UserRegActionService extends PullUserActionBaseService
     }
 
 
+    public function updateItem($item){
+        if(empty($item['channel_id'])) return;
+
+        $info = $this->model->setTableNameWithMonth($item['create_time'])
+            ->where('cp_channel_id','')
+            ->where('open_id',$item['openid'])
+            ->where('action_time',$item['create_time'])
+            ->first();
+        if(empty($info)) return;
+
+        $info->cp_channel_id = $item['channel_id'];
+        $info->save();
+    }
+
+
 
 
 }

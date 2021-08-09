@@ -19,8 +19,8 @@ class ChannelService extends BaseService
         ''      => '',
         'JRTT'  => AdvAliasEnum::OCEAN,
         'GDT'   => AdvAliasEnum::GDT,
-        'BAIDU' => AdvAliasEnum::BAI_DU,
-        'KUAISHOU' => AdvAliasEnum::KUAI_SHOU,
+        'BAIDU' => AdvAliasEnum::BD,
+        'KUAISHOU' => AdvAliasEnum::KS,
     ];
 
 

@@ -156,7 +156,7 @@ class MatchDataService extends BaseService
 
         $rawData['match_data_id'] = $data['id'];
         $this->saveClickDataService
-            ->saveAdvClickData(AdvAliasEnum::KUAI_SHOU,[
+            ->saveAdvClickData(AdvAliasEnum::KS,[
                 'ip'           => $info['ip'],
                 'ua'           => $info['extend']['ua'],
                 'click_at'     => $clickAt,
@@ -205,7 +205,7 @@ class MatchDataService extends BaseService
         $extends = $data['data'];
         $extends['match_data_id'] = $data['id'];
         $this->saveClickDataService
-            ->saveAdvClickData(AdvAliasEnum::BAI_DU,[
+            ->saveAdvClickData(AdvAliasEnum::BD,[
                 'ip'           => $data['data']['ip'],
                 'ua'           => $data['data']['ua'],
                 'click_at'     => $clickAt,

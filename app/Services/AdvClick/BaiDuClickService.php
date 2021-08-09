@@ -12,7 +12,7 @@ use App\Models\BaiDuClickModel;
 class BaiDuClickService extends AdvClickService
 {
 
-    protected $adv = AdvAliasEnum::BAI_DU;
+    protected $adv = AdvAliasEnum::BD;
 
     protected $advBdApiService;
 

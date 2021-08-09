@@ -24,7 +24,7 @@ class CheckOrderCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = '阅文快应用：检测订单';
+    protected $description = '阅文：检测订单';
 
 
     protected $consoleEchoService;

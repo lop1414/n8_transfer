@@ -75,7 +75,7 @@ class MatchDataController extends BaseController
             $requestData = $request->all();
             $data['data']['raw_data'] = $requestData;
             $data['cp_type'] = CpTypeEnums::YW;
-            $data['adv_alias'] = AdvAliasEnum::KUAI_SHOU;
+            $data['adv_alias'] = AdvAliasEnum::KS;
             $data['cp_product_alias'] = $requestData['appflag'];
             $data['open_id'] = $requestData['guid'];
             $data['cp_channel_id'] = $requestData['channel_id'] ?? '';
