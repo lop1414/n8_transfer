@@ -88,6 +88,7 @@ class UserRegActionService extends PullUserActionBaseService
             ->where('cp_channel_id','')
             ->where('open_id',$item['openid'])
             ->where('action_time',$item['create_time'])
+            ->where('type',$this->actionType)
             ->first();
         if(empty($info)) return;
 
