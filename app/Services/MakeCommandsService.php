@@ -13,7 +13,7 @@ class MakeCommandsService
 
     protected $userActionMap = [
         ProductTypeEnums::KYY => [
-            UserActionTypeEnum::REG,
+//            UserActionTypeEnum::REG,
             UserActionTypeEnum::READ,
             UserActionTypeEnum::ADD_SHORTCUT,
 //            UserActionTypeEnum::LOGIN,
