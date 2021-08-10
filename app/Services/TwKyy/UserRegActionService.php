@@ -93,27 +93,6 @@ class UserRegActionService extends PullUserActionBaseService
     }
 
 
-    public function updateItem($item){
-        if(empty($item['channel_id'])) return;
-
-        $info = $this->model->setTableNameWithMonth($item['reg_time'])
-            ->where('cp_channel_id','')
-            ->where('open_id',$item['openid'])
-            ->where('action_time',$item['reg_time'])
-            ->where('type',$this->actionType)
-            ->first();
-        if(empty($info)) return;
-
-        $info->cp_channel_id = $item['channel_id'];
-        $data =  $info->data;
-        // 补充信息
-        $data['replenish'] = ['cp_channel_id',$item['channel_id']];
-        $this->data = $data;
-        $this->status = ReportStatusEnum::WAITING;
-        $info->save();
-    }
-
-
 
 
 
