@@ -18,24 +18,6 @@ use Illuminate\Support\Facades\DB;
 class PushUserActionService extends BaseService
 {
 
-
-    /**
-     * @var
-     * 行为类型
-     */
-    protected $actionType;
-
-
-
-    /**
-     * @var
-     * 产品信息
-     */
-    protected $product;
-
-
-
-
     /**
      * @var N8Sdk
      */
@@ -69,13 +51,6 @@ class PushUserActionService extends BaseService
     }
 
 
-    public function setActionType($type){
-        $this->actionType = $type;
-        return $this;
-    }
-
-
-
     public function setProductMap(){
 
         $product = (new ProductService())->get();
@@ -85,60 +60,7 @@ class PushUserActionService extends BaseService
 
 
 
-
-    /**
-     * @param $productId
-     * @return $this
-     * 设置产品
-     */
-    public function setProduct($productId){
-        $this->product = $this->productMap[$productId];
-        return $this;
-    }
-
-
-
-
-    /**
-     * @param $startTime
-     * @param $endTime
-     * @throws CustomException
-     * 上报
-     */
-    public function push($startTime,$endTime){
-
-        if(date('m',strtotime($startTime)) != date('m',strtotime($endTime))){
-            throw new CustomException([
-                'code' => 'DATE_TIME_ERROR',
-                'message' => '月份不一致',
-            ]);
-        }
-
-        $list = $this->model
-            ->setTableNameWithMonth($startTime)
-            ->when($this->actionType,function ($query,$actionType){
-                return $query->where('type',$actionType);
-            })
-            ->when($this->product,function ($query,$product){
-                return $query->where('product_id',$product['id']);
-            })
-            ->where('status',ReportStatusEnum::WAITING)
-            ->whereBetween('action_time',[$startTime,$endTime])
-            ->orderBy('action_time')
-            ->get();
-
-        foreach ($list as $item){
-
-          $this->pushItem($item);
-        }
-    }
-
-
-
-    /**
-     * 上报所有
-     */
-    public function pushAll(){
+    public function getTableList(){
         $sql = <<<STR
 SELECT
 	`table_name`
@@ -153,16 +75,27 @@ ORDER BY
 STR;
         $tableList = DB::select($sql);
         $tableList = array_column(json_decode(json_encode($tableList),true),'table_name');
-        $pushUserActionService = new PushUserActionService();
+        return $tableList;
+    }
+
+
+
+    /**
+     * @param string $actionType
+     * @param string $productId
+     */
+    public function push($actionType = '',$productId = ''){
+
+        $tableList = $this->getTableList();
 
         foreach ($tableList as $tableName){
             $query = $this->model
                 ->setTable($tableName)
-                ->when($this->actionType,function ($query,$actionType){
+                ->when($actionType,function ($query,$actionType){
                     return $query->where('type',$actionType);
                 })
-                ->when($this->product,function ($query,$product){
-                    return $query->where('product_id',$product['id']);
+                ->when($productId,function ($query,$productId){
+                    return $query->where('product_id',$productId);
                 })
                 ->where('status',ReportStatusEnum::WAITING);
 
@@ -179,11 +112,7 @@ STR;
                     ->get();
 
                 foreach ($list as $item){
-                    $pushUserActionService
-                        ->setProduct($item['product_id'])
-                        ->setActionType($item['type'])
-                        ->pushItem($item);
-
+                    $this->pushItem($item);
                     $lastMaxId = $item['id'];
                 }
 
@@ -197,8 +126,10 @@ STR;
 
     public function pushItem($item){
         try{
+            $product  = $this->productMap[$item['product_id']];
+
             // 运营方不是系统 无需上报
-            if($this->product['operator'] != OperatorEnum::SYS){
+            if($product['operator'] != OperatorEnum::SYS){
                 $item->status = ReportStatusEnum::NOT_REPORT;
             }else{
 
@@ -209,8 +140,8 @@ STR;
                 $action = 'report';
                 $action .= ucfirst(Functions::camelize($item['type']));
                 $pushData = array_merge($item['extend'],[
-                    'product_alias' => $this->product['cp_product_alias'],
-                    'cp_type'       => $this->product['cp_type'],
+                    'product_alias' => $product['cp_product_alias'],
+                    'cp_type'       => $product['cp_type'],
                     'open_id'       => $item['open_id'],
                     'action_time'   => $item['action_time'],
                     'cp_channel_id' => $item['cp_channel_id'],

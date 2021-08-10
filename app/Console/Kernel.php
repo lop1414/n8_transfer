@@ -108,7 +108,7 @@ class Kernel extends ConsoleKernel
         }
 
         // 用户行为数据上报
-        $schedule->command("push_user_action --is_all=1")->cron('* * * * *');
+        $schedule->command("push_user_action")->cron('* * * * *');
 
 
 
