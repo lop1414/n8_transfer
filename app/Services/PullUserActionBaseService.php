@@ -111,6 +111,7 @@ class PullUserActionBaseService extends BaseService
 
     /**
      * @param $info
+     * @return $this
      * 设置产品
      */
     public function setProduct($info){
