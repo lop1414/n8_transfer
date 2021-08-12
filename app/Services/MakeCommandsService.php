@@ -11,22 +11,21 @@ use App\Enums\UserActionTypeEnum;
 class MakeCommandsService
 {
 
-    protected $userActionMap = [
-        ProductTypeEnums::KYY => [
-//            UserActionTypeEnum::REG,
-            UserActionTypeEnum::READ,
-            UserActionTypeEnum::ADD_SHORTCUT,
-//            UserActionTypeEnum::LOGIN,
-            UserActionTypeEnum::ORDER,
-            UserActionTypeEnum::COMPLETE_ORDER
+    protected $userActionList = [
+        CpTypeEnums::YW => [
+            ProductTypeEnums::KYY => [
+                UserActionTypeEnum::ORDER,
+            ],
+            ProductTypeEnums::H5 => [
+                UserActionTypeEnum::REG,
+                UserActionTypeEnum::ORDER,
+            ]
         ],
-        ProductTypeEnums::H5 => [
-            UserActionTypeEnum::REG,
-//            UserActionTypeEnum::READ,
-//            UserActionTypeEnum::FOLLOW,
-//            UserActionTypeEnum::LOGIN,
-            UserActionTypeEnum::ORDER,
-//            UserActionTypeEnum::COMPLETE_ORDER
+        CpTypeEnums::QY => [
+            ProductTypeEnums::H5 => [
+                UserActionTypeEnum::REG,
+                UserActionTypeEnum::ORDER,
+            ]
         ]
     ];
 
@@ -45,9 +44,6 @@ class MakeCommandsService
 
         $str = $this->pullUserAction();
         $content = str_replace('#commands|pull_user_action#',$str,$content);
-
-        $str = $this->pushUserAction();
-        $content = str_replace('#commands|push_user_action#',$str,$content);
 
         $fileName = $path.'CommandsService.php';
         file_put_contents($fileName,$content);
@@ -93,70 +89,25 @@ class MakeCommandsService
 
 
     protected function pullUserAction(){
-        $cpTypeList = CpTypeEnums::$list;
         $str = "";
 
-        //书城
-        foreach ($cpTypeList as $cpType){
-            $productTypeList = $cpType['product_type'] ?? [];
-            //产品类型
-            foreach ($productTypeList as $productType){
-                $str .= "        //{$cpType['name']}-{$productType}\n";
+        //用户行为
+        foreach($this->userActionList as $cpType => $item){
 
-                //用户行为
-                $userActionList = $this->userActionMap[$productType];
-                foreach($userActionList as $userAction){
+            foreach ($item as $productType => $actions){
+                $str .= "        //{$cpType}-{$productType}\n";
 
-                    // 目前先对接阅文 七悦
-                    if(!in_array($cpType['id'],[CpTypeEnums::YW,CpTypeEnums::QY]) ){
-                        continue;
-                    }
-
-                    // 跳过阅文注册、加桌行为
-                    if(
-                        $cpType['id'] == CpTypeEnums::YW
-                        && in_array($userAction,[UserActionTypeEnum::REG,UserActionTypeEnum::ADD_SHORTCUT,UserActionTypeEnum::COMPLETE_ORDER])){
-                        continue;
-                    }
-
+                foreach ($actions as $action){
                     $tmpCommand = "pull_user_action ";
-                    $tmpCommand .= "--cp_type={$cpType['id']} --product_type={$productType} ";
-                    $tmpCommand .= "--action_type={$userAction} ";
+                    $tmpCommand .= "--cp_type={$cpType} --product_type={$productType} ";
+                    $tmpCommand .= "--action_type={$action} ";
                     $tmpCommand .= "--time={\$timeRange}";
                     $str .= $this->echoCommand($tmpCommand);
                 }
                 $str .= "\n";
             }
         }
-        return $str;
-    }
 
-
-
-    protected function pushUserAction(){
-        $cpTypeList = CpTypeEnums::$list;
-
-        $str = "";
-
-        //书城
-        foreach ($cpTypeList as $cpType){
-            $productTypeList = $cpType['product_type'] ?? [];
-            //产品类型
-            foreach ($productTypeList as $productType){
-                $str .= "        //{$cpType['name']}-{$productType}\n";
-
-                //用户行为
-                $userActionList = $this->userActionMap[$productType];
-                foreach($userActionList as $userAction){
-                    $tmpCommand = "push_user_action  ";
-                    $tmpCommand .= "--cp_type={$cpType['id']} --product_type={$productType} ";
-                    $tmpCommand .= "--action_type={$userAction} ";
-                    $tmpCommand .= "--time={\$timeRange}";
-                    $str .= $this->echoCommand($tmpCommand);
-                }
-                $str .= "\n";
-            }
-        }
         return $str;
     }
 
