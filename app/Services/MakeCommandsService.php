@@ -22,11 +22,11 @@ class MakeCommandsService
         ],
         ProductTypeEnums::H5 => [
             UserActionTypeEnum::REG,
-            UserActionTypeEnum::READ,
-            UserActionTypeEnum::FOLLOW,
+//            UserActionTypeEnum::READ,
+//            UserActionTypeEnum::FOLLOW,
 //            UserActionTypeEnum::LOGIN,
             UserActionTypeEnum::ORDER,
-            UserActionTypeEnum::COMPLETE_ORDER
+//            UserActionTypeEnum::COMPLETE_ORDER
         ]
     ];
 
@@ -107,8 +107,8 @@ class MakeCommandsService
                 $userActionList = $this->userActionMap[$productType];
                 foreach($userActionList as $userAction){
 
-                    // 目前先对接阅文
-                    if( $cpType['id'] != CpTypeEnums::YW){
+                    // 目前先对接阅文 七悦
+                    if(!in_array($cpType['id'],[CpTypeEnums::YW,CpTypeEnums::QY]) ){
                         continue;
                     }
 

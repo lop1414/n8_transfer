@@ -61,6 +61,10 @@ class UserRegActionService extends PullUserActionBaseService
     public function pullItem($item)
     {
 
+        if($item['is_subscribe'] == 1){
+            $this->userFollowActionService->pullItem($item);
+        }
+
         $this->save([
             'product_id'    => $this->product['id'],
             'open_id'       => $item['openid'],
@@ -75,9 +79,7 @@ class UserRegActionService extends PullUserActionBaseService
             ],$this->filterExtendInfo($item)),
         ],$item);
 
-        if($item['is_subscribe'] == 1){
-            $this->userFollowActionService->pullItem($item);
-        }
+
     }
 
 

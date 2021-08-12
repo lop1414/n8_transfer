@@ -74,3 +74,7 @@ $router->group([
         $router->get('quickapp_order/select', 'Proxy\Yw\QuickappOrderController@select');
     });
 });
+
+
+// 测试
+$router->post('test', 'TestController@test');
