@@ -3,6 +3,7 @@
 namespace App\Services\TwKyy;
 
 
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Tw\TwSdk;
 use App\Services\PullUserActionBaseService;
@@ -12,6 +13,8 @@ class UserAddShortcutActionService extends PullUserActionBaseService
 {
 
     protected $actionType = UserActionTypeEnum::ADD_SHORTCUT;
+
+    protected $source = DataSourceEnums::CP;
 
 
     public function pullPrepare(){
@@ -36,49 +39,19 @@ class UserAddShortcutActionService extends PullUserActionBaseService
 
     public function pullItem($item){
 
-        // 未加桌
-        if($item['is_save_shortcuts'] != 1){
-            return;
+        // 加桌
+        if($item['is_save_shortcuts'] == 1){
+            $this->save([
+                'product_id'    => $this->product['id'],
+                'open_id'       => $item['id'],
+                'action_time'   => $item['reg_time'],
+                'cp_channel_id' => $item['channel_id'],
+                'request_id'    => '',
+                'ip'            => $item['device_ip'],
+                'action_id'     => $item['id'],
+                'matcher'       => $this->product['matcher'],
+                'extend'        => $this->filterExtendInfo($item),
+            ],$item);
         }
-
-
-
-        $this->save([
-            'open_id'       => $item['id'],
-            'action_time'   => $item['reg_time'],
-            'cp_channel_id' => $item['channel_id'],
-            'request_id'    => '',
-            'ip'            => $item['device_ip'],
-            'action_id'     => $item['id'],
-            'matcher'       => $this->product['matcher']
-        ],$item);
-    }
-
-
-
-
-
-    public function pushItemPrepare($item){
-        $rawData = $item['data'];
-        return [
-            'product_alias' => $this->product['cp_product_alias'],
-            'cp_type'       => $this->product['cp_type'],
-            'open_id'       => $item['open_id'],
-            'action_time'   => $item['action_time'],
-            'cp_channel_id' => $item['cp_channel_id'],
-            'ip'            => $item['ip'],
-            'ua'            => '',
-            'muid'          => $rawData['imei'],
-            'device_brand'          => $rawData['device_company'],
-            'device_manufacturer'   => '',
-            'device_model'          => '',
-            'device_product'        => $rawData['device_product'],
-            'device_os_version_name'    => '',
-            'device_os_version_code'    => $rawData['device_os'],
-            'device_platform_version_name'  => '',
-            'device_platform_version_code'  => '',
-            'android_id'            => $rawData['android_id'],
-            'request_id'            => $item['request_id']
-        ];
     }
 }

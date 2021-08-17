@@ -3,6 +3,7 @@
 namespace App\Services\TwKyy;
 
 
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Tw\TwSdk;
 use App\Services\PullUserActionBaseService;
@@ -13,6 +14,7 @@ class UserCompleteOrderActionService extends PullUserActionBaseService
 
     protected $actionType = UserActionTypeEnum::COMPLETE_ORDER;
 
+    protected $source = DataSourceEnums::CP;
 
 
     public function pullPrepare(){
@@ -38,36 +40,22 @@ class UserCompleteOrderActionService extends PullUserActionBaseService
 
 
     public function pullItem($item){
-
         $this->save([
+            'product_id'    => $this->product['id'],
             'open_id'       => $item['uid'],
             'action_time'   => $item['finished_at'],
             'cp_channel_id' => $item['channel_id'],
             'request_id'    => '',
             'ip'            => '',
             'action_id'     => $item['id'],
-            'matcher'       => $this->product['matcher']
+            'matcher'       => $this->product['matcher'],
+            'extend'        => array_merge([
+                'order_id'      => $item['id']
+            ],$this->filterExtendInfo($item)),
         ],$item);
 
     }
 
-
-
-
-
-
-
-
-
-
-    public function pushItemPrepare($item){
-        return [
-            'product_alias' => $this->product['cp_product_alias'],
-            'cp_type'       => $this->product['cp_type'],
-            'order_id'      => $item['id'],
-            'complete_time'   => $item['action_time']
-        ];
-    }
 
 
 

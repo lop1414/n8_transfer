@@ -4,6 +4,7 @@ namespace App\Services\TwKyy;
 
 
 use App\Common\Enums\CpTypeEnums;
+use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\ConfigModel;
 use App\Sdks\Tw\TwSdk;
@@ -15,23 +16,34 @@ class UserOrderActionService extends PullUserActionBaseService
 
     protected $actionType = UserActionTypeEnum::ORDER;
 
+    protected $source = DataSourceEnums::CP;
 
     protected $orderTypeMap;
 
+    protected $completeOrderService;
 
-    public function setOrderTypeMap(){
-        $this->orderTypeMap = (new ConfigModel())
-            ->where('group',CpTypeEnums::TW)
-            ->where('k','order_type_map')
-            ->first()
-            ->v;
+
+    public function __construct(){
+        parent::__construct();
+        $this->completeOrderService = new UserCompleteOrderActionService();
+    }
+
+
+    public function getOrderTypeMap(){
+        if(empty($this->orderTypeMap)){
+            $this->orderTypeMap = (new ConfigModel())
+                ->where('group',CpTypeEnums::TW)
+                ->where('k','order_type_map')
+                ->first()
+                ->v;
+        }
+        return  $this->orderTypeMap;
     }
 
     public function pullPrepare(){
 
-
-
         $sdk = new TwSdk($this->product['cp_product_alias'],$this->product['cp_secret']);
+        $this->completeOrderService->setProduct($this->product);
 
         $date = date('Y-m-d H:i',strtotime($this->startTime));
         $endTime = date('Y-m-d H:i',strtotime('+1 minutes',strtotime($this->endTime)));
@@ -51,57 +63,29 @@ class UserOrderActionService extends PullUserActionBaseService
 
     public function pullItem($item){
 
+        if($item['is_pay'] == 1){
+            $this->completeOrderService->pullItem($item);
+        }
+
+        $orderTypeMap = $this->getOrderTypeMap();
+
         $this->save([
+            'product_id'    => $this->product['id'],
             'open_id'       => $item['uid'],
             'action_time'   => $item['created_at'],
             'cp_channel_id' => $item['channel_id'],
             'request_id'    => '',
             'ip'            => '',
             'action_id'     => $item['id'],
-            'matcher'       => $this->product['matcher']
+            'matcher'       => $this->product['matcher'],
+            'extend'        => array_merge([
+                'amount'        => $item['amount'],
+                'type'          => $orderTypeMap[$item['type']],
+                'order_id'      => $item['id']
+            ],$this->filterExtendInfo($item)),
         ],$item);
 
     }
-
-
-
-
-
-
-
-    public function pushPrepare(){
-        $this->setOrderTypeMap();
-    }
-
-
-    public function pushItemPrepare($item){
-        $rawData = $item['data'];
-        return [
-            'product_alias' => $this->product['cp_product_alias'],
-            'cp_type'       => $this->product['cp_type'],
-            'open_id'       => $item['open_id'],
-            'order_id'      => $item['id'],
-            'action_time'   => $item['action_time'],
-            'cp_channel_id' => $item['cp_channel_id'],
-            'amount'        => $rawData['amount'],
-            'type'          => $this->orderTypeMap[$rawData['type']],
-            'ip'            => '',
-            'ua'            => '',
-            'muid'          => $rawData['imei'],
-            'oaid'          => $rawData['oaid'],
-            'device_brand'          => '',
-            'device_manufacturer'   => '',
-            'device_model'          => '',
-            'device_product'        => $rawData['device_product'],
-            'device_os_version_name'    => '',
-            'device_os_version_code'    => '',
-            'device_platform_version_name'  => '',
-            'device_platform_version_code'  => '',
-            'android_id'            => '',
-            'request_id'            => $item['request_id']
-        ];
-    }
-
 
 
 
