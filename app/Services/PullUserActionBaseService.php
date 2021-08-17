@@ -201,7 +201,10 @@ class PullUserActionBaseService extends BaseService
      * 保存数据入库
      */
     public function save($data,$rawData){
-
+        $matcher =  $data['matcher'] ?? MatcherEnum::SYS;
+        if($this->product['id'] == 100 && $data['action_time'] < '2021-08-17 00:00:00'){
+            $matcher = MatcherEnum::CP;
+        }
         $this->model->setTableNameWithMonth($data['action_time'])->create([
             'product_id'    => $this->product['id'],
             'open_id'       => $data['open_id'],
@@ -214,7 +217,7 @@ class PullUserActionBaseService extends BaseService
             'data'          => $rawData,
             'status'        => ReportStatusEnum::WAITING,
             'action_id'     => $data['action_id'] ?? '',
-            'matcher'       => $data['matcher'] ?? MatcherEnum::SYS,
+            'matcher'       => $matcher,
             'source'        => $this->source,
         ]);
 
