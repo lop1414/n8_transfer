@@ -9,7 +9,6 @@ use App\Common\Services\ConsoleEchoService;
 use App\Common\Tools\CustomException;
 use App\Services\AdvClick\BaiDuClickService;
 use App\Services\AdvClick\OceanClickService;
-use App\Services\CreateTableService;
 
 class PushAdvClickCommand extends BaseCommand
 {
@@ -17,7 +16,7 @@ class PushAdvClickCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'push_adv_click {--adv_alias=} {--time=}';
+    protected $signature = 'push_adv_click {--adv_alias=}';
 
     /**
      * 命令描述
@@ -48,15 +47,10 @@ class PushAdvClickCommand extends BaseCommand
 
 
     public function handle(){
-        $time = $this->option('time');
-        list($this->startTime,$this->endTime) = explode(",", $time);
-        $this->endTime = min($this->endTime,date('Y-m-d H:i:s'));
-        Functions::checkTimeRange($this->startTime,$this->endTime);
 
         $advAlias  = $this->option('adv_alias');
         Functions::hasEnum(AdvAliasEnum::class,$advAlias);
-        $action = ucfirst(Functions::camelize($advAlias));
-
+        $action = Functions::camelize($advAlias);
         if(!method_exists($this,$action)){
             throw new CustomException([
                 'code' => 'NOT_REALIZED',
@@ -70,12 +64,12 @@ class PushAdvClickCommand extends BaseCommand
 
 
     public function ocean(){
-        (new OceanClickService())->setTimeRange($this->startTime,$this->endTime)->push();
+        (new OceanClickService())->push();
     }
 
 
-    public function baidu(){
-        (new BaiDuClickService())->setTimeRange($this->startTime,$this->endTime)->push();
+    public function bd(){
+        (new BaiDuClickService())->push();
     }
 
 

@@ -14,11 +14,6 @@ class AdvClickService extends BaseService
 
     protected $adv;
 
-    /**
-     * @var
-     * 时间区间
-     */
-    protected $startTime,$endTime;
 
 
     /**
@@ -30,21 +25,6 @@ class AdvClickService extends BaseService
 
     protected $pageSize = 1000;
 
-
-
-    /**
-     * @param $startTime
-     * @param $endTime
-     * @return $this
-     * @throws CustomException
-     * 设置时间区间
-     */
-    public function setTimeRange($startTime,$endTime){
-        Functions::checkTimeRange($startTime,$endTime);
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
-        return $this;
-    }
 
 
     /**
@@ -62,7 +42,6 @@ class AdvClickService extends BaseService
 
         do{
             $list = $this->model
-                ->whereBetween('click_at',[$this->startTime,$this->endTime])
                 ->where('status',ReportStatusEnum::WAITING)
                 ->skip(0)
                 ->take($this->pageSize)
