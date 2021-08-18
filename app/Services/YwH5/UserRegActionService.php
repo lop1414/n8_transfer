@@ -3,6 +3,7 @@
 namespace App\Services\YwH5;
 
 
+use App\Common\Enums\ReportStatusEnum;
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Yw\YwSdk;
@@ -71,7 +72,7 @@ class UserRegActionService extends PullUserActionBaseService
             ->where('action_time',$item['create_time'])
             ->first();
 
-        if(empty($info)){
+        if(empty($info) || $info->status == ReportStatusEnum::DONE){
             $this->save([
                 'product_id'    => $this->product['id'],
                 'open_id'       => $item['openid'],
