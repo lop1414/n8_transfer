@@ -93,8 +93,8 @@ class UserRegActionService extends PullUserActionBaseService
                 'oaid'         => $advData['oaid'] ?? '',
                 'os'           => $advData['os'] ?? '',
                 'click_at'     => $item['reg_time'],
-                'ad_id'        => $advData['adid'],
-                'creative_id'  => $advData['cid'],
+                'ad_id'        => $advData['adid'] ?? '',
+                'creative_id'  => $advData['cid'] ?? '',
                 'union_site'   => $unionSite,
                 'request_id'   => $requestId,
                 'type'         => $this->actionType
