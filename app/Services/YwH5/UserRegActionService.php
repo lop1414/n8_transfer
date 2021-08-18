@@ -3,7 +3,6 @@
 namespace App\Services\YwH5;
 
 
-use App\Common\Enums\ReportStatusEnum;
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Sdks\Yw\YwSdk;
@@ -80,27 +79,6 @@ class UserRegActionService extends PullUserActionBaseService
         ],$item);
 
 
-    }
-
-
-    public function updateItem($item){
-        if(empty($item['channel_id'])) return;
-
-        $info = $this->model->setTableNameWithMonth($item['create_time'])
-            ->where('cp_channel_id','')
-            ->where('open_id',$item['openid'])
-            ->where('action_time',$item['create_time'])
-            ->where('type',$this->actionType)
-            ->first();
-        if(empty($info)) return;
-
-        $info->cp_channel_id = $item['channel_id'];
-        $data =  $info->data;
-        // 补充信息
-        $data['replenish'] = ['cp_channel_id' => $item['channel_id']];
-        $this->data = $data;
-        $this->status = ReportStatusEnum::WAITING;
-        $info->save();
     }
 
 
