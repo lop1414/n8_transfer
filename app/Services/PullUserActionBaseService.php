@@ -234,6 +234,7 @@ class PullUserActionBaseService extends BaseService
             ->where('product_id',$this->product['id'])
             ->where('open_id',$data['open_id'])
             ->where('action_time',$data['action_time'])
+            ->where('type',$this->actionType)
             ->first();
 
         if(empty($info) || $info->status == ReportStatusEnum::DONE){
