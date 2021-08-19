@@ -65,34 +65,19 @@ class UserRegActionService extends PullUserActionBaseService
             $this->userFollowActionService->pullItem($item);
         }
 
-        $info = $this->model
-            ->setTableNameWithMonth($item['create_time'])
-            ->where('product_id',$this->product['id'])
-            ->where('open_id',$item['openid'])
-            ->where('action_time',$item['create_time'])
-            ->first();
-
-        if(empty($info) || $info->status == ReportStatusEnum::DONE){
-            $this->save([
-                'product_id'    => $this->product['id'],
-                'open_id'       => $item['openid'],
-                'action_time'   => $item['create_time'],
-                'cp_channel_id' => $item['channel_id'],
-                'request_id'    => '',
-                'ip'            => '',
-                'action_id'     => $item['openid'],
-                'matcher'       => $this->product['matcher'],
-                'extend'        => array_merge([
-                    'guid'      => $item['guid']
-                ],$this->filterExtendInfo($item)),
-            ],$item);
-            return ;
-        }
-
-        if(empty($info->cp_channel_id) && !empty($item['channel_id'])){
-            $info->cp_channel_id = $item['channel_id'];
-            $info->save();
-        }
+        $this->updateSave([
+            'product_id'    => $this->product['id'],
+            'open_id'       => $item['openid'],
+            'action_time'   => $item['create_time'],
+            'cp_channel_id' => $item['channel_id'],
+            'request_id'    => '',
+            'ip'            => '',
+            'action_id'     => $item['openid'],
+            'matcher'       => $this->product['matcher'],
+            'extend'        => array_merge([
+                'guid'      => $item['guid']
+            ],$this->filterExtendInfo($item)),
+        ],$item);
     }
 
 

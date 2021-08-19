@@ -65,7 +65,7 @@ class UserRegActionService extends PullUserActionBaseService
             $this->userFollowActionService->pullItem($item);
         }
 
-        $this->save([
+        $this->updateSave([
             'product_id'    => $this->product['id'],
             'open_id'       => $item['openid'],
             'action_time'   => date('Y-m-d H:i:s',$item['createtime']),

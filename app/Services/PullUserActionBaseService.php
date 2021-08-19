@@ -223,6 +223,40 @@ class PullUserActionBaseService extends BaseService
 
     }
 
+    /**
+     * @param $data
+     * @param $rawData
+     * 更新保存
+     */
+    public function updateSave($data,$rawData){
+        $info = $this->model
+            ->setTableNameWithMonth($data['action_time'])
+            ->where('product_id',$this->product['id'])
+            ->where('open_id',$data['open_id'])
+            ->where('action_time',$data['action_time'])
+            ->first();
+
+        if(empty($info) || $info->status == ReportStatusEnum::DONE){
+            $this->save($data,$rawData);
+            return ;
+        }
+
+        // 更新信息
+        if(empty($info->cp_channel_id) && !empty($item['cp_channel_id'])){
+            $info->cp_channel_id = $item['cp_channel_id'];
+        }
+
+        if((empty($info->ip) || $info->ip == '-') && !empty($item['ip'])){
+            $info->ip = $item['ip'];
+        }
+
+        if(empty($info->ua) && !empty($item['ua'])){
+            $info->ua = $item['ua'];
+        }
+
+        $info->save();
+    }
+
 
     /**
      * @param $data
