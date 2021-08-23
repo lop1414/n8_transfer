@@ -202,9 +202,6 @@ class PullUserActionBaseService extends BaseService
      */
     public function save($data,$rawData){
         $matcher =  $data['matcher'] ?? MatcherEnum::SYS;
-        if($this->product['id'] == 100 && $data['action_time'] < '2021-08-17 00:00:00'){
-            $matcher = MatcherEnum::CP;
-        }
         $this->model->setTableNameWithMonth($data['action_time'])->create([
             'product_id'    => $this->product['id'],
             'open_id'       => $data['open_id'],
