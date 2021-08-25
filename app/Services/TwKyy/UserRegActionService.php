@@ -71,13 +71,13 @@ class UserRegActionService extends PullUserActionBaseService
 
     public function pullItem($item){
 
-        $advData = $item['data'];
+        $advData = $item['data'] ?? [];
         $requestId = $advData['request_id'] ?? '';
 
         $adv = $this->getAdv($item['pt']);
 
         //有广告商
-        if(!empty($item['data'])){
+        if(!empty($advData)){
             if(empty($requestId)){
                 $requestId = 'n8_'.md5(uniqid());
             }
