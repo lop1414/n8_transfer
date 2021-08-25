@@ -36,7 +36,7 @@ class UserRegActionService extends PullUserActionBaseService
      * 获取腾文快应用广告商映射
      */
     public function getAdv($pt){
-        if(empty($this->twKyyAdvMap)){
+        if(empty($this->advMap)){
             $this->advMap = (new ConfigModel())
                 ->where('group',CpTypeEnums::TW)
                 ->where('k','adv_map')
@@ -44,7 +44,7 @@ class UserRegActionService extends PullUserActionBaseService
                 ->v;
         }
 
-        return $this->twKyyAdvMap[$pt] ?? '';
+        return $this->advMap[$pt] ?? '';
     }
 
 
