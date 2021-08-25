@@ -71,6 +71,7 @@ class UserRegActionService extends PullUserActionBaseService
 
     public function pullItem($item){
 
+        $advData = $item['data'];
         $requestId = $advData['request_id'] ?? '';
 
         $adv = $this->getAdv($item['pt']);
@@ -80,8 +81,6 @@ class UserRegActionService extends PullUserActionBaseService
             if(empty($requestId)){
                 $requestId = 'n8_'.md5(uniqid());
             }
-
-            $advData = $item['data'];
 
             $unionSite = '';
             if(isset($advData['union_site']) && $advData['union_site'] != '__UNION_SITE__'){
