@@ -62,12 +62,16 @@ class KsClickService extends AdvClickService
             ];
         }else{
             $unitId = $extends['ad_id'] ?? '';
-            $creativeId = $extends['creative_id'] ?? '';
             if(empty($unitId)){
                 $unitId = $extends['aid'] ?? '';
-                $creativeId = $extends['cid'] ?? '';
-
             }
+
+            $creativeId = $extends['creative_id'] ?? '';
+            if(empty($creativeId)){
+                $creativeId = $extends['cid'] ?? '';
+            }
+
+
             $data = [
                 'campaign_id' => '',
                 'unit_id'     => $unitId,
