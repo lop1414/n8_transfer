@@ -96,6 +96,7 @@ class Kernel extends ConsoleKernel
         //广告商点击数据上报
         $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN)->cron('* * * * *');
         $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::BD)->cron('* * * * *');
+        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::KS)->cron('* * * * *');
 
 
         //用户行为数据 拉取

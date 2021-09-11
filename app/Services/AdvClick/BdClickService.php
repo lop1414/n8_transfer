@@ -9,7 +9,7 @@ use App\Common\Enums\ReportStatusEnum;
 use App\Common\Services\SystemApi\AdvBdApiService;
 use App\Models\BaiDuClickModel;
 
-class BaiDuClickService extends AdvClickService
+class BdClickService extends AdvClickService
 {
 
     protected $adv = AdvAliasEnum::BD;

@@ -7,7 +7,8 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Tools\CustomException;
-use App\Services\AdvClick\BaiDuClickService;
+use App\Services\AdvClick\BdClickService;
+use App\Services\AdvClick\KsClickService;
 use App\Services\AdvClick\OceanClickService;
 
 class PushAdvClickCommand extends BaseCommand
@@ -69,7 +70,11 @@ class PushAdvClickCommand extends BaseCommand
 
 
     public function bd(){
-        (new BaiDuClickService())->push();
+        (new BdClickService())->push();
+    }
+
+    public function ks(){
+        (new KsClickService())->push();
     }
 
 
