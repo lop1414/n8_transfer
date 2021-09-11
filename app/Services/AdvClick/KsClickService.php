@@ -41,8 +41,9 @@ class KsClickService extends AdvClickService
     public function pushItem($item){
         $tmp = $item->toArray();
         $extends = $tmp['extends'];
-        $rawData = $extends['raw_data'] ?? [];
-        if(!empty($rawData)){
+
+        if(isset($extends['raw_data'])){
+            $rawData = $extends['raw_data'] ?? [];
             $data = [
                 'campaign_id' => $rawData['campaign_id'] ?? '',
                 'unit_id'     => $rawData['aid'] ?? '',
@@ -74,7 +75,7 @@ class KsClickService extends AdvClickService
                 'ip'          => $extends['ip'] ?? '',
                 'ua'          => $extends['ua'] ?? '',
                 'click_at'    => strtotime($tmp['click_at']). '000',
-                'callback'    => '',
+                'callback'    => $extends['url_info']['callback'] ?? '',
             ];
         }
 
