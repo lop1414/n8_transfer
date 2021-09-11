@@ -41,25 +41,45 @@ class KsClickService extends AdvClickService
     public function pushItem($item){
         $tmp = $item->toArray();
         $extends = $tmp['extends'];
-        $rawData = $extends['raw_data'];
+        $rawData = $extends['raw_data'] ?? [];
+        if(!empty($rawData)){
+            $data = [
+                'campaign_id' => $rawData['campaign_id'] ?? '',
+                'unit_id'     => $rawData['aid'] ?? '',
+                'creative_id' => $rawData['cid'] ?? '',
+                'channel_id'  => $tmp['channel_id'],
+                'request_id'  => $tmp['request_id'],
+                'muid'        => $rawData['muid'] ?? '',
+                'android_id'  => $rawData['android_id'] ?? '',
+                'oaid'        => $rawData['oaid'] ?? '',
+                'os'          => $rawData['os'] ?? '',
+                'oaid_md5'    => $rawData['oaid_md5'] ?? '',
+                'ip'          => $rawData['ip'] ?? '',
+                'ua'          => $rawData['ua'] ?? '',
+                'click_at'    => strtotime($tmp['click_at']). '000',
+                'callback'    => $extends['url_info']['callback'] ?? '',
+            ];
+        }else{
+            $data = [
+                'campaign_id' => '',
+                'unit_id'     => $extends['ad_id'] ?? '',
+                'creative_id' => $extends['creative_id'] ?? '',
+                'channel_id'  => $tmp['channel_id'],
+                'request_id'  => $tmp['request_id'],
+                'muid'        => $extends['muid'] ?? '',
+                'android_id'  => $extends['android_id'] ?? '',
+                'oaid'        => $extends['oaid'] ?? '',
+                'os'          => $extends['os'] ?? '',
+                'oaid_md5'    => $extends['oaid_md5'] ?? '',
+                'ip'          => $extends['ip'] ?? '',
+                'ua'          => $extends['ua'] ?? '',
+                'click_at'    => strtotime($tmp['click_at']). '000',
+                'callback'    => '',
+            ];
+        }
 
 
-        $data = [
-            'campaign_id' => $rawData['campaign_id'] ?? '',
-            'unit_id'     => $rawData['aid'] ?? '',
-            'creative_id' => $rawData['cid'] ?? '',
-            'channel_id'  => $tmp['channel_id'],
-            'request_id'  => $tmp['request_id'],
-            'muid'        => $rawData['muid'] ?? '',
-            'android_id'  => $rawData['android_id'] ?? '',
-            'oaid'        => $rawData['oaid'] ?? '',
-            'os'          => $rawData['os'] ?? '',
-            'oaid_md5'    => $rawData['oaid_md5'] ?? '',
-            'ip'          => $rawData['ip'] ?? '',
-            'ua'          => $rawData['ua'] ?? '',
-            'click_at'    => strtotime($tmp['click_at']). '000',
-            'callback'    => $extends['url_info']['callback'] ?? '',
-        ];
+
 
         $this->advKsApiService->apiCreateClick($data,$item['click_source']);
     }
