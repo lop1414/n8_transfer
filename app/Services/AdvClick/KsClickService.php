@@ -61,10 +61,17 @@ class KsClickService extends AdvClickService
                 'callback'    => $extends['url_info']['callback'] ?? '',
             ];
         }else{
+            $unitId = $extends['ad_id'] ?? '';
+            $creativeId = $extends['creative_id'] ?? '';
+            if(empty($unitId)){
+                $unitId = $extends['aid'] ?? '';
+                $creativeId = $extends['cid'] ?? '';
+
+            }
             $data = [
                 'campaign_id' => '',
-                'unit_id'     => $extends['ad_id'] ?? '',
-                'creative_id' => $extends['creative_id'] ?? '',
+                'unit_id'     => $unitId,
+                'creative_id' => $creativeId,
                 'channel_id'  => $tmp['channel_id'],
                 'request_id'  => $tmp['request_id'],
                 'muid'        => $extends['muid'] ?? '',
