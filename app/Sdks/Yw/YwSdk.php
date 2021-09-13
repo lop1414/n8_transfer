@@ -7,6 +7,7 @@ namespace App\Sdks\Yw;
 use App\Sdks\Yw\Traits\Order;
 use App\Sdks\Yw\Traits\Product;
 use App\Sdks\Yw\Traits\Request;
+use App\Sdks\Yw\Traits\Spread;
 use App\Sdks\Yw\Traits\User;
 
 class YwSdk
@@ -16,6 +17,7 @@ class YwSdk
     use Order;
     use Product;
     use User;
+    use Spread;
 
     /**
      * @var
