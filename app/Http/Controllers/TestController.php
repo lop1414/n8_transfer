@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Common\Controllers\Front\FrontController;
 
 
-use App\Common\Enums\CpTypeEnums;
-use App\Common\Enums\ProductTypeEnums;
-use App\Common\Enums\StatusEnum;
-use App\Services\BmKyy\UserRegActionService;
-use App\Services\ProductService;
+use App\Common\Enums\AdvAliasEnum;
+use App\Common\Services\SystemApi\UnionApiService;
+use App\Enums\UserActionTypeEnum;
+use App\Models\KuaiShouClickModel;
+use App\Models\MatchDataModel;
+use App\Services\AdvClick\SaveClickDataService;
+use App\Services\MatchDataService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TestController extends FrontController
 {
@@ -30,30 +33,79 @@ class TestController extends FrontController
             return $this->forbidden();
         }
 
-        $this->demo();
-        $productList = (new ProductService())->get([
-            'cp_type' => CpTypeEnums::BM,
-            'type'    => ProductTypeEnums::KYY,
-            'status'  => StatusEnum::ENABLE
-        ]);
-        $service = (new UserRegActionService())->setProduct($productList[0]);
-        $service->setTimeRange('2021-05-25 16:00:00', '2021-05-25 17:00:00');
-//        $service->setTimeRange('2021-08-26 00:00:00', '2021-08-26 17:00:00');
-        $service->pull();
+        $matchDataModel = new MatchDataModel();
+
+        $lastId = 0;
+        $channels= [];
+        $matchDataService = new MatchDataService();
+        do{
+            $list = $matchDataModel
+                ->where('adv_alias','KS')
+                ->where('type','ADD_SHORTCUT')
+                ->where('id','>',$lastId)
+                ->take(1000)
+                ->get();
+
+            foreach ($list as $data){
+                $lastId = $data['id'];
+
+                $rawData = $data['data'];
+                $openId = $rawData['raw_data']['guid'];
+                $cpChannelId = $data['cp_channel_id'];
+
+                $matchDataService->setDataRange('2021-08-09','2021-09-14');
+                $info = $matchDataService->getRegLogInfo($data['product_id'],$data['open_id']);
+
+                if(empty($info)){
+                    echo "kuai_shou:没有log: {$data['open_id']} \n";
+                    continue;
+                }
 
 
-    }
+                $requestId = 'n8_'.md5(uniqid());
+
+                $clickAt =  isset($data['data']['ts'])
+                    ? date('Y-m-d H:i:s',intval($data['data']['ts']/1000))
+                    : $info['action_time'];
+
+                $rawData['match_data_id'] = $data['id'];
+                (new SaveClickDataService())
+                    ->saveAdvClickData(AdvAliasEnum::KS,[
+                        'ip'           => $info['ip'],
+                        'ua'           => $info['extend']['ua'],
+                        'click_at'     => $clickAt,
+                        'type'         => UserActionTypeEnum::REG,
+                        'product_id'   => $data['product_id'],
+                        'request_id'   => $requestId,
+                        'extends'      => $rawData,
+                    ]);
 
 
-    public function demo(){
-        $productList = (new ProductService())->get([
-            'cp_type' => CpTypeEnums::YW,
-            'type'    => ProductTypeEnums::H5,
-            'status'  => StatusEnum::ENABLE,
-            'id'      => 109
-        ]);
-        $service = (new \App\Services\YwH5\UserRegActionService())->setProduct($productList[0]);
-        $service->pull();
+                // 获取渠道id
+                if(empty($channels[$cpChannelId])){
+                    $channels[$cpChannelId] = (new UnionApiService())->apiReadChannel([
+                        'product_id' => $data['product_id'],
+                        'cp_channel_id' => $cpChannelId,
+                    ]);
+                }
+
+                $channelId = $channels[$cpChannelId]['id'];
+
+                // 更改联运用户 request_id
+                $globalUser = DB::select("SELECT * FROM n8_union.n8_global_users WHERE product_id = {$data['product_id']} AND open_id= {$openId}");
+                if(empty($globalUser)) continue;
+                $globalUser = $globalUser[0];
+
+                $unionUser = DB::select("SELECT * FROM n8_union.n8_union_users WHERE n8_guid = {$globalUser->n8_guid} AND channel_id= {$channelId} AND click_id = 0");
+                if(empty($unionUser)) continue;
+                $unionUser = $unionUser[0];
+
+                DB::update("UPDATE n8_union.n8_union_user_extends SET request_id = '{$requestId}' WHERE uuid = {$unionUser->id}");
+                echo $unionUser->id."\n";
+                die;
+            }
+
+        }while(!$list->isEmpty());
     }
 
 
