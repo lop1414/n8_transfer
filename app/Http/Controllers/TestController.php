@@ -49,8 +49,8 @@ class TestController extends FrontController
             foreach ($list as $data){
                 $lastId = $data['id'];
 
-                $rawData = $data['data'];
-                $openId = $rawData['raw_data']['guid'];
+                $rawData = $data['data']['raw_data'];
+                $openId = $rawData['guid'];
                 $cpChannelId = $data['cp_channel_id'];
 
                 $matchDataService->setDataRange('2021-08-09','2021-09-14');
