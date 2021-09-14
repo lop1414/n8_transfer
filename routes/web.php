@@ -72,6 +72,7 @@ $router->group([
     $router->group(['prefix' => 'yw'], function () use ($router) {
         $router->get('quickapp_user/select', 'Proxy\Yw\QuickappUserController@select');
         $router->get('quickapp_order/select', 'Proxy\Yw\QuickappOrderController@select');
+        $router->get('quickapp_spread/select', 'Proxy\Yw\QuickappSpreadController@select');
     });
 });
 
