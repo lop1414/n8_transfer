@@ -227,6 +227,7 @@ class MatchDataService extends BaseService
 
 
 
+
     /**
      * @param $productId
      * @param $openId
@@ -263,6 +264,14 @@ class MatchDataService extends BaseService
         }
 
         return $info;
+    }
+
+
+    public function setDataRange($start,$end){
+        $this->dateRange = [
+            'start' => $start,
+            'end'   => $end
+        ];
     }
 
 }
