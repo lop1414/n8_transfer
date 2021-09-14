@@ -68,19 +68,14 @@ class TestController extends FrontController
                     ? date('Y-m-d H:i:s',intval($data['data']['ts']/1000))
                     : $info['action_time'];
 
-                $rawData['raw_data'] = $rawData['extends'];
-                unset($rawData['extends']);
                 $rawData['match_data_id'] = $data['id'];
+                $rawData['raw_data']['ip'] = $info['ip'];
+                $rawData['raw_data']['ua'] = $info['extend']['ua'];
+                $rawData['click_at'] = $clickAt;
+                $rawData['request_id'] = $requestId;
+                dd($rawData);
                 (new SaveClickDataService())
-                    ->saveAdvClickData(AdvAliasEnum::KS,[
-                        'ip'           => $info['ip'],
-                        'ua'           => $info['extend']['ua'],
-                        'click_at'     => $clickAt,
-                        'type'         => UserActionTypeEnum::REG,
-                        'product_id'   => $data['product_id'],
-                        'request_id'   => $requestId,
-                        'extends'      => $rawData,
-                    ]);
+                    ->saveAdvClickData(AdvAliasEnum::KS,$rawData);
 
 
                 // 获取渠道id
