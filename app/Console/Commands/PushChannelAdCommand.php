@@ -7,6 +7,7 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Common\Enums\PlatformEnum;
 use App\Common\Services\ErrorLogService;
 use App\Common\Services\SystemApi\AdvBdApiService;
+use App\Common\Services\SystemApi\AdvKsApiService;
 use App\Common\Services\SystemApi\AdvOceanApiService;
 use App\Common\Services\SystemApi\UnionApiService;
 use App\Common\Tools\CustomException;
@@ -93,6 +94,13 @@ class PushChannelAdCommand extends BaseCommand
                     (new AdvBdApiService())->apiUpdateChannelAdgroup(
                         $data['channel_id'],
                         $data['adgroup_ids'],
+                        PlatformEnum::DEFAULT,
+                        $channel
+                    );
+                }elseif ($data['adv_alias'] == AdvAliasEnum::KS){
+                    (new AdvKsApiService())->apiUpdateChannelUnit(
+                        $data['channel_id'],
+                        $data['ad_ids'],
                         PlatformEnum::DEFAULT,
                         $channel
                     );

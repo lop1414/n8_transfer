@@ -39,4 +39,15 @@ class ChannelRelationAdController extends BaseController
     }
 
 
+    public function ks(Request $request){
+        $reqData = $request->all();
+
+        $reqData['adv_alias'] = AdvAliasEnum::KS;
+
+        $service = new DataToQueueService(QueueEnums::PUSH_CHANNEL_AD);
+        $service->push($reqData);
+        return $this->_response(0,'success');
+    }
+
+
 }
