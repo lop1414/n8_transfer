@@ -100,7 +100,7 @@ class PushChannelAdCommand extends BaseCommand
                 }elseif ($data['adv_alias'] == AdvAliasEnum::KS){
                     (new AdvKsApiService())->apiUpdateChannelUnit(
                         $data['channel_id'],
-                        $data['ad_ids'],
+                        $data['unit_ids'],
                         PlatformEnum::DEFAULT,
                         $channel
                     );
