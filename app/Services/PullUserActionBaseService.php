@@ -263,6 +263,7 @@ class PullUserActionBaseService extends BaseService
      */
     public function filterExtendInfo($data){
         return array(
+            'click_id'              => $data['click_id'] ?? '',
             'ua'                    => $data['ua'] ?? '',
             'muid'                  => $data['muid'] ?? '',
             'oaid'                  => $data['oaid'] ?? '',
