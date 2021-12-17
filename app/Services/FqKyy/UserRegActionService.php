@@ -45,7 +45,7 @@ class UserRegActionService extends PullUserActionBaseService
 
     public function pullItem($item){
 
-        $userAdInfo = $item['ad_info'] ?: ['ip' => '','user_agent' => '','click_id'  => '','oaid' => '','caid' => ''];
+        $userAdInfo = $item['ad_info'] ?: ['ip' => '','user_agent' => '','clickid'  => '','oaid' => '','caid' => ''];
         $item['oaid'] = $item['oaid'] ?: $userAdInfo['oaid'];
         $item['caid'] = $item['caid'] ?: $userAdInfo['caid'];
         $this->save([
@@ -56,7 +56,7 @@ class UserRegActionService extends PullUserActionBaseService
             'matcher'       => $this->product['matcher'],
             'ip'            => $userAdInfo['ip'],
             'user_agent'    => $userAdInfo['user_agent'],
-            'adv_click_id'  => $userAdInfo['click_id'] ?? '',
+            'adv_click_id'  => $userAdInfo['clickid'],
             'extend'        => $this->filterExtendInfo($item),
             'request_id'    => ''
         ],$item);
