@@ -46,8 +46,6 @@ class UserOrderActionService extends PullUserActionBaseService
 
 
     public function pullItem($item){
-        $item['status']  = 0;
-        $item['pay_time'] = date('Y-m-d H:i:s');
         if($item['status'] == 0){
             $this->completeOrderService->pullItem($item);
         }
