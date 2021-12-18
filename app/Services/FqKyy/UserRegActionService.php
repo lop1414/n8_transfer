@@ -55,7 +55,7 @@ class UserRegActionService extends PullUserActionBaseService
             'cp_channel_id' => $item['promotion_id'],
             'matcher'       => $this->product['matcher'],
             'ip'            => $userAdInfo['ip'],
-            'user_agent'    => $userAdInfo['user_agent'],
+            'ua'            => $userAdInfo['user_agent'],
             'adv_click_id'  => $userAdInfo['clickid'],
             'extend'        => $this->filterExtendInfo($item),
             'request_id'    => ''
