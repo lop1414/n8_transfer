@@ -22,41 +22,29 @@ class UserRegActionService extends PullUserActionBaseService
         $sdk = new FqSdk($this->product['cp_product_alias'],$this->product['cp_secret']);
 
         echo "{$this->startTime} ~ {$this->endTime}\n";
-        $offset = 0;
+        $page = 0;
         $data = [];
+        $pageSize = 100;
         do{
-            $list =  $sdk->getUsers($this->startTime,$this->endTime,$offset);
-            foreach ($list['result'] as $item ){
-
-                $tmp = $sdk->readAdInfo($item['device_id']);
-
-
-                $userAdInfo = empty($tmp['result']) ? [] :$tmp['result'][0];
-
-                $item['ad_info'] = $userAdInfo;
-                $data[] = $item ;
-            }
-            $offset = $list['next_offset'];
-
-        }while($list['has_more']);
+            $list =  $sdk->getUserList($this->startTime,$this->endTime,$page,$pageSize);
+            $data = array_merge($list['data'],$data);
+            $page += 1;
+            $number = count($data);
+        }while($number < $list['total']);
         return $data;
     }
 
 
     public function pullItem($item){
-
-        $userAdInfo = $item['ad_info'] ?: ['ip' => '','user_agent' => '','clickid'  => '','oaid' => '','caid' => ''];
-        $item['oaid'] = $item['oaid'] ?: $userAdInfo['oaid'];
-        $item['caid'] = $item['caid'] ?: $userAdInfo['caid'];
         $this->save([
-            'open_id'       => $item['device_id'],
-            'action_id'     => $item['device_id'],
-            'action_time'   => date('Y-m-d H:i:s',$item['register_timestamp']),
+            'open_id'       => $item['encrypted_device_id'],
+            'action_id'     => $item['encrypted_device_id'],
+            'action_time'   => $item['register_time'],
             'cp_channel_id' => $item['promotion_id'],
             'matcher'       => $this->product['matcher'],
-            'ip'            => $userAdInfo['ip'],
-            'ua'            => $userAdInfo['user_agent'],
-            'adv_click_id'  => $userAdInfo['clickid'],
+            'ip'            => $item['ip'] ?? '',
+            'ua'            => $item['user_agent'] ?? '',
+            'adv_click_id'  => $item['clickid'],
             'extend'        => $this->filterExtendInfo($item),
             'request_id'    => ''
         ],$item);

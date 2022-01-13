@@ -6,7 +6,22 @@ namespace App\Sdks\Fq\Traits;
 trait User
 {
 
-    public function getUsers($startTime,$endTime,$offset = 0, $limit = 1000){
+    public function getUserList($startTime,$endTime,$page = 0, $pageSize = 100){
+        $uri = 'novelsale/openapi/user/list/v1';
+        $param = [
+            'begin' => strtotime($startTime),
+            'end' => strtotime($endTime),
+            'show_not_recharge' => true,
+            'page_size'  => $pageSize,
+            'page_index' => $page
+        ];
+
+        return $this->apiRequest($uri,$param);
+    }
+
+
+
+    public function getUsers($startTime,$endTime,$offset = 0, $limit = 100){
         $uri = 'novelsale/openapi/user/distribution/v1';
         $param = [
             'begin' => strtotime($startTime),
