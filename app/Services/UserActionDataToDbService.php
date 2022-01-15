@@ -6,7 +6,9 @@ use App\Common\Enums\ReportStatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Tools\CustomQueue;
+use App\Common\Tools\CustomRedis;
 use App\Enums\QueueEnums;
+use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
 
 class UserActionDataToDbService extends BaseService
@@ -46,6 +48,28 @@ class UserActionDataToDbService extends BaseService
             $data['product_id'] = $product['id'];
             $data['status'] = ReportStatusEnum::WAITING;
             $data['matcher'] = $product['matcher'];
+
+
+            if($data['type'] == UserActionTypeEnum::ADD_SHORTCUT){
+                $keyArr = ['user_add_shortcut_log',$data['open_id'],$data['product_id'],$data['type'],$data['cp_channel_id'],$data['action_id']];
+                $key = implode(':',$keyArr);
+
+                $customRedis = new CustomRedis();
+                $info = $customRedis->get($key);
+
+                if(!empty($info)){
+                    echo "重复加桌\n";
+                    return;
+                }
+
+                $logInfo = (new UserActionLogModel())
+                    ->setTableNameWithMonth($data['action_time'])
+                    ->create($data);
+                $customRedis->set($key,$logInfo->toArray());
+                $customRedis->expire($key,7200);
+
+                return;
+            }
 
             (new UserActionLogModel())
                 ->setTableNameWithMonth($data['action_time'])
