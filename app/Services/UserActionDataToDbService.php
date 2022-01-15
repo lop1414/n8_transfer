@@ -62,10 +62,10 @@ class UserActionDataToDbService extends BaseService
                     return;
                 }
 
-                $logInfo = (new UserActionLogModel())
+                (new UserActionLogModel())
                     ->setTableNameWithMonth($data['action_time'])
                     ->create($data);
-                $customRedis->set($key,$logInfo->toArray());
+                $customRedis->set($key,1);
                 $customRedis->expire($key,7200);
 
                 return;
