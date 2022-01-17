@@ -4,16 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Common\Controllers\Front\FrontController;
 
-
-use App\Common\Enums\AdvAliasEnum;
-use App\Common\Services\SystemApi\UnionApiService;
-use App\Enums\UserActionTypeEnum;
-use App\Models\KuaiShouClickModel;
-use App\Models\MatchDataModel;
-use App\Services\AdvClick\SaveClickDataService;
-use App\Services\MatchDataService;
+use App\Common\Enums\StatusEnum;
+use App\Common\Models\FailedQueueModel;
+use App\Common\Services\DataToQueueService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class TestController extends FrontController
 {
@@ -33,74 +27,32 @@ class TestController extends FrontController
             return $this->forbidden();
         }
 
-        $matchDataModel = new MatchDataModel();
-
-        $lastId = 0;
-        $channels= [];
-        $matchDataService = new MatchDataService();
+        $model = new FailedQueueModel();
         do{
-            $list = $matchDataModel
-                ->where('adv_alias','KS')
-                ->where('type','ADD_SHORTCUT')
-                ->where('id','>',$lastId)
+            $list = $model
+                ->where('queue','queue:USER_ADD_SHORTCUT_ACTION')
+                ->where('status',StatusEnum::ENABLE)
+                ->skip(0)
                 ->take(1000)
                 ->get();
+            foreach ($list as $item){
+                $data = json_decode(json_encode($item['data']),true);
+                $queueEnums = str_replace('queue:','', $item['queue']);
 
-            foreach ($list as $data){
-                $lastId = $data['id'];
+                // push to queue
+                $service = new DataToQueueService($queueEnums);
 
-                $rawData = $data['data'];
-                $openId = $rawData['raw_data']['guid'];
-                $cpChannelId = $data['cp_channel_id'];
-
-                $matchDataService->setDataRange('2021-08-09','2021-09-14');
-                $info = $matchDataService->getRegLogInfo($data['product_id'],$data['open_id']);
-
-                if(empty($info)){
-                    echo "kuai_shou:没有log: {$data['open_id']} \n";
-                    continue;
+                if(strlen($data['data']['data']['time']) == 13){
+                    $time = floor($data['data']['data']['time']/1000);
+                    $data['data']['action_time'] = date('Y-m-d H:i:s',$time);
                 }
 
-
-                $requestId = 'n8_'.md5(uniqid());
-
-                $clickAt =  isset($data['data']['ts'])
-                    ? date('Y-m-d H:i:s',intval($data['data']['ts']/1000))
-                    : $info['action_time'];
-
-                $rawData['match_data_id'] = $data['id'];
-                $rawData['raw_data']['ip'] = $info['ip'];
-                $rawData['raw_data']['ua'] = $info['extend']['ua'];
-                $rawData['click_at'] = $clickAt;
-                $rawData['request_id'] = $requestId;
-                dd($rawData);
-                (new SaveClickDataService())
-                    ->saveAdvClickData(AdvAliasEnum::KS,$rawData);
-
-
-                // 获取渠道id
-                if(empty($channels[$cpChannelId])){
-                    $channels[$cpChannelId] = (new UnionApiService())->apiReadChannel([
-                        'product_id' => $data['product_id'],
-                        'cp_channel_id' => $cpChannelId,
-                    ]);
-                }
-
-                $channelId = $channels[$cpChannelId]['id'];
-
-                // 更改联运用户 request_id
-                $globalUser = DB::select("SELECT * FROM n8_union.n8_global_users WHERE product_id = {$data['product_id']} AND open_id= {$openId}");
-                if(empty($globalUser)) continue;
-                $globalUser = $globalUser[0];
-
-                $unionUser = DB::select("SELECT * FROM n8_union.n8_union_users WHERE n8_guid = {$globalUser->n8_guid} AND channel_id= {$channelId} AND click_id = 0");
-                if(empty($unionUser)) continue;
-                $unionUser = $unionUser[0];
-
-                DB::update("UPDATE n8_union.n8_union_user_extends SET request_id = '{$requestId}' WHERE uuid = {$unionUser->id}");
-                echo $unionUser->id."\n";
-                die;
+                $service->push($data['data']);
+                echo $item->id. "|";
+                // 删除
+                return $item->delete();
             }
+
 
         }while(!$list->isEmpty());
     }
