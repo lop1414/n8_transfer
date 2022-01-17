@@ -42,7 +42,7 @@ class TestController extends FrontController
                 // push to queue
                 $service = new DataToQueueService($queueEnums);
 
-                if(strlen($data['data']['data']['time']) == 13){
+                if(isset($data['data']['data']['time']) && strlen($data['data']['data']['time']) == 13){
                     $time = floor($data['data']['data']['time']/1000);
                     $data['data']['action_time'] = date('Y-m-d H:i:s',$time);
                 }
@@ -50,10 +50,8 @@ class TestController extends FrontController
                 $service->push($data['data']);
                 echo $item->id. "|";
                 // 删除
-                return $item->delete();
+                $item->delete();
             }
-
-
         }while(!$list->isEmpty());
     }
 
