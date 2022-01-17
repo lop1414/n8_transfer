@@ -47,7 +47,7 @@ class UserCompleteOrderActionService extends PullUserActionBaseService
                 'action_id'     => $item['trade_no'],
                 'matcher'       => $this->product['matcher'],
                 'extend'        => array_merge([
-                    'order_id'      => $item['device_id']
+                    'order_id'      => $item['trade_no']
                 ],$this->filterExtendInfo($item)),
             ],$item);
         }
