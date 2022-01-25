@@ -23,12 +23,12 @@ class UserAddShortcutActionService extends PullUserActionBaseService
         echo "{$this->startTime} ~ {$this->endTime}\n";
         $offset = 0;
         $data = [];
-        do{
-            $list =  $sdk->getAddDesktopActions($this->startTime,$this->endTime,$offset);
-            $data = array_merge($list['result'],$data);
-            $offset = $list['next_offset'];
-
-        }while($list['has_more']);
+//        do{
+//            $list =  $sdk->getAddDesktopActions($this->startTime,$this->endTime,$offset);
+//            $data = array_merge($list['result'],$data);
+//            $offset = $list['next_offset'];
+//
+//        }while($list['has_more']);
         return $data;
     }
 
@@ -36,12 +36,12 @@ class UserAddShortcutActionService extends PullUserActionBaseService
     public function pullItem($item){
         $this->save([
             'product_id'    => $this->product['id'],
-            'open_id'       => $item['device_id'],
+            'open_id'       => $item['encrypted_device_id'],
             'action_time'   => date('Y-m-d H:i:s',$item['timestamp']),
-            'cp_channel_id' => '',
+            'cp_channel_id' => $item['promotion_id'],
             'request_id'    => '',
-            'ip'            => '',
-            'action_id'     => $item['device_id'],
+            'ip'            => $item['ip'],
+            'action_id'     => $item['encrypted_device_id'],
             'matcher'       => $this->product['matcher'],
             'extend'        => $this->filterExtendInfo($item),
         ],$item);

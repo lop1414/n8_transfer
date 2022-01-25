@@ -48,6 +48,9 @@ class UserRegActionService extends PullUserActionBaseService
             'extend'        => $this->filterExtendInfo($item),
             'request_id'    => ''
         ],$item);
+        if($item['timestamp'] > 0){
+            (new UserAddShortcutActionService())->setProduct($this->product)->pullItem($item);
+        }
 
     }
 
