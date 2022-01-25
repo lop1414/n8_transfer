@@ -36,6 +36,10 @@ class UserRegActionService extends PullUserActionBaseService
 
 
     public function pullItem($item){
+
+        if($item['timestamp'] > 0){
+            (new UserAddShortcutActionService())->setProduct($this->product)->pullItem($item);
+        }
         $this->save([
             'open_id'       => $item['encrypted_device_id'],
             'action_id'     => $item['encrypted_device_id'],
@@ -48,9 +52,6 @@ class UserRegActionService extends PullUserActionBaseService
             'extend'        => $this->filterExtendInfo($item),
             'request_id'    => ''
         ],$item);
-        if($item['timestamp'] > 0){
-            (new UserAddShortcutActionService())->setProduct($this->product)->pullItem($item);
-        }
 
     }
 
