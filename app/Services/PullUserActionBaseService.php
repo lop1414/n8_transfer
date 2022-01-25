@@ -313,7 +313,7 @@ class PullUserActionBaseService extends BaseService
      * 后期缓存下标
      */
     public function getLogKey($data){
-        $keyArr = ['user_add_shortcut_log',$data['open_id'],$data['product_id'],$data['cp_channel_id'],$data['action_id']];
+        $keyArr = ['user_add_shortcut_log',$data['product_id'],$data['open_id'],$data['cp_channel_id'],$data['action_id']];
         return implode(':',$keyArr);
     }
 
