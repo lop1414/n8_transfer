@@ -51,13 +51,8 @@ class UserActionDataToDbService extends BaseService
 
 
             if($data['type'] == UserActionTypeEnum::ADD_SHORTCUT){
-                $keyArr = ['user_add_shortcut_log',$data['open_id'],$data['product_id'],$data['type'],$data['cp_channel_id'],$data['action_id']];
-                $key = implode(':',$keyArr);
-
-                $customRedis = new CustomRedis();
-                $info = $customRedis->get($key);
-
-                if(!empty($info)){
+                $tmpService = new PullUserActionBaseService();
+                if($tmpService->isRepeatAddShortcut($data)){
                     echo "重复加桌\n";
                     return;
                 }
@@ -65,8 +60,7 @@ class UserActionDataToDbService extends BaseService
                 (new UserActionLogModel())
                     ->setTableNameWithMonth($data['action_time'])
                     ->create($data);
-                $customRedis->set($key,1);
-                $customRedis->expire($key,7200);
+                $tmpService->setAddShortcutCacheLog($data);
 
                 return;
             }

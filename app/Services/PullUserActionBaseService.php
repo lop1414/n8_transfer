@@ -9,6 +9,7 @@ use App\Common\Services\BaseService;
 use App\Common\Services\ConsoleEchoService;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
+use App\Common\Tools\CustomRedis;
 use App\Models\UserActionLogModel;
 use App\Sdks\N8\N8Sdk;
 use App\Services\AdvClick\SaveClickDataService;
@@ -277,6 +278,43 @@ class PullUserActionBaseService extends BaseService
             'device_platform_version_code' => $data['device_platform_version_code'] ?? '',
             'android_id'            => $data['android_id'] ?? ''
         );
+    }
+
+
+
+
+    /**
+     * @param $data
+     * @return bool
+     * 是否重复加桌
+     */
+    public function isRepeatAddShortcut($data){
+        $key = $this->getLogKey($data);
+        $customRedis = new CustomRedis();
+        $info = $customRedis->get($key);
+        return !!$info;
+    }
+
+
+    /**
+     * @param $data
+     * 设置加桌缓存记录
+     */
+    public function setAddShortcutCacheLog($data){
+        $key = $this->getLogKey($data);
+        $customRedis = new CustomRedis();
+        $customRedis->set($key,1);
+        $customRedis->expire($key,7200);
+    }
+
+    /**
+     * @param $data
+     * @return string
+     * 后期缓存下标
+     */
+    public function getLogKey($data){
+        $keyArr = ['user_add_shortcut_log',$data['open_id'],$data['product_id'],$data['cp_channel_id'],$data['action_id']];
+        return implode(':',$keyArr);
     }
 
 }

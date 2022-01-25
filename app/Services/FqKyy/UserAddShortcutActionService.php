@@ -34,7 +34,7 @@ class UserAddShortcutActionService extends PullUserActionBaseService
 
 
     public function pullItem($item){
-        $this->save([
+        $saveData = [
             'product_id'    => $this->product['id'],
             'open_id'       => $item['encrypted_device_id'],
             'action_time'   => date('Y-m-d H:i:s',$item['timestamp']),
@@ -44,7 +44,14 @@ class UserAddShortcutActionService extends PullUserActionBaseService
             'action_id'     => $item['encrypted_device_id'],
             'matcher'       => $this->product['matcher'],
             'extend'        => $this->filterExtendInfo($item),
-        ],$item);
+        ];
+
+        // 重复加桌
+        if($this->isRepeatAddShortcut($saveData)){
+            return;
+        }
+
+        $this->save($saveData,$item);
 
     }
 }
