@@ -21,8 +21,6 @@ class QueueEnums
     const OCEAN_MATCH_DATA = 'OCEAN_MATCH_DATA';
     const KUAI_SHOU_MATCH_DATA = 'KUAI_SHOU_MATCH_DATA';
     const FORWARD_DATA = 'FORWARD_DATA';
-    const PUSH_CHANNEL_AD = 'PUSH_CHANNEL_AD';
-
 
 
 
@@ -43,8 +41,7 @@ class QueueEnums
         ['id' => self::USER_COMPLETE_ORDER_ACTION,'name' => '完成订单', 'type' => ''],
         ['id' => self::OCEAN_MATCH_DATA,        'name' => '头条匹配数据', 'type' => 'match'],
         ['id' => self::KUAI_SHOU_MATCH_DATA,    'name' => '快手匹配数据', 'type' => 'match'],
-        ['id' => self::FORWARD_DATA,    'name' => '转发数据', 'type' => ''],
-        ['id' => self::PUSH_CHANNEL_AD,    'name' => '推送渠道计划', 'type' => ''],
+        ['id' => self::FORWARD_DATA,    'name' => '转发数据', 'type' => '']
     ];
 
 

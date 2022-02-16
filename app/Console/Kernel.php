@@ -10,7 +10,6 @@ use App\Console\Commands\ForwardDataCommand;
 use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
-use App\Console\Commands\PushChannelAdCommand;
 use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UpdateUserActionLogCommand;
@@ -53,9 +52,6 @@ class Kernel extends ConsoleKernel
         CheckOrderCommand::class,
         // 转发数据
         ForwardDataCommand::class,
-
-        // 转发渠道计划信息
-        PushChannelAdCommand::class,
 
     ];
 
@@ -109,10 +105,7 @@ class Kernel extends ConsoleKernel
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";
         $schedule->command("yw:check_order --time={$tmpRange}")->cron('2 * * * *');
 
-
-
         $schedule->command("update_user_action --cp_type=YW --time={$twoMinuteRange}")->cron('* * * * *');
-
 
         //阅文 补充用户行为的渠道信息等
         $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*12)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";
@@ -120,7 +113,6 @@ class Kernel extends ConsoleKernel
 
 
         $schedule->command("forward_data")->cron('* * * * *');
-        $schedule->command("push_channel_ad")->cron('* * * * *');
     }
 
 
