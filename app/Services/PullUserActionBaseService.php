@@ -133,6 +133,7 @@ class PullUserActionBaseService extends BaseService
     public function pull(){
         $list = $this->pullPrepare();
         echo "total:".count($list)."\n";
+        $arr = [];
         foreach ($list as $item){
 
             try{
@@ -154,12 +155,14 @@ class PullUserActionBaseService extends BaseService
                     echo $e->getMessage()."\n";
                 }else{
                     echo "  命中唯一索引 \n";
+                    $arr[] = $item;
                     $this->updateItem($item);
                 }
 
             }
         }
         $this->pullAfter();
+        echo "命中唯一索引总数:".count($arr);
     }
 
 
