@@ -24,7 +24,7 @@ class UserAddShortcutActionService extends PullUserActionBaseService
         $page = 1;
         do{
             $tmp =  $sdk->getInstallUsers($this->startTime, $this->endTime, $page);
-            if(!empty($tmp['list'])) dd($tmp);
+
             $data = array_merge($data,$tmp['list']);
             $page += 1;
 
@@ -42,7 +42,7 @@ class UserAddShortcutActionService extends PullUserActionBaseService
             $this->save([
                 'product_id'    => $this->product['id'],
                 'open_id'       => $item['uuid'],
-                'action_time'   => date('Y-m-d H:i:s',$item['regTime']),
+                'action_time'   => date('Y-m-d H:i:s',$item['installTime']),
                 'cp_channel_id' => $item['channelid'],
                 'request_id'    => '',
                 'ip'            => $item['regIp'] ?? '',
