@@ -317,4 +317,18 @@ class PullUserActionBaseService extends BaseService
         return implode(':',$keyArr);
     }
 
+
+    /**
+     * @param $ip
+     * @return bool
+     * 是否为ip v6
+     */
+    public function isIpv6($ip){
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

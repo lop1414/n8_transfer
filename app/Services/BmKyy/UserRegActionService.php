@@ -72,7 +72,9 @@ class UserRegActionService extends PullUserActionBaseService
         $item['ua'] = $item['regUa'] ?? '';
         $item['android_id'] = $item['androidid'] ?? '';
         $ip = $item['clientIp'] ?? '';
-        $ip = is_int($ip) ? long2ip($ip) : $ip;
+        if(!empty($ip)){
+            $ip = $this->isIpv6($ip) ? $ip :long2ip($ip);
+        }
 
         //有匹配到的计划
         if(!empty($item['externalPlanid'])){
