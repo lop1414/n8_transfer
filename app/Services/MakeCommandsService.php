@@ -21,6 +21,13 @@ class MakeCommandsService
                 UserActionTypeEnum::ORDER,
             ]
         ],
+        CpTypeEnums::BM => [
+            ProductTypeEnums::KYY => [
+                UserActionTypeEnum::REG,
+                UserActionTypeEnum::ADD_SHORTCUT,
+                UserActionTypeEnum::ORDER,
+            ]
+        ],
         CpTypeEnums::TW => [
             ProductTypeEnums::KYY => [
                 UserActionTypeEnum::REG,

@@ -9,10 +9,10 @@ use App\Sdks\Bm\BmSdk;
 use App\Services\PullUserActionBaseService;
 
 
-class UserAddShortcutActionService extends PullUserActionBaseService
+class UserCompleteOrderActionService extends PullUserActionBaseService
 {
 
-    protected $actionType = UserActionTypeEnum::ADD_SHORTCUT;
+    protected $actionType = UserActionTypeEnum::COMPLETE_ORDER;
 
     protected $source = DataSourceEnums::CP;
 
@@ -23,33 +23,36 @@ class UserAddShortcutActionService extends PullUserActionBaseService
         $data = [];
         $page = 1;
         do{
-            $tmp =  $sdk->getInstallUsers($this->startTime, $this->endTime, $page);
-            if(!empty($tmp['list'])) dd($tmp);
+            $tmp =  $sdk->getPayOrders($this->startTime, $this->endTime, $page);
+
             $data = array_merge($data,$tmp['list']);
             $page += 1;
 
         }while($page <= $tmp['totalPage']);
 
-
         return $data;
     }
 
 
-    public function pullItem($item){
+    public function pullItem($item)
+    {
 
-        // 加桌
-        if($item['isInstall'] == 1){
+        if($item['orderStatus'] == 1){
             $this->save([
                 'product_id'    => $this->product['id'],
                 'open_id'       => $item['uuid'],
-                'action_time'   => date('Y-m-d H:i:s',$item['regTime']),
+                'action_time'   => date('Y-m-d H:i:s',$item['payTime']),
                 'cp_channel_id' => $item['channelid'],
                 'request_id'    => '',
-                'ip'            => $item['regIp'] ?? '',
-                'action_id'     => $item['uuid'],
+                'ip'            => '',
+                'action_id'     => $item['orderSn'],
                 'matcher'       => $this->product['matcher'],
-                'extend'        => $this->filterExtendInfo($item),
+                'extend'        => array_merge([
+                    'order_id'      => $item['orderSn']
+                ],$this->filterExtendInfo($item)),
             ],$item);
         }
     }
+
+
 }

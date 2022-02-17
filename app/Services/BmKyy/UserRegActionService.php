@@ -48,14 +48,11 @@ class UserRegActionService extends PullUserActionBaseService
 
         $sdk = new BmSdk($this->product['cp_product_alias'],$this->product['cp_secret']);
         $this->userAddShortcutActionService->setProduct($this->product);
-        $startTime = strtotime($this->startTime);
-        $endTime = strtotime($this->endTime);
 
         $data = [];
         $page = 1;
         do{
-            $tmp =  $sdk->getUsers($startTime, $endTime, $page);
-
+            $tmp =  $sdk->getChangeChannelLog($this->startTime, $this->endTime, $page);
             $data = array_merge($data,$tmp['list']);
             $page += 1;
 
@@ -71,7 +68,11 @@ class UserRegActionService extends PullUserActionBaseService
         $requestId = 'n8_'.md5(uniqid());
 
         $adv = $this->getAdv($item['platform']);
-        $ip = long2ip($item['clientIp']);
+
+        $item['ua'] = $item['regUa'] ?? '';
+        $item['android_id'] = $item['androidid'] ?? '';
+        $ip = $item['clientIp'] ?? '';
+        $ip = is_int($ip) ? long2ip($ip) : $ip;
 
         //有匹配到的计划
         if(!empty($item['externalPlanid'])){
@@ -80,10 +81,10 @@ class UserRegActionService extends PullUserActionBaseService
                 'ip'           => $ip,
                 'muid'         => '',
                 'oaid'         => $item['oaid'] ?? '',
-                'os'           => $advData['os'] ?? '',
-                'click_at'     => $item['reg_time'],
-                'ad_id'        => $advData['adid'] ?? '',
-                'creative_id'  => $advData['cid'] ?? '',
+                'os'           => 0,
+                'click_at'     => $item['createTime'],
+                'ad_id'        => $item['externalPlanid'],
+                'creative_id'  => '',
                 'union_site'   => '',
                 'request_id'   => $requestId,
                 'type'         => $this->actionType
@@ -93,26 +94,17 @@ class UserRegActionService extends PullUserActionBaseService
             $this->saveAdvClickData($adv,$clickData);
         }
 
+
+
         $this->save([
-            'open_id'       => $item['id'],
-            'action_time'   => date('Y-m-d H:i:s',$item['regTime']),
-            'cp_channel_id' => $item['channel_id'],
+            'open_id'       => $item['uuid'],
+            'action_time'   => $item['createTime'],
+            'cp_channel_id' => $item['channelid'],
             'request_id'    => $requestId,
             'ip'            => $ip,
-            'action_id'     => $item['id'],
+            'action_id'     => $item['uuid'],
             'matcher'       => $this->product['matcher'],
             'extend'        => $this->filterExtendInfo($item)
         ],$item);
-
-
-        if($item['is_save_shortcuts'] == 1){
-            $this->userAddShortcutActionService->pullItem($item);
-        }
-
     }
-
-
-
-
-
 }
