@@ -162,7 +162,7 @@ class PullUserActionBaseService extends BaseService
             }
         }
         $this->pullAfter();
-        echo "命中唯一索引总数:".count($arr);
+        echo "命中唯一索引总数:".count($arr)."\n";
     }
 
 
