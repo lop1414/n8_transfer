@@ -72,6 +72,8 @@ class Kernel extends ConsoleKernel
         $oneMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60)."','{$dateTime}'";
         //二分钟区间
         $twoMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*2)."','{$dateTime}'";
+        //五分钟区间
+        $fiveMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*5)."','{$dateTime}'";
         //十分钟区间
         $tenMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*10)."','{$dateTime}'";
         //半小时区间
@@ -92,7 +94,7 @@ class Kernel extends ConsoleKernel
             $commandsService = new \App\Services\CommandsService();
             $commandsService->userActionQueueDataToDb($schedule);
             $commandsService->matchQueueDataToDb($schedule);
-            $commandsService->pullUserAction($schedule,$tenMinuteRange);
+            $commandsService->pullUserAction($schedule,$fiveMinuteRange);
         }
 
         // 用户行为数据上报
