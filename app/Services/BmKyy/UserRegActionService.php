@@ -65,7 +65,7 @@ class UserRegActionService extends PullUserActionBaseService
 
     public function pullItem($item){
 
-        $requestId = 'n8_'.md5(uniqid());
+        $requestId = '';
 
         $adv = $this->getAdv($item['platform']);
 
@@ -78,7 +78,7 @@ class UserRegActionService extends PullUserActionBaseService
 
         //有匹配到的计划
         if(!empty($item['externalPlanid'])){
-
+            $requestId = 'n8_'.md5(uniqid());
             $clickData = [
                 'ip'           => $ip,
                 'muid'         => '',
