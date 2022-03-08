@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Open\YwKyy;
 
 
 use App\Common\Enums\CpTypeEnums;
+use App\Common\Helpers\Functions;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
@@ -69,7 +70,7 @@ class UserController extends BaseController
         $rawData = $requestData;
 
         if(isset($requestData['ua']) && !empty($requestData['ua'])){
-            $requestData['ua'] = base64_decode($requestData['ua']);
+            $requestData['ua'] = Functions::base64DeepDecode($requestData['ua']);
         }
         $data = array_merge([
             'cp_type'     => CpTypeEnums::YW,
