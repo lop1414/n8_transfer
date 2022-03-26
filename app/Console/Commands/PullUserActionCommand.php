@@ -137,7 +137,6 @@ class PullUserActionCommand extends BaseCommand
             }
 
 
-
             $service->setProduct($product);
 
             $time = $this->startTime;
