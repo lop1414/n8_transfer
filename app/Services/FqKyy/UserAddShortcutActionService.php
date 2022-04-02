@@ -40,7 +40,7 @@ class UserAddShortcutActionService extends PullUserActionBaseService
             'action_time'   => date('Y-m-d H:i:s',$item['timestamp']),
             'cp_channel_id' => $item['promotion_id'],
             'request_id'    => '',
-            'ip'            => $item['ip'],
+            'ip'            => $item['ip'] ?? '',
             'action_id'     => $item['encrypted_device_id'],
             'matcher'       => $this->product['matcher'],
             'extend'        => $this->filterExtendInfo($item),
