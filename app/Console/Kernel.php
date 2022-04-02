@@ -12,7 +12,6 @@ use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
-use App\Console\Commands\UpdateUserActionLogCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
 use App\Console\Commands\Yw\CheckOrderCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -38,8 +37,7 @@ class Kernel extends ConsoleKernel
         PullUserActionCommand::class,
         // 推送用户行为
         PushUserActionCommand::class,
-        // 根据转发上报数据更新user_action_log
-        UpdateUserActionLogCommand::class,
+
 
         // 推送点击数据
         PushAdvClickCommand::class,
