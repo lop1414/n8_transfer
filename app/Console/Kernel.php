@@ -105,7 +105,6 @@ class Kernel extends ConsoleKernel
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";
         $schedule->command("yw:check_order --time={$tmpRange}")->cron('2 * * * *');
 
-        $schedule->command("update_user_action --cp_type=YW --time={$twoMinuteRange}")->cron('* * * * *');
 
         //阅文 补充用户行为的渠道信息等
         $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*12)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";
