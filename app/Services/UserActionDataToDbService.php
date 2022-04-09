@@ -6,15 +6,16 @@ use App\Common\Enums\ReportStatusEnum;
 use App\Common\Helpers\Functions;
 use App\Common\Services\BaseService;
 use App\Common\Tools\CustomQueue;
-use App\Common\Tools\CustomRedis;
 use App\Enums\QueueEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
+use App\Traits\UserAction\AddShortcut;
 
 class UserActionDataToDbService extends BaseService
 {
 
     protected $queueEnum;
+    use AddShortcut;
 
 
 
@@ -51,8 +52,7 @@ class UserActionDataToDbService extends BaseService
 
 
             if($data['type'] == UserActionTypeEnum::ADD_SHORTCUT){
-                $tmpService = new PullUserActionBaseService();
-                if($tmpService->isRepeatAddShortcut($data)){
+                if($this->isRepeatAddShortcut($data)){
                     echo "重复加桌\n";
                     return;
                 }
@@ -60,7 +60,7 @@ class UserActionDataToDbService extends BaseService
                 (new UserActionLogModel())
                     ->setTableNameWithMonth($data['action_time'])
                     ->create($data);
-                $tmpService->setAddShortcutCacheLog($data);
+                $this->setAddShortcutCacheLog($data);
 
                 return;
             }

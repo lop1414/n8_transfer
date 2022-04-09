@@ -14,7 +14,7 @@ use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
 use App\Enums\UserActionTypeEnum;
 use App\Models\UserActionLogModel;
-use App\Sdks\Yw\YwSdk;
+use App\Common\Sdks\Yw\YwSdk;
 use App\Services\YwH5\UserFollowActionService;
 
 
@@ -132,15 +132,7 @@ class YwFillUserActionInfoService extends BaseService
                             }
 
                         }
-                        // 推送二版
-                        $repData = [
-                            'open_id'   => $cpUser[$openIdField],
-                            'plf_alias'   => CpTypeEnums::YW,
-                            'appflag'   => $cpUser['appflag'],
-                            'channel_id'=> $cpUser['channel_id'],
-                        ];
-                        $url = 'http://ny.7788zongni.com/api/fill_user_channel?'. http_build_query($repData);
-                        file_get_contents($url);
+
                     }catch(CustomException $e){
                         (new ErrorLogService())->catch($e);
 
