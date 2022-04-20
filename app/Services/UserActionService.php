@@ -8,9 +8,20 @@ use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
 use App\Models\UserActionLogModel;
+use App\Services\UserAction\Order\BmKyyOrderService;
+use App\Services\UserAction\Order\FqKyyOrderService;
+use App\Services\UserAction\Order\QyH5OrderService;
+use App\Services\UserAction\Order\TwAppOrderService;
+use App\Services\UserAction\Order\TwKyyOrderService;
 use App\Services\UserAction\Order\YwH5OrderService;
 use App\Services\UserAction\Order\YwKyyOrderService;
+use App\Services\UserAction\Reg\BmKyyRegService;
+use App\Services\UserAction\Reg\FqKyyRegService;
+use App\Services\UserAction\Reg\QyH5RegService;
+use App\Services\UserAction\Reg\TwAppRegService;
+use App\Services\UserAction\Reg\TwKyyRegService;
 use App\Services\UserAction\Reg\YwH5RegService;
+use App\Services\UserAction\Reg\YwKyyRegService;
 use App\Services\UserAction\UserActionInterface;
 
 class UserActionService
@@ -35,14 +46,25 @@ class UserActionService
 
     /**
      * @return string[]
-     * 获取服务列表
+     * 获取需要拉取数据的 服务列表
      */
     static public function getServices(): array
     {
         return [
             YwH5RegService::class,
+            TwAppRegService::class,
+            BmKyyRegService::class,
+            TwKyyRegService::class,
+            QyH5RegService::class,
+            FqKyyRegService::class,
+
             YwKyyOrderService::class,
             YwH5OrderService::class,
+            TwAppOrderService::class,
+            BmKyyOrderService::class,
+            TwKyyOrderService::class,
+            FqKyyOrderService::class,
+            QyH5OrderService::class,
         ];
     }
 
@@ -57,6 +79,20 @@ class UserActionService
             YwH5OrderService::class,
         ];
     }
+
+    /**
+     * @return string[]
+     * 获取需要补充渠道的服务列表
+     */
+    static public function getNeedFillChannelService():array
+    {
+        return [
+            YwKyyRegService::class,
+            YwH5RegService::class,
+        ];
+    }
+
+
 
 
     /**
@@ -86,6 +122,25 @@ class UserActionService
     public function __call($name, $arguments)
     {
         return $this->service->$name(...$arguments);
+    }
+
+
+    /**
+     * @return array
+     * @throws CustomException
+     * 根据参数获取产品列表
+     */
+    private function getProducts(): array
+    {
+        $where = [
+            'product_ids' => $this->getParam('product_ids'),
+            'cp_type'   => $this->service->getCpType(),
+            'type'      => $this->service->getType(),
+        ];
+
+        $productService = new ProductService();
+        $productList = $productService->get($where);
+        return $productList;
     }
 
 
@@ -126,14 +181,7 @@ class UserActionService
      */
     public function sync()
     {
-        $where = [
-            'product_ids' => $this->getParam('product_ids'),
-            'cp_type'   => $this->service->getCpType(),
-            'type'      => $this->service->getType(),
-        ];
-
-        $productService = new ProductService();
-        $productList = $productService->get($where);
+        $productList = $this->getProducts();
 
         $startTime = $this->getParam('start_time');
         $endTime = $this->getParam('end_time');
@@ -162,7 +210,7 @@ class UserActionService
      * @param string $startTime
      * @param string $endTime
      * @return int
-     * 按产品获取差异
+     * 按产品获取差异 接口获取的总数跟入库的总数对比
      */
     public function getDiffByProduct(array $product,string $startTime,string $endTime): int
     {
@@ -188,14 +236,7 @@ class UserActionService
      * 检测差异并同步
      */
     public function checkDiffWithSync(){
-        $where = [
-            'product_ids' => $this->getParam('product_ids'),
-            'cp_type'   => $this->service->getCpType(),
-            'type'      => $this->service->getType(),
-        ];
-
-        $productService = new ProductService();
-        $productList = $productService->get($where);
+        $productList = $this->getProducts();
 
         $startTime = $this->getParam('start_time');
         $endTime = $this->getParam('end_time');
@@ -205,6 +246,79 @@ class UserActionService
             if($diff > 0){
                 echo " 相差{$diff} \n";
                 $this->syncByProduct($product,$startTime,$endTime);
+            }
+        }
+    }
+
+
+
+    // 补充用户渠道
+    public function fillUserChannel(){
+        $productList = $this->getProducts();
+        $startTime = $this->getParam('start_time');
+        $endTime = $this->getParam('end_time');
+
+        $userActionLogModel = new UserActionLogModel();
+
+        foreach ($productList as $product){
+            $data = $this->service->get($product,$startTime,$endTime);
+
+            foreach($data as $item){
+                try{
+                    //没有渠道
+                    $cpChannelId = $item['channel_id'];
+                    if(empty($cpChannelId)){
+                        echo "没有渠道\n";
+                        continue;
+                    }
+
+                    $actions = $userActionLogModel
+                        ->setTableNameWithMonth($item['action_time'])
+                        ->where('open_id',strval($item['open_id']))
+                        ->where('product_id',$product['id'])
+                        ->where('type',$this->service->getType())
+                        ->where('cp_channel_id','')
+                        ->get();
+
+                    foreach ($actions as $action){
+                        $action->cp_channel_id = $item['cp_channel_id'];
+
+                        // 未上报
+                        if($action->status == ReportStatusEnum::WAITING){
+                            $action->save();
+                            echo "渠道更新:".$action->open_id. "\n";
+                        }else{
+                            $rawData = $item['data'];
+                            $rawData['action_log_id'] = $action->id;
+
+                            $info = $action->toArray();
+                            $info['source'] = DataSourceEnums::CP_PULL;
+                            $info['status'] = ReportStatusEnum::WAITING;
+                            $info['data'] = $rawData;
+
+                            $this->model->setTableNameWithMonth($info['action_time'])->create($info);
+                            echo "创建新的行为:".$action->open_id. "\n";
+                        }
+                    }
+
+                }catch(CustomException $e){
+                    (new ErrorLogService())->catch($e);
+
+                    //日志
+                    $errorInfo = $e->getErrorInfo(true);
+                    echo $errorInfo['message']. "\n";
+
+                }catch (\Exception $e){
+
+                    //未命中唯一索引
+                    if($e->getCode() != 23000){
+                        //日志
+                        (new ErrorLogService())->catch($e);
+                        echo $e->getMessage()."\n";
+                    }else{
+                        echo "  命中唯一索引 \n";
+                    }
+                }
             }
         }
     }

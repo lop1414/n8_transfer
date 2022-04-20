@@ -11,13 +11,13 @@ use App\Services\UserAction\UserActionInterface;
 use App\Services\UserActionService;
 use Illuminate\Container\Container;
 
-class PullUserActionCommand extends BaseCommand
+class CheckUserActionCommand extends BaseCommand
 {
     /**
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'pull_user_action {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=}';
+    protected $signature = 'check_user_action {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=}';
 
 
     /**
@@ -25,7 +25,7 @@ class PullUserActionCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = '拉取用户行为数据';
+    protected $description = '监测用户行为数据';
 
 
 
@@ -60,7 +60,7 @@ class PullUserActionCommand extends BaseCommand
 
 
         $container = Container::getInstance();
-        $services = UserActionService::getServices();
+        $services = UserActionService::getNeedCheckDiffService();
         foreach ($services as $service){
             $container->bind(UserActionInterface::class,$service);
             $userActionService = $container->make(UserActionService::class);
@@ -87,12 +87,12 @@ class PullUserActionCommand extends BaseCommand
 
                 $userActionService->setParam('start_time',$tmpStartTime);
                 $userActionService->setParam('end_time',$tmpEndTime);
-                $userActionService->sync();
+                $userActionService->checkDiffWithSync();
                 $tmpStartTime = $tmpEndTime;
             }
         }
 
-        $lockKey = "pull|{$cpType}|{$productType}|{$actionType}";
+        $lockKey = "check|{$cpType}|{$productType}|{$actionType}";
 
 
 

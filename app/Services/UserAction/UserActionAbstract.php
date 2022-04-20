@@ -2,9 +2,6 @@
 
 namespace App\Services\UserAction;
 
-
-use App\Common\Tools\CustomRedis;
-
 abstract class UserActionAbstract implements UserActionInterface
 {
 
@@ -50,44 +47,6 @@ abstract class UserActionAbstract implements UserActionInterface
         } else {
             return false;
         }
-    }
-
-
-    /**
-     * @param array $data
-     * @return bool
-     * 是否重复加桌
-     */
-    public function isRepeatAddShortcut(array $data): bool
-    {
-        $key = $this->getLogKey($data);
-        $customRedis = new CustomRedis();
-        $info = $customRedis->get($key);
-        return !!$info;
-    }
-
-
-    /**
-     * @param $data
-     * 设置加桌缓存记录
-     */
-    public function setAddShortcutCacheLog($data){
-        $key = $this->getLogKey($data);
-        $customRedis = new CustomRedis();
-        $customRedis->set($key,1);
-        $customRedis->expire($key,7200);
-    }
-
-
-    /**
-     * @param array $data
-     * @return string
-     * 获取缓存下标
-     */
-    public function getLogKey(array $data): string
-    {
-        $keyArr = ['user_add_shortcut_log',$data['open_id'],$data['cp_channel_id'],$data['action_id']];
-        return implode(':',$keyArr);
     }
 
 }

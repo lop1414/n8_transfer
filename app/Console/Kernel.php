@@ -7,13 +7,12 @@ use App\Common\Enums\AdvAliasEnum;
 use App\Console\Commands\CreateTableCommand;
 use App\Console\Commands\FillUserActionInfoCommand;
 use App\Console\Commands\ForwardDataCommand;
-use App\Console\Commands\MakeCommandCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
-use App\Console\Commands\Yw\CheckOrderCommand;
+//use App\Console\Commands\Yw\CheckOrderCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -27,7 +26,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [
 
         CreateTableCommand::class,
-        MakeCommandCommand::class,
 
         // 队列行为数据入库
         UserActionDataToDbCommand::class,
@@ -47,7 +45,7 @@ class Kernel extends ConsoleKernel
         FillUserActionInfoCommand::class,
 
         // 阅文快应用
-        CheckOrderCommand::class,
+//        CheckOrderCommand::class,
         // 转发数据
         ForwardDataCommand::class,
 
@@ -80,30 +78,28 @@ class Kernel extends ConsoleKernel
         $threeHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*60*3)."','{$dateTime}'";
 
 
-        //广告商点击数据上报
-        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN)->cron('* * * * *');
-        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::BD)->cron('* * * * *');
-        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::KS)->cron('* * * * *');
 
 
-        //用户行为数据 拉取
-        $path = base_path(). '/app/Services/CommandsService.php';
-        if(file_exists($path)){
-            $commandsService = new \App\Services\CommandsService();
-            $commandsService->userActionQueueDataToDb($schedule);
-            $commandsService->matchQueueDataToDb($schedule);
-            $commandsService->pullUserAction($schedule,$fiveMinuteRange);
-        }
+        // 用户行为数据 start
 
-        // 用户行为数据上报
-        $schedule->command("push_user_action")->cron('* * * * *');
+        // 队列入库
+        $schedule->command("user_action_data_to_db --enum=USER_REG_ACTION ")->cron('* * * * *');
+        $schedule->command("user_action_data_to_db --enum=USER_ADD_SHORTCUT_ACTION ")->cron('* * * * *');
 
+        // 同步
+        // -- 注册
+        $schedule->command("pull_user_action --cp_type=YW --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("pull_user_action --cp_type=TW --product_type=APP --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("pull_user_action --cp_type=TW --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("pull_user_action --cp_type=QY --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("pull_user_action --cp_type=FQ --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("pull_user_action --cp_type=BM --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        // -- 订单
+        $schedule->command("pull_user_action --action_type=ORDER --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
-
-
-        // 阅文充值 查漏补缺
+        // 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";
-        $schedule->command("yw:check_order --time={$tmpRange}")->cron('2 * * * *');
+        $schedule->command("check_user_action --time={$tmpRange}")->cron('*/2 * * * *');
 
 
         //阅文 补充用户行为的渠道信息等
@@ -111,6 +107,29 @@ class Kernel extends ConsoleKernel
         $schedule->command("fill_user_action_info --time={$tmp}")->cron('*/10 * * * *');
 
 
+        //上报
+        $schedule->command("push_user_action")->cron('* * * * *');
+
+
+        // 用户行为数据 end
+
+
+
+
+        // 匹配数据入库
+        // -- 头条
+        $schedule->command("match_data_to_db --enum=OCEAN_MATCH_DATA ")->cron('* * * * *');
+        // -- 快手
+        $schedule->command("match_data_to_db --enum=KUAI_SHOU_MATCH_DATA ")->cron('* * * * *');
+
+
+        //广告商点击数据上报
+        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::OCEAN)->cron('* * * * *');
+        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::BD)->cron('* * * * *');
+        $schedule->command("push_adv_click --adv_alias=".AdvAliasEnum::KS)->cron('* * * * *');
+
+
+        // 转发数据
         $schedule->command("forward_data")->cron('* * * * *');
     }
 
