@@ -4,15 +4,15 @@ namespace App\Console;
 
 
 use App\Common\Enums\AdvAliasEnum;
+use App\Console\Commands\CheckUserActionCommand;
 use App\Console\Commands\CreateTableCommand;
-use App\Console\Commands\FillUserActionInfoCommand;
+use App\Console\Commands\FillUserActionChannelCommand;
 use App\Console\Commands\ForwardDataCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\PullUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
-//use App\Console\Commands\Yw\CheckOrderCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -33,6 +33,11 @@ class Kernel extends ConsoleKernel
         MatchDataToDbCommand::class,
         // 拉取用户行为
         PullUserActionCommand::class,
+        // 补充用户行为渠道
+        FillUserActionChannelCommand::class,
+        // 监测用户行为数据
+        CheckUserActionCommand::class,
+
         // 推送用户行为
         PushUserActionCommand::class,
 
@@ -41,11 +46,7 @@ class Kernel extends ConsoleKernel
         PushAdvClickCommand::class,
 
 
-        // 补充用户信息
-        FillUserActionInfoCommand::class,
 
-        // 阅文快应用
-//        CheckOrderCommand::class,
         // 转发数据
         ForwardDataCommand::class,
 
@@ -102,9 +103,10 @@ class Kernel extends ConsoleKernel
         $schedule->command("check_user_action --time={$tmpRange}")->cron('*/2 * * * *');
 
 
-        //阅文 补充用户行为的渠道信息等
+        //补充用户行为的渠道信息等 阅文
         $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*12)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";
-        $schedule->command("fill_user_action_info --time={$tmp}")->cron('*/10 * * * *');
+        $schedule->command("fill_user_action_channel --product_type=KYY --time={$tmp}")->cron('*/10 * * * *');
+        $schedule->command("fill_user_action_channel --product_type=H5 --time={$tmp}")->cron('*/10 * * * *');
 
 
         //上报
