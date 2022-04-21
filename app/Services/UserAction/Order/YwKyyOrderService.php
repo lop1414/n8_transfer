@@ -46,11 +46,10 @@ class YwKyyOrderService extends UserActionAbstract
         ];
 
         $data = [];
-        $completerOrderData = [];
+
         do{
 
             $tmp = $ywSdk->getOrders($reqPara);
-            $data = array_merge($data,$tmp['list']);
 
             foreach ($tmp['list'] as $item){
 
@@ -72,7 +71,7 @@ class YwKyyOrderService extends UserActionAbstract
 
                 // 完成订单
                 if($item['order_status'] == 2){
-                    $completerOrderData[] = $this->ywKyyCompleteOrderService->itemFilter($item);
+                    $data[] = $this->ywKyyCompleteOrderService->itemFilter($item);
                 }
             }
 
@@ -84,7 +83,7 @@ class YwKyyOrderService extends UserActionAbstract
 
         }while(count($data) < $tmp['total_count']);
 
-        return array_merge($data,$completerOrderData);
+        return $data;
     }
 
 
