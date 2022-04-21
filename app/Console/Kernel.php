@@ -79,8 +79,7 @@ class Kernel extends ConsoleKernel
 
 
 
-
-            // 用户行为数据 start
+        // 用户行为数据 start
 
         // 队列入库
         $schedule->command("user_action_data_to_db --enum=USER_REG_ACTION ")->cron('* * * * *');
@@ -88,7 +87,7 @@ class Kernel extends ConsoleKernel
 
         // 同步
 
-        //  延迟5分钟 阅文上过来的数据优先
+        //  延迟5分钟 阅文上报的数据优先
 //        $schedule->command("sync_user_action --action_type=REG --cp_type=YW --product_type=H5  --time={$frontFiveMinuteRange}")->cron('*/5 * * * *');
 
         $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=APP --time={$fiveMinuteRange}")->cron('*/5 * * * *');
@@ -96,6 +95,8 @@ class Kernel extends ConsoleKernel
 //        $schedule->command("sync_user_action --action_type=REG --cp_type=QY --product_type=H5  --time={$fiveMinuteRange}")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+
+        $schedule->command("sync_user_action --action_type=ADD_SHORTCUT --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
         $schedule->command("sync_user_action --action_type=ORDER --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 

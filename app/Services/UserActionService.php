@@ -8,6 +8,7 @@ use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
 use App\Models\UserActionLogModel;
+use App\Services\UserAction\AddShortcut\BmKyyAddShortcutService;
 use App\Services\UserAction\Order\BmKyyOrderService;
 use App\Services\UserAction\Order\FqKyyOrderService;
 use App\Services\UserAction\Order\QyH5OrderService;
@@ -57,6 +58,8 @@ class UserActionService
             TwKyyRegService::class,
             QyH5RegService::class,
             FqKyyRegService::class,
+
+            BmKyyAddShortcutService::class,
 
             YwKyyOrderService::class,
             YwH5OrderService::class,

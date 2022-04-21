@@ -2,7 +2,6 @@
 
 namespace App\Services\UserAction\Reg;
 
-use App\Services\UserAction\AddShortcut\BmKyyAddShortcutService;
 use App\Services\UserAction\UserActionAbstract;
 use App\Traits\Cp\Bm;
 use App\Traits\ProductType\Kyy;
@@ -15,12 +14,6 @@ class BmKyyRegService extends UserActionAbstract
     use Bm;
     use Reg;
 
-    protected $bmKyyAddShortcutService;
-
-    public function __construct()
-    {
-        $this->bmKyyAddShortcutService = new BmKyyAddShortcutService();
-    }
 
     public function get(array $product, string $startTime,string $endTime): array
     {
@@ -49,11 +42,6 @@ class BmKyyRegService extends UserActionAbstract
                     'extend'        => $this->filterExtendInfo($item),
                     'data'          => $item
                 ];
-
-                // 加桌
-                if($item['isInstall'] == 1){
-                    $data[] = $this->bmKyyAddShortcutService->itemFilter($item);
-                }
             }
             $page += 1;
 
