@@ -56,18 +56,16 @@ class UserActionDataToDbService extends BaseService
                     echo "重复加桌\n";
                     return;
                 }
-
-                (new UserActionLogModel())
-                    ->setTableNameWithMonth($data['action_time'])
-                    ->create($data);
-                $this->setAddShortcutCacheLog($data);
-
-                return;
             }
 
             (new UserActionLogModel())
                 ->setTableNameWithMonth($data['action_time'])
                 ->create($data);
+
+            // 加桌记录log
+            if($data['type'] == UserActionTypeEnum::ADD_SHORTCUT){
+                $this->setAddShortcutCacheLog($data);
+            }
         });
 
         $queue->setExceptionHook(function ($data,$e){

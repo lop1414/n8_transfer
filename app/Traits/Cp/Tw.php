@@ -18,7 +18,7 @@ trait Tw
 
     protected function getSdk(array $product): TwSdk
     {
-        return new TwSdk($product['cp_product_alias'],$product['cp_account']['cp_secret']);
+        return new TwSdk($product['cp_product_alias'],$product['cp_secret']);
     }
 
     protected function getOrderType($orderType){

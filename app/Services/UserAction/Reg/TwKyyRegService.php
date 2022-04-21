@@ -48,7 +48,7 @@ class TwKyyRegService extends UserActionAbstract
                     'data'          => $item
                 ];
                 // 加桌
-                if($item['is_subscribe'] == 1){
+                if($item['is_save_shortcuts'] == 1){
                     $data[] = $this->twKyyAddShortcutService->itemFilter($item);
                 }
             }
