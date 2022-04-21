@@ -50,7 +50,7 @@ class FqKyyOrderService extends UserActionAbstract
                 ];
                 // 完成订单
                 if($item['status'] == 0){
-                    $completerOrderData[] = $this->fqKyyCompleteOrderService->itemFilter($item);
+                    $data[] = $this->fqKyyCompleteOrderService->itemFilter($item);
                 }
             }
             $offset = $list['next_offset'];

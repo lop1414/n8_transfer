@@ -37,16 +37,10 @@ class Kernel extends ConsoleKernel
         FillUserActionChannelCommand::class,
         // 监测用户行为数据
         CheckUserActionCommand::class,
-
         // 推送用户行为
         PushUserActionCommand::class,
-
-
         // 推送点击数据
         PushAdvClickCommand::class,
-
-
-
         // 转发数据
         ForwardDataCommand::class,
 
@@ -65,18 +59,18 @@ class Kernel extends ConsoleKernel
 
         //时间范围
         $dateTime = date('Y-m-d H:i:s',TIMESTAMP);
-        //五分钟区间
         $fiveMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*5);
+        $tenMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*10);
+
+        //五分钟区间
         $fiveMinuteRange = "'{$fiveMinuteFront}','{$dateTime}'";
         //十分钟区间
-        $tenMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*10);
 //        $tenMinuteRange = "'{$tenMinuteFront}','{$dateTime}'";
         //半小时区间
 //        $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
 
         //前5分钟区间
         $frontFiveMinuteRange = "'{$tenMinuteFront}','{$fiveMinuteFront}'";
-
 
 
         // 用户行为数据 start
@@ -102,7 +96,7 @@ class Kernel extends ConsoleKernel
 
         // 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";
-        $schedule->command("check_user_action --time={$tmpRange}")->cron('*/2 * * * *');
+        $schedule->command("check_user_action --time={$tmpRange}")->cron('10 * * * *');
 
 
         //补充用户行为的渠道信息等 阅文
@@ -116,7 +110,6 @@ class Kernel extends ConsoleKernel
 
 
         // 用户行为数据 end
-
 
 
 
