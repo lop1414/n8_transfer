@@ -65,37 +65,38 @@ class Kernel extends ConsoleKernel
 
         //时间范围
         $dateTime = date('Y-m-d H:i:s',TIMESTAMP);
-        //一分钟区间
-        $oneMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60)."','{$dateTime}'";
-        //二分钟区间
-        $twoMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*2)."','{$dateTime}'";
         //五分钟区间
-        $fiveMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*5)."','{$dateTime}'";
+        $fiveMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*5);
+        $fiveMinuteRange = "'{$fiveMinuteFront}','{$dateTime}'";
         //十分钟区间
-        $tenMinuteRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*10)."','{$dateTime}'";
+        $tenMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*10);
+//        $tenMinuteRange = "'{$tenMinuteFront}','{$dateTime}'";
         //半小时区间
-        $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
-        //3小时区间
-        $threeHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*60*3)."','{$dateTime}'";
+//        $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
+
+        //前5分钟区间
+        $frontFiveMinuteRange = "'{$tenMinuteFront}','{$fiveMinuteFront}'";
 
 
 
 
-        // 用户行为数据 start
+            // 用户行为数据 start
 
         // 队列入库
         $schedule->command("user_action_data_to_db --enum=USER_REG_ACTION ")->cron('* * * * *');
         $schedule->command("user_action_data_to_db --enum=USER_ADD_SHORTCUT_ACTION ")->cron('* * * * *');
 
         // 同步
-        // -- 注册
-        $schedule->command("sync_user_action --cp_type=YW --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --cp_type=TW --product_type=APP --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --cp_type=TW --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --cp_type=QY --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --cp_type=FQ --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --cp_type=BM --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        // -- 订单
+
+        //  延迟5分钟 阅文上过来的数据优先
+//        $schedule->command("sync_user_action --action_type=REG --cp_type=YW --product_type=H5  --time={$frontFiveMinuteRange}")->cron('*/5 * * * *');
+
+        $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=APP --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=QY --product_type=H5  --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+
         $schedule->command("sync_user_action --action_type=ORDER --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
         // 查漏补缺
@@ -119,9 +120,7 @@ class Kernel extends ConsoleKernel
 
 
         // 匹配数据入库
-        // -- 头条
         $schedule->command("match_data_to_db --enum=OCEAN_MATCH_DATA ")->cron('* * * * *');
-        // -- 快手
         $schedule->command("match_data_to_db --enum=KUAI_SHOU_MATCH_DATA ")->cron('* * * * *');
 
 

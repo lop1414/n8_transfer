@@ -133,10 +133,12 @@ class UserActionService
     private function getProducts(): array
     {
         $where = [
-            'id'        => $this->getParam('product_id'),
             'cp_type'   => $this->service->getCpType(),
             'type'      => $this->service->getProductType(),
         ];
+        if(!empty($this->getParam('product_id'))){
+            $where['id'] = $this->getParam('product_id');
+        }
 
         $productService = new ProductService();
         $productList = $productService->get($where);

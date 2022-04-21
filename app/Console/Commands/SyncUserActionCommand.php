@@ -71,11 +71,13 @@ class SyncUserActionCommand extends BaseCommand
         $timeInterval = $this->option('time_interval') ?? $this->timeInterval;
 
         $productId = $this->option('product_id');
-        $productService = new ProductService();
-        $products = $productService->get(['id' => $productId]);
-        $product = $products[0];
-        $cpType = $product['cp_type'];
-        $productType = $product['type'];
+        if(!empty($productId)){
+            $productService = new ProductService();
+            $products = $productService->get(['id' => $productId]);
+            $product = $products[0];
+            $cpType = $product['cp_type'];
+            $productType = $product['type'];
+        }
 
         $container = Container::getInstance();
         $services = UserActionService::getServices();
