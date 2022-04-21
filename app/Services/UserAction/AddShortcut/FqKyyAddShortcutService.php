@@ -28,6 +28,7 @@ class FqKyyAddShortcutService extends UserActionAbstract
     {
 
         $saveData = [
+            'product_id'    => $item['product_id'] ?? 0,
             'open_id'       => $item['encrypted_device_id'],
             'action_time'   => date('Y-m-d H:i:s',$item['timestamp']),
             'type'          => $this->getType(),

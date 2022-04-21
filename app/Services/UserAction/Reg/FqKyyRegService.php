@@ -50,13 +50,13 @@ class FqKyyRegService extends UserActionAbstract
 
                 //加桌
                 if($item['timestamp'] > 0){
+                    $item['product_id'] = $product['id'];
                     $tmpData = $this->fqKyyAddShortcutService->itemFilter($item);
                     if(!empty($tmpData)){
                         $data[] = $tmpData;
                     }
                 }
             }
-            $data = array_merge($list['data'],$data);
             $page += 1;
             $number = count($data);
         }while($number < $list['total']);
