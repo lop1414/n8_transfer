@@ -48,11 +48,9 @@ class YwH5OrderService extends UserActionAbstract
 
 
         $data = [];
-        $completerOrderData = [];
         do{
 
             $tmp = $ywSdk->getH5Order($reqPara);
-            $data = array_merge($data,$tmp['list']);
 
             foreach ($tmp['list'] as $item){
                 $data[] = [
@@ -73,7 +71,7 @@ class YwH5OrderService extends UserActionAbstract
 
                 // 完成订单
                 if($item['order_status'] == 2){
-                    $completerOrderData[] = $this->ywH5CompleteOrderService->itemFilter($item);
+                    $data[] = $this->ywH5CompleteOrderService->itemFilter($item);
                 }
             }
 
@@ -85,7 +83,7 @@ class YwH5OrderService extends UserActionAbstract
 
         }while(count($data) < $tmp['total_count']);
 
-        return array_merge($data,$completerOrderData);
+        return $data;
     }
 
 
