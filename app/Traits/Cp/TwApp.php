@@ -28,6 +28,8 @@ trait TwApp
             2   => OrderTypeEnums::PROP,
             3   => OrderTypeEnums::ACTIVITY,
             4   => OrderTypeEnums::NORMAL,
+            7   => OrderTypeEnums::NORMAL,
+            8   => OrderTypeEnums::NORMAL,
         ];
         return $orderTypeMap[$orderType];
     }
