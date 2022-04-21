@@ -133,13 +133,17 @@ class UserActionService
     private function getProducts(): array
     {
         $where = [
-            'product_ids' => $this->getParam('product_ids'),
+            'id'        => $this->getParam('product_id'),
             'cp_type'   => $this->service->getCpType(),
-            'type'      => $this->service->getType(),
+            'type'      => $this->service->getProductType(),
         ];
 
         $productService = new ProductService();
         $productList = $productService->get($where);
+        foreach ($productList as &$item){
+            $item['cp_account'] = $productService->readCpAccount($item['cp_account_id']);
+        }
+
         return $productList;
     }
 

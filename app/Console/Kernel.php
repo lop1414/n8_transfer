@@ -10,7 +10,7 @@ use App\Console\Commands\FillUserActionChannelCommand;
 use App\Console\Commands\ForwardDataCommand;
 use App\Console\Commands\MatchDataToDbCommand;
 use App\Console\Commands\PushAdvClickCommand;
-use App\Console\Commands\PullUserActionCommand;
+use App\Console\Commands\SyncUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
         // 匹配数据入库
         MatchDataToDbCommand::class,
         // 拉取用户行为
-        PullUserActionCommand::class,
+        SyncUserActionCommand::class,
         // 补充用户行为渠道
         FillUserActionChannelCommand::class,
         // 监测用户行为数据
@@ -89,14 +89,14 @@ class Kernel extends ConsoleKernel
 
         // 同步
         // -- 注册
-        $schedule->command("pull_user_action --cp_type=YW --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("pull_user_action --cp_type=TW --product_type=APP --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("pull_user_action --cp_type=TW --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("pull_user_action --cp_type=QY --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("pull_user_action --cp_type=FQ --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("pull_user_action --cp_type=BM --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --cp_type=YW --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --cp_type=TW --product_type=APP --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --cp_type=TW --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --cp_type=QY --product_type=H5 --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --cp_type=FQ --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --cp_type=BM --product_type=KYY --action_type=REG --time={$fiveMinuteRange}")->cron('*/5 * * * *');
         // -- 订单
-        $schedule->command("pull_user_action --action_type=ORDER --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=ORDER --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
         // 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*48)."','".date('Y-m-d H:i:s',TIMESTAMP - 60*60)."'";

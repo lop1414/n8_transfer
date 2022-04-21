@@ -7,17 +7,18 @@ use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
 use App\Enums\UserActionTypeEnum;
+use App\Services\ProductService;
 use App\Services\UserAction\UserActionInterface;
 use App\Services\UserActionService;
 use Illuminate\Container\Container;
 
-class PullUserActionCommand extends BaseCommand
+class SyncUserActionCommand extends BaseCommand
 {
     /**
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'pull_user_action {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=}';
+    protected $signature = 'sync_user_action {--action_type=} {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=}';
 
 
     /**
@@ -44,6 +45,22 @@ class PullUserActionCommand extends BaseCommand
         $cpType = $this->option('cp_type');
         $cpType && Functions::hasEnum(CpTypeEnums::class, $cpType);
 
+        $productType = $this->option('product_type');
+        $productType && Functions::hasEnum(ProductTypeEnums::class, $productType);
+
+        $lockKey = "sync|{$cpType}|{$productType}|{$actionType}";
+
+        $this->lockRun(function () use ($cpType,$productType,$actionType){
+            $this->action($cpType,$productType,$actionType);
+        },$lockKey,60*60*3,['log' => true]);
+
+
+    }
+
+
+
+    public function action($cpType,$productType,$actionType){
+
         // 时间参数
         $time = $this->option('time');
         list($startTime,$endTime) = explode(",", $time);
@@ -53,17 +70,26 @@ class PullUserActionCommand extends BaseCommand
         // 时间区间
         $timeInterval = $this->option('time_interval') ?? $this->timeInterval;
 
-        //产品
-        $productType = $this->option('product_type');
-        $productType && Functions::hasEnum(ProductTypeEnums::class, $productType);
         $productId = $this->option('product_id');
-
+        $productService = new ProductService();
+        $products = $productService->get(['id' => $productId]);
+        $product = $products[0];
+        $cpType = $product['cp_type'];
+        $productType = $product['type'];
 
         $container = Container::getInstance();
         $services = UserActionService::getServices();
+
+
+
         foreach ($services as $service){
             $container->bind(UserActionInterface::class,$service);
             $userActionService = $container->make(UserActionService::class);
+
+            !empty($productId) && $userActionService->setParam('product_id',$productId);
+
+
+
             if(!empty($cpType) &&  $cpType != $userActionService->getCpType()){
                 continue;
             }
@@ -76,14 +102,12 @@ class PullUserActionCommand extends BaseCommand
                 continue;
             }
 
-            !empty($productId) && $userActionService->setParam('product_ids',[$productId]);
-
 
             $tmpStartTime = $startTime;
             while($tmpStartTime < $endTime){
                 $tmpEndTime = date('Y-m-d H:i:s',  strtotime($tmpStartTime) + $timeInterval);
 
-                echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}";
+                echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
 
                 $userActionService->setParam('start_time',$tmpStartTime);
                 $userActionService->setParam('end_time',$tmpEndTime);
@@ -91,15 +115,5 @@ class PullUserActionCommand extends BaseCommand
                 $tmpStartTime = $tmpEndTime;
             }
         }
-
-        $lockKey = "pull|{$cpType}|{$productType}|{$actionType}";
-
-
-
-        $this->lockRun(function () use ($cpType,$productType,$actionType){
-
-        },$lockKey,60*60*3,['log' => true]);
-
-
     }
 }
