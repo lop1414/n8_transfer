@@ -160,6 +160,7 @@ class UserActionService
      * 按产品同步
      */
     public function syncByProduct(array $product,string $startTime,string $endTime){
+        echo "\n{$product['name']}\n";
         $data = $this->service->get($product,$startTime,$endTime);
 
         foreach ($data as $item){

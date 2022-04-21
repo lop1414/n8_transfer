@@ -91,7 +91,6 @@ class SyncUserActionCommand extends BaseCommand
             !empty($productId) && $userActionService->setParam('product_id',$productId);
 
 
-
             if(!empty($cpType) &&  $cpType != $userActionService->getCpType()){
                 continue;
             }
@@ -104,6 +103,7 @@ class SyncUserActionCommand extends BaseCommand
                 continue;
             }
 
+            echo "\n\n".$userActionService->getCpType().':'.$userActionService->getProductType().':'.$userActionService->getType()."\n\n";
 
             $tmpStartTime = $startTime;
             while($tmpStartTime < $endTime){
