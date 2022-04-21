@@ -47,7 +47,7 @@ class TwKyyOrderService extends UserActionAbstract
                     'action_id'     => $item['id'],
                     'extend'        => array_merge([
                         'amount'        => $item['amount'],
-                        'type'          => $this->getOrderType($item['order_type']),
+                        'type'          => $this->getOrderType($item['type']),
                         'order_id'      => $item['id']
                     ],$this->filterExtendInfo($item)),
                 ];
