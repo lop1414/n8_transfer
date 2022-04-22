@@ -7,6 +7,7 @@ use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
 use App\Enums\UserActionTypeEnum;
+use App\Services\ProductService;
 use App\Services\UserAction\UserActionInterface;
 use App\Services\UserActionService;
 use Illuminate\Container\Container;
@@ -17,7 +18,7 @@ class CheckUserActionCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'check_user_action {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=}';
+    protected $signature = 'check_user_action {--action_type=} {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=}';
 
 
     /**
@@ -59,6 +60,15 @@ class CheckUserActionCommand extends BaseCommand
 
     public function action($cpType,$productType,$actionType){
         $productId = $this->option('product_id');
+        if(!empty($productId)){
+            $productService = new ProductService();
+            $products = $productService->get(['id' => $productId]);
+            $product = $products[0];
+            $cpType = $product['cp_type'];
+            $productType = $product['type'];
+        }
+
+
         // 时间区间
         $timeInterval = $this->option('time_interval') ?? $this->timeInterval;
 
@@ -87,14 +97,14 @@ class CheckUserActionCommand extends BaseCommand
                 continue;
             }
 
-            !empty($productId) && $userActionService->setParam('product_ids',[$productId]);
+            !empty($productId) && $userActionService->setParam('product_id',$productId);
 
 
             $tmpStartTime = $startTime;
             while($tmpStartTime < $endTime){
                 $tmpEndTime = date('Y-m-d H:i:s',  strtotime($tmpStartTime) + $timeInterval);
 
-                echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}";
+                echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
 
                 $userActionService->setParam('start_time',$tmpStartTime);
                 $userActionService->setParam('end_time',$tmpEndTime);

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ReportStatusEnum;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
@@ -80,6 +81,9 @@ class UserActionService
         return [
             YwKyyOrderService::class,
             YwH5OrderService::class,
+
+            YwKyyRegService::class,
+            YwH5RegService::class
         ];
     }
 
@@ -160,7 +164,7 @@ class UserActionService
      * 按产品同步
      */
     public function syncByProduct(array $product,string $startTime,string $endTime){
-        echo "\n{$product['name']}\n";
+
         $data = $this->service->get($product,$startTime,$endTime);
 
         foreach ($data as $item){
@@ -174,7 +178,7 @@ class UserActionService
 
             }catch (\Exception $e){
                 if($e->getCode() == 23000){
-                    echo "  命中唯一索引 \n";
+                    echo "        命中唯一索引 \n";
                     continue;
                 }
 
@@ -198,6 +202,8 @@ class UserActionService
 
         foreach ($productList as $product){
             try{
+                echo "    {$product['name']}\n";
+
                 $this->syncByProduct($product,$startTime,$endTime);
 
             }catch (CustomException $e){
@@ -252,9 +258,16 @@ class UserActionService
         $endTime = $this->getParam('end_time');
 
         foreach ($productList as $product){
+            echo "    {$product['name']}\n";
+
             $diff = $this->getDiffByProduct($product,$startTime,$endTime);
             if($diff > 0){
-                echo " 相差{$diff} \n";
+                echo "        相差{$diff} \n";
+
+                if($this->service->getCpType() == CpTypeEnums::YW){
+                    //阅文接口频率限制
+                    sleep(60);
+                }
                 $this->syncByProduct($product,$startTime,$endTime);
             }
         }

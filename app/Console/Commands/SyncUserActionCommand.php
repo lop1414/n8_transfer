@@ -34,7 +34,7 @@ class SyncUserActionCommand extends BaseCommand
      * @var
      * 时间间隔
      */
-    protected $timeInterval = 60*30;
+    protected $timeInterval = 60*10;
 
 
 
@@ -60,6 +60,7 @@ class SyncUserActionCommand extends BaseCommand
 
 
     public function action($cpType,$productType,$actionType){
+        $startRunTime = microtime(true);
 
         // 时间参数
         $time = $this->option('time');
@@ -82,8 +83,6 @@ class SyncUserActionCommand extends BaseCommand
         $container = Container::getInstance();
         $services = UserActionService::getServices();
 
-
-
         foreach ($services as $service){
             $container->bind(UserActionInterface::class,$service);
             $userActionService = $container->make(UserActionService::class);
@@ -103,7 +102,7 @@ class SyncUserActionCommand extends BaseCommand
                 continue;
             }
 
-            echo "\n\n".$userActionService->getCpType().':'.$userActionService->getProductType().':'.$userActionService->getType()."\n\n";
+            echo $userActionService->getCpType().':'.$userActionService->getProductType().':'.$userActionService->getType()."\n";
 
             $tmpStartTime = $startTime;
             while($tmpStartTime < $endTime){
@@ -117,5 +116,8 @@ class SyncUserActionCommand extends BaseCommand
                 $tmpStartTime = $tmpEndTime;
             }
         }
+
+        $endRunTime = microtime(true);
+        echo "\n用时".($endRunTime - $startRunTime)."秒\n";
     }
 }
