@@ -6,6 +6,7 @@ use App\Common\Console\BaseCommand;
 use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
+use App\Services\ProductService;
 use App\Services\UserAction\UserActionInterface;
 use App\Services\UserActionService;
 use Illuminate\Container\Container;
@@ -17,7 +18,7 @@ class FillUserActionChannelCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'fill_user_action_channel {--time=} {--product_id=} {--cp_type=} {--product_type=}';
+    protected $signature = 'fill_user_action_channel {--time=} {--product_id=} {--cp_type=} {--product_type=} {--time_interval=}';
 
     /**
      * 命令描述
@@ -67,9 +68,14 @@ class FillUserActionChannelCommand extends BaseCommand
 
         // 时间区间
         $timeInterval = $this->option('time_interval') ?? $this->timeInterval;
-
-
         $productId = $this->option('product_id');
+        if(!empty($productId)){
+            $productService = new ProductService();
+            $products = $productService->get(['id' => $productId]);
+            $product = $products[0];
+            $cpType = $product['cp_type'];
+            $productType = $product['type'];
+        }
 
         $container = Container::getInstance();
         $services = UserActionService::getNeedFillChannelService();
@@ -85,7 +91,7 @@ class FillUserActionChannelCommand extends BaseCommand
                 continue;
             }
 
-            !empty($productId) && $userActionService->setParam('product_ids',[$productId]);
+            !empty($productId) && $userActionService->setParam('product_id',$productId);
 
 
             $tmpStartTime = $startTime;

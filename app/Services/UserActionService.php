@@ -282,14 +282,14 @@ class UserActionService
         $userActionLogModel = new UserActionLogModel();
 
         foreach ($productList as $product){
+            echo "    {$product['name']}\n";
+
             $data = $this->service->get($product,$startTime,$endTime);
 
             foreach($data as $item){
                 try{
-                    //没有渠道
-                    $cpChannelId = $item['channel_id'];
-                    if(empty($cpChannelId)){
-                        echo "没有渠道\n";
+                    if(empty($item['cp_channel_id'])){
+                        echo "        {$item['open_id']} 没有渠道\n";
                         continue;
                     }
 
@@ -307,7 +307,7 @@ class UserActionService
                         // 未上报
                         if($action->status == ReportStatusEnum::WAITING){
                             $action->save();
-                            echo "渠道更新:".$action->open_id. "\n";
+                            echo "        渠道更新:".$action->open_id. "\n";
                         }else{
                             $rawData = $item['data'];
                             $rawData['action_log_id'] = $action->id;
@@ -318,7 +318,7 @@ class UserActionService
                             $info['data'] = $rawData;
 
                             $this->model->setTableNameWithMonth($info['action_time'])->create($info);
-                            echo "创建新的行为:".$action->open_id. "\n";
+                            echo "        创建新的行为:".$action->open_id. "\n";
                         }
                     }
 
@@ -337,7 +337,7 @@ class UserActionService
                         (new ErrorLogService())->catch($e);
                         echo $e->getMessage()."\n";
                     }else{
-                        echo "  命中唯一索引 \n";
+                        echo "        命中唯一索引 \n";
                     }
                 }
             }

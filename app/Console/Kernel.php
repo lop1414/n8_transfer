@@ -100,7 +100,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("check_user_action  --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
 
         //补充用户行为的渠道信息等 阅文
-        $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*12)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";
+        $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*20)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";
         $schedule->command("fill_user_action_channel --product_type=KYY --time={$tmp}")->cron('*/10 * * * *');
         $schedule->command("fill_user_action_channel --product_type=H5 --time={$tmp}")->cron('*/10 * * * *');
 
