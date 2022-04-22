@@ -57,7 +57,7 @@ class UserActionService
             TwAppRegService::class,
             BmKyyRegService::class,
             TwKyyRegService::class,
-            QyH5RegService::class,
+//            QyH5RegService::class,
             FqKyyRegService::class,
 
             BmKyyAddShortcutService::class,
@@ -68,7 +68,7 @@ class UserActionService
             BmKyyOrderService::class,
             TwKyyOrderService::class,
             FqKyyOrderService::class,
-            QyH5OrderService::class,
+//            QyH5OrderService::class,
         ];
     }
 
