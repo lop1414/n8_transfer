@@ -80,10 +80,7 @@ class UserActionService
     {
         return [
             YwKyyOrderService::class,
-            YwH5OrderService::class,
-
-            YwKyyRegService::class,
-            YwH5RegService::class
+            YwH5OrderService::class
         ];
     }
 
@@ -230,7 +227,6 @@ class UserActionService
      */
     public function getDiffByProduct(array $product,string $startTime,string $endTime): int
     {
-        $total = $this->service->getTotal($product,$startTime,$endTime);
         $actionType = $this->service->getType();
         $dbCount = (new UserActionLogModel())
             ->setTableNameWithMonth($startTime)
@@ -238,6 +234,8 @@ class UserActionService
             ->where('product_id',$product['id'])
             ->where('type',$actionType)
             ->count();
+
+        $total = $this->service->getTotal($product,$startTime,$endTime);
 
         $diff = 0;
         if($total > $dbCount){

@@ -87,9 +87,6 @@ class SyncUserActionCommand extends BaseCommand
             $container->bind(UserActionInterface::class,$service);
             $userActionService = $container->make(UserActionService::class);
 
-            !empty($productId) && $userActionService->setParam('product_id',$productId);
-
-
             if(!empty($cpType) &&  $cpType != $userActionService->getCpType()){
                 continue;
             }
@@ -101,6 +98,8 @@ class SyncUserActionCommand extends BaseCommand
             if(!empty($productType) &&  $productType != $userActionService->getProductType()){
                 continue;
             }
+
+            !empty($productId) && $userActionService->setParam('product_id',$productId);
 
             echo $userActionService->getCpType().':'.$userActionService->getProductType().':'.$userActionService->getType()."\n";
 

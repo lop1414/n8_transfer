@@ -47,7 +47,7 @@ class YwH5RegService extends UserActionAbstract
         ];
 
         $data = [];
-        $followData = [];
+
         do{
 
             $tmp = $ywSdk->getH5User($reqPara);
@@ -70,7 +70,7 @@ class YwH5RegService extends UserActionAbstract
 
                 //关注
                 if($item['is_subscribe'] == 1){
-                    $followData[] = $this->ywH5FollowService->itemFilter($item);
+                    $data[] = $this->ywH5FollowService->itemFilter($item);
                 }
             }
             $reqPara['page'] += 1;
@@ -78,7 +78,7 @@ class YwH5RegService extends UserActionAbstract
 
         }while(count($data) < $tmp['total_count']);
 
-        return array_merge($data,$followData);
+        return $data;
     }
 
 
