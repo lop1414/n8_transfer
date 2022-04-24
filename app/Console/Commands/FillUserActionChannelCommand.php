@@ -97,8 +97,9 @@ class FillUserActionChannelCommand extends BaseCommand
             $tmpStartTime = $startTime;
             while($tmpStartTime < $endTime){
                 $tmpEndTime = date('Y-m-d H:i:s',  strtotime($tmpStartTime) + $timeInterval);
+                $tmpEndTime = min($tmpEndTime,$endTime);
 
-                echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}";
+                echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
 
                 $userActionService->setParam('start_time',$tmpStartTime);
                 $userActionService->setParam('end_time',$tmpEndTime);
