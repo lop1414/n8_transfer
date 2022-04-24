@@ -83,6 +83,7 @@ class SyncUserActionCommand extends BaseCommand
         $container = Container::getInstance();
         $services = UserActionService::getServices();
 
+        $currentTime = date('Y-m-d H:i:s');
         foreach ($services as $service){
             $container->bind(UserActionInterface::class,$service);
             $userActionService = $container->make(UserActionService::class);
@@ -106,6 +107,7 @@ class SyncUserActionCommand extends BaseCommand
             $tmpStartTime = $startTime;
             while($tmpStartTime < $endTime){
                 $tmpEndTime = date('Y-m-d H:i:s',  strtotime($tmpStartTime) + $timeInterval);
+                $tmpEndTime = min($tmpEndTime,$currentTime);
 
                 echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
 
