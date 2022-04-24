@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ReportStatusEnum;
+use App\Common\Enums\StatusEnum;
 use App\Common\Services\ErrorLogService;
 use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
@@ -139,6 +140,7 @@ class UserActionService
         $where = [
             'cp_type'   => $this->service->getCpType(),
             'type'      => $this->service->getProductType(),
+            'status'    => StatusEnum::ENABLE
         ];
         if(!empty($this->getParam('product_id'))){
             $where['id'] = $this->getParam('product_id');
