@@ -65,9 +65,9 @@ class Kernel extends ConsoleKernel
         //五分钟区间
         $fiveMinuteRange = "'{$fiveMinuteFront}','{$dateTime}'";
         //十分钟区间
-        $tenMinuteRange = "'{$tenMinuteFront}','{$dateTime}'";
+//        $tenMinuteRange = "'{$tenMinuteFront}','{$dateTime}'";
         //半小时区间
-//        $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
+        $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
 
         //前5分钟区间
         $frontFiveMinuteRange = "'{$tenMinuteFront}','{$fiveMinuteFront}'";
@@ -87,7 +87,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=APP --time={$fiveMinuteRange}")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 //        $schedule->command("sync_user_action --action_type=REG --cp_type=QY --product_type=H5  --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time={$tenMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time={$halfHourRange}")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
         $schedule->command("sync_user_action --action_type=ADD_SHORTCUT --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
