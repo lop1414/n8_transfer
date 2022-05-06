@@ -81,8 +81,8 @@ class Kernel extends ConsoleKernel
 
         // 同步
 
-        //  延迟5分钟 阅文上报的数据优先
-//        $schedule->command("sync_user_action --action_type=REG --cp_type=YW --product_type=H5  --time={$frontFiveMinuteRange}")->cron('*/5 * * * *');
+        //  延迟5分钟 阅文上报的数据优先 主要同步关注行为
+        $schedule->command("sync_user_action --action_type=REG --cp_type=YW --product_type=H5  --time={$frontFiveMinuteRange}")->cron('*/5 * * * *');
 
         $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=APP --time={$fiveMinuteRange}")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
