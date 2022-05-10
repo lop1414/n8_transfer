@@ -44,7 +44,7 @@ class FqKyyOrderService extends UserActionAbstract
                     'action_id'     => $item['trade_no'],
                     'extend'        => array_merge([
                         'amount'        => $item['pay_fee'],
-                        'type'          => $item['is_activity']? OrderTypeEnums::ACTIVITY : OrderTypeEnums::ANNUAL,
+                        'type'          => $item['is_activity']? OrderTypeEnums::ACTIVITY : OrderTypeEnums::NORMAL,
                         'order_id'      => $item['trade_no']
                     ],$this->filterExtendInfo($item)),
                 ];
