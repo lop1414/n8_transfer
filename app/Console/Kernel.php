@@ -100,7 +100,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("check_user_action  --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
 
         $schedule->command("check_user_action  --action_type=REG --time='{$dateTime}','{$twoHourFront}'")->cron('*/10 * * * *');
-        $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time='{$dateTime}','{$twoHourFront}'")->cron('*/30 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time='{$dateTime}','{$twoHourFront}' --key_suffix=supplement ")->cron('*/30 * * * *');
 
         //补充用户行为的渠道信息等 阅文
         $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*20)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";

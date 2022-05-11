@@ -18,7 +18,7 @@ class SyncUserActionCommand extends BaseCommand
      * 命令行执行命令
      * @var string
      */
-    protected $signature = 'sync_user_action {--action_type=} {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=}';
+    protected $signature = 'sync_user_action {--action_type=} {--cp_type=} {--product_type=} {--time=} {--time_interval=} {--product_id=} {--key_suffix=}';
 
 
     /**
@@ -49,6 +49,11 @@ class SyncUserActionCommand extends BaseCommand
         $productType && Functions::hasEnum(ProductTypeEnums::class, $productType);
 
         $lockKey = "sync|{$cpType}|{$productType}|{$actionType}";
+        // key 后缀
+        $keySuffix = $this->option('key_suffix');
+        if(!empty($keySuffix)){
+            $lockKey .= '_'. trim($keySuffix);
+        }
 
         $this->lockRun(function () use ($cpType,$productType,$actionType){
             $this->action($cpType,$productType,$actionType);
