@@ -22,6 +22,13 @@ class FqKyyRegService extends UserActionAbstract
         $this->fqKyyAddShortcutService = new FqKyyAddShortcutService();
     }
 
+    public function getTotal(array $product, string $startTime, string $endTime): ?int
+    {
+        $sdk = $this->getSdk($product);
+        $tmp = $sdk->getUserList($startTime,$endTime);
+        return $tmp['total'] ?? null;
+    }
+
 
     public function get(array $product, string $startTime,string $endTime): array
     {

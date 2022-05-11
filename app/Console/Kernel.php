@@ -87,7 +87,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=APP --time={$fiveMinuteRange}")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=TW --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 //        $schedule->command("sync_user_action --action_type=REG --cp_type=QY --product_type=H5  --time={$fiveMinuteRange}")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time={$halfHourRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=FQ --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
         $schedule->command("sync_user_action --action_type=ADD_SHORTCUT --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
@@ -97,6 +97,9 @@ class Kernel extends ConsoleKernel
         // 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*24*2)."','{$oneHourFront}'";
         $schedule->command("check_user_action  --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
+
+        $tmpRange =  "'{$dateTime}','{$oneHourFront}'";
+        $schedule->command("check_user_action  --action_type=REG --time={$tmpRange}")->cron('*/10 * * * *');
 
         //补充用户行为的渠道信息等 阅文
         $tmp = "'".date('Y-m-d H:i:s',TIMESTAMP-60*20)."','".date('Y-m-d H:i:s',TIMESTAMP)."'";

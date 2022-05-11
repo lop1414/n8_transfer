@@ -81,7 +81,8 @@ class UserActionService
     {
         return [
             YwKyyOrderService::class,
-            YwH5OrderService::class
+            YwH5OrderService::class,
+            FqKyyRegService::class,
         ];
     }
 
