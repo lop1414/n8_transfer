@@ -37,6 +37,7 @@ class FqKyyRegService extends UserActionAbstract
 
         $page = 0;
         $data = [];
+        $addShortcutData = [];
         $pageSize = 100;
         do{
             $list =  $sdk->getUserList($startTime,$endTime,$page,$pageSize);
@@ -60,14 +61,14 @@ class FqKyyRegService extends UserActionAbstract
                     $item['product_id'] = $product['id'];
                     $tmpData = $this->fqKyyAddShortcutService->itemFilter($item);
                     if(!empty($tmpData)){
-                        $data[] = $tmpData;
+                        $addShortcutData[] = $tmpData;
                     }
                 }
             }
             $page += 1;
             $number = count($data);
         }while($number < $list['total']);
-        return $data;
+        return array_merge($data,$addShortcutData);
     }
 
 
