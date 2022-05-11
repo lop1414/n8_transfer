@@ -61,6 +61,7 @@ class Kernel extends ConsoleKernel
         $fiveMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*5);
         $tenMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*10);
         $oneHourFront = date('Y-m-d H:i:s',TIMESTAMP-60*60);
+        $twoHourFront = date('Y-m-d H:i:s',TIMESTAMP-60*60*2);
 
         //五分钟区间
         $fiveMinuteRange = "'{$fiveMinuteFront}','{$dateTime}'";
@@ -98,7 +99,7 @@ class Kernel extends ConsoleKernel
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*24*2)."','{$oneHourFront}'";
         $schedule->command("check_user_action  --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
 
-        $tmpRange =  "'{$dateTime}','{$oneHourFront}'";
+        $tmpRange =  "'{$dateTime}','{$twoHourFront}'";
         $schedule->command("check_user_action  --action_type=REG --time={$tmpRange}")->cron('*/10 * * * *');
 
         //补充用户行为的渠道信息等 阅文
