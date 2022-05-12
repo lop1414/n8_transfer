@@ -74,8 +74,7 @@ ORDER BY
 	DESC
 STR;
         $tableList = DB::select($sql);
-        $tableList = array_column(json_decode(json_encode($tableList),true),'table_name');
-        return $tableList;
+        return array_column(json_decode(json_encode($tableList),true),'table_name');
     }
 
 
@@ -91,6 +90,7 @@ STR;
         foreach ($tableList as $tableName){
             $query = $this->model
                 ->setTable($tableName)
+                ->where('product_id','!=',157)
                 ->when($actionType,function ($query,$actionType){
                     return $query->where('type',$actionType);
                 })
