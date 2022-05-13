@@ -66,7 +66,7 @@ class Kernel extends ConsoleKernel
         //五分钟区间
         $fiveMinuteRange = "'{$fiveMinuteFront}','{$dateTime}'";
         //十分钟区间
-//        $tenMinuteRange = "'{$tenMinuteFront}','{$dateTime}'";
+        $tenMinuteRange = "'{$tenMinuteFront}','{$dateTime}'";
         //半小时区间
         $halfHourRange = "'".date('Y-m-d H:i:s',TIMESTAMP-60*30)."','{$dateTime}'";
 
@@ -93,7 +93,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command("sync_user_action --action_type=ADD_SHORTCUT --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
-        $schedule->command("sync_user_action --action_type=ORDER --time={$fiveMinuteRange}")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=ORDER --time={$tenMinuteRange}")->cron('*/5 * * * *');
 
         // 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*24*2)."','{$oneHourFront}'";
