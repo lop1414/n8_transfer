@@ -35,9 +35,6 @@ class UserController extends BaseController
         try {
             $requestData = $request->all();
 
-            $forwardData = array_merge($requestData,['cp_type' => $this->cpType,'appflag' => $this->cpProductAlias]);
-            (new ForwardDataService())->toQueue($forwardData);
-
             $ua = $requestData['user_agent'] ?? '';
             $data = array_merge([
                 'cp_type'     => $this->cpType,
@@ -74,9 +71,6 @@ class UserController extends BaseController
      */
     public function addShortcut(Request $request){
         $requestData = $request->all();
-
-        $forwardData = array_merge($requestData,['cp_type' => $this->cpType,'appflag' => $this->cpProductAlias]);
-        (new ForwardDataService())->toQueue($forwardData);
 
         $ua = $requestData['user_agent'] ?? '';
 
