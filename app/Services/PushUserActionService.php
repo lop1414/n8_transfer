@@ -90,6 +90,7 @@ STR;
         foreach ($tableList as $tableName){
             $query = $this->model
                 ->setTable($tableName)
+                ->where('product_id','!=',157)
                 ->when($actionType,function ($query,$actionType){
                     return $query->where('type',$actionType);
                 })

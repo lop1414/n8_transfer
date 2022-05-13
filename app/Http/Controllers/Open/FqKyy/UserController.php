@@ -31,7 +31,6 @@ class UserController extends BaseController
      * @return mixed
      */
     public function reg(Request $request){
-        return $this->success();
 
         try {
             $requestData = $request->all();
