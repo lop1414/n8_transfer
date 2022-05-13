@@ -34,14 +34,14 @@ class UserController extends BaseController
 
         try {
             $requestData = $request->all();
-            $requestData['cp_type'] = $this->cpType;
-            $requestData['cp_product_alias'] = $this->cpProductAlias;
-            (new ForwardDataService())->toQueue($requestData);
+
+            $forwardData = array_merge($requestData,['cp_type' => $this->cpType,'appflag' => $this->cpProductAlias]);
+            (new ForwardDataService())->toQueue($forwardData);
 
             $ua = $requestData['user_agent'] ?? '';
             $data = array_merge([
-                'cp_type'      => $requestData['cp_type'],
-                'cp_product_alias' => $requestData['cp_product_alias'],
+                'cp_type'     => $this->cpType,
+                'cp_product_alias' => $this->cpProductAlias,
                 'open_id'      => $requestData['device_id'],
                 'action_time'  => date('Y-m-d H:i:s',$requestData['buying_timestamp']),
                 'type'         => UserActionTypeEnum::REG,
@@ -74,15 +74,15 @@ class UserController extends BaseController
      */
     public function addShortcut(Request $request){
         $requestData = $request->all();
-        $requestData['cp_type'] = $this->cpType;
-        $requestData['cp_product_alias'] = $this->cpProductAlias;
-        $rawData = $requestData;
+
+        $forwardData = array_merge($requestData,['cp_type' => $this->cpType,'appflag' => $this->cpProductAlias]);
+        (new ForwardDataService())->toQueue($forwardData);
 
         $ua = $requestData['user_agent'] ?? '';
 
         $data = array_merge([
-            'cp_type'      => $requestData['cp_type'],
-            'cp_product_alias' => $requestData['cp_product_alias'],
+            'cp_type'      => $this->cpType,
+            'cp_product_alias' => $this->cpProductAlias,
             'open_id'      => $requestData['device_id'],
             'action_time'  => date('Y-m-d H:i:s',$requestData['add_desktop_timestamp']),
             'type'         => UserActionTypeEnum::ADD_SHORTCUT,
@@ -90,7 +90,7 @@ class UserController extends BaseController
             'request_id'   => '',
             'ip'           => '',
             'extend'       => array_merge($this->filterDeviceInfo($requestData),['ua' => $ua]),
-            'data'         => $rawData,
+            'data'         => $requestData,
             'action_id'    => $requestData['device_id'],
             'source'       => DataSourceEnums::CP
         ]);
