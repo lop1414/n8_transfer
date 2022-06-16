@@ -53,6 +53,7 @@ class UserActionDataToDbService extends BaseService
 
         $productService = (new ProductService())->setMap();
 
+        $rePushData = [];
         while ($data = $queue->pull()) {
 
             try{
@@ -88,6 +89,11 @@ class UserActionDataToDbService extends BaseService
                 //日志
                 (new ErrorLogService())->catch($e);
 
+                // 重回队列
+                $queue->item['exception'] = $e->getMessage();
+                $queue->item['code'] = $e->getCode();
+                $rePushData[] = $queue->item;
+
             }catch (\Exception $e){
                 DB::rollBack();
 
@@ -99,7 +105,18 @@ class UserActionDataToDbService extends BaseService
                 //日志
                 (new ErrorLogService())->catch($e);
 
+                // 重回队列
+                $queue->item['exception'] = $e->getMessage();
+                $queue->item['code'] = $e->getCode();
+                $rePushData[] = $queue->item;
+
             }
+        }
+
+        foreach($rePushData as $item){
+            // 重推
+            $queue->setItem($item);
+            $queue->rePush();
         }
     }
 
