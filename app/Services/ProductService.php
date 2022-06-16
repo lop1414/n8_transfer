@@ -10,6 +10,8 @@ use App\Common\Tools\CustomException;
 class ProductService extends BaseService
 {
 
+    public $cpProductAliasMap = [];
+
     public $map = [];
 
 
@@ -44,18 +46,25 @@ class ProductService extends BaseService
      * 设置产品映射
      */
     public function setMap(){
-        if(empty($this->productMap)){
+        if(empty($this->cpProductAliasMap)){
             $products = (new UnionApiService())->apiGetProduct();
-            $productMap = [];
+            $cpProductAliasMap = [];
+            $map = [];
 
             foreach ($products as $product){
                 $key = $this->getMapKey($product['cp_type'],$product['cp_product_alias']);
-                $productMap[$key] = $product;
+                $cpProductAliasMap[$key] = $product;
+                $map[$product['id']] = $product;
             }
-            $this->map = $productMap;
+            $this->cpProductAliasMap = $cpProductAliasMap;
+            $this->map = $map;
         }
         return $this;
 
+    }
+
+    public function read($productId){
+        return $this->map[$productId];
     }
 
     /**
@@ -66,7 +75,7 @@ class ProductService extends BaseService
      */
     public function readByMap($cpType,$cpProductAlias){
         $k = $this->getMapKey($cpType,$cpProductAlias);
-        return $this->map[$k];
+        return $this->cpProductAliasMap[$k];
     }
 
 
