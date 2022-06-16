@@ -23,7 +23,7 @@ class UserController extends BaseController
      * 平台产品标识
      * @var int
      */
-    protected $cpProductAlias = 1715568083108909;
+    protected $cpProductAlias = 0;
 
     /**
      * 注册
