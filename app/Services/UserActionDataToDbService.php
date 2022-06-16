@@ -137,7 +137,7 @@ class UserActionDataToDbService extends BaseService
         $key = 'channel:'.$cpType.':'.$cpChannelId;
         $info = $customRedis->get($key);
 
-        $ttl = 0;
+        $ttl = 60*60*24*7;
         if($info === false){
             $channels = (new UnionApiService())->apiGetChannel(['cp_channel_id' => $cpChannelId]);
             foreach ($channels as $channel){
