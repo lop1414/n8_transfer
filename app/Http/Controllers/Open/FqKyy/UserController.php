@@ -20,12 +20,6 @@ class UserController extends BaseController
     protected $cpType = CpTypeEnums::FQ;
 
     /**
-     * 平台产品标识
-     * @var int
-     */
-    protected $cpProductAlias = 0;
-
-    /**
      * 注册
      * @param Request $request
      * @return mixed
@@ -38,7 +32,7 @@ class UserController extends BaseController
             $ua = $requestData['user_agent'] ?? '';
             $data = array_merge([
                 'cp_type'     => $this->cpType,
-                'cp_product_alias' => $this->cpProductAlias,
+                'cp_product_alias' => $requestData['app_id'],
                 'open_id'      => $requestData['device_id'],
                 'action_time'  => date('Y-m-d H:i:s',$requestData['buying_timestamp']),
                 'type'         => UserActionTypeEnum::REG,
@@ -76,7 +70,7 @@ class UserController extends BaseController
 
         $data = array_merge([
             'cp_type'      => $this->cpType,
-            'cp_product_alias' => $this->cpProductAlias,
+            'cp_product_alias' => $requestData['app_id'],
             'open_id'      => $requestData['device_id'],
             'action_time'  => date('Y-m-d H:i:s',$requestData['add_desktop_timestamp']),
             'type'         => UserActionTypeEnum::ADD_SHORTCUT,
