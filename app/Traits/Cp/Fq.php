@@ -17,7 +17,7 @@ trait Fq
 
     protected function getSdk(array $product): FqSdk
     {
-        return new FqSdk($product['cp_product_alias'],$product['cp_secret']);
+        return new FqSdk($product['cp_account']['account'],$product['cp_account']['cp_secret']);
     }
 
 
