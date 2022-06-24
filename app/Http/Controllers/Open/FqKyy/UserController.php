@@ -74,7 +74,7 @@ class UserController extends BaseController
             'open_id'      => $requestData['device_id'],
             'action_time'  => date('Y-m-d H:i:s',$requestData['add_desktop_timestamp']),
             'type'         => UserActionTypeEnum::ADD_SHORTCUT,
-            'cp_channel_id'=> '',
+            'cp_channel_id'=>  $requestData['promotion_id'] ?? '',
             'request_id'   => '',
             'ip'           => '',
             'extend'       => array_merge($this->filterDeviceInfo($requestData),['ua' => $ua]),
