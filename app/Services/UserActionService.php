@@ -13,6 +13,7 @@ use App\Models\UserActionLogModel;
 use App\Services\UserAction\AddShortcut\BmKyyAddShortcutService;
 use App\Services\UserAction\Order\BmKyyOrderService;
 use App\Services\UserAction\Order\FqKyyOrderService;
+use App\Services\UserAction\Order\MbDyMiniProgramOrderService;
 use App\Services\UserAction\Order\QyH5OrderService;
 use App\Services\UserAction\Order\TwAppOrderService;
 use App\Services\UserAction\Order\TwKyyOrderService;
@@ -21,6 +22,7 @@ use App\Services\UserAction\Order\YwKyyOrderService;
 use App\Services\UserAction\Order\ZyKyyOrderService;
 use App\Services\UserAction\Reg\BmKyyRegService;
 use App\Services\UserAction\Reg\FqKyyRegService;
+use App\Services\UserAction\Reg\MbDyMiniProgramRegService;
 use App\Services\UserAction\Reg\QyH5RegService;
 use App\Services\UserAction\Reg\TwAppRegService;
 use App\Services\UserAction\Reg\TwKyyRegService;
@@ -63,6 +65,7 @@ class UserActionService
 //            QyH5RegService::class,
             FqKyyRegService::class,
             ZyKyyRegService::class,
+            MbDyMiniProgramRegService::class,
 
             BmKyyAddShortcutService::class,
 
@@ -73,6 +76,7 @@ class UserActionService
             TwKyyOrderService::class,
             FqKyyOrderService::class,
             ZyKyyOrderService::class,
+            MbDyMiniProgramOrderService::class,
 //            QyH5OrderService::class,
         ];
     }
