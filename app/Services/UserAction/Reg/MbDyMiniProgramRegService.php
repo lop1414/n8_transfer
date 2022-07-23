@@ -2,7 +2,9 @@
 
 namespace App\Services\UserAction\Reg;
 
+use App\Common\Tools\CustomException;
 use App\Services\AdvClick\OceanClickService;
+use App\Services\ChannelService;
 use App\Services\UserAction\UserActionAbstract;
 use App\Traits\Cp\Mb;
 use App\Traits\ProductType\DyMiniProgram;
@@ -25,9 +27,8 @@ class MbDyMiniProgramRegService extends UserActionAbstract
 
     public function get(array $product, string $startTime,string $endTime): array
     {
-
-
         $sdk = $this->getSdk($product);
+        $channelService = new ChannelService();
 
         $data = [];
         $page = 1;
@@ -37,12 +38,23 @@ class MbDyMiniProgramRegService extends UserActionAbstract
                 $requestId = '';
 
                 if(!empty($item['adid'])){
+                    $channel = $channelService->readChannelByCpChannelId($this->getCpType(),$data['promotionId']);
+                    if(empty($channel)){
+                        throw new CustomException([
+                            'code' => 'NOT_FOUND_CHANNEL',
+                            'message' => '找不到渠道',
+                            'log'   => true,
+                            'data' => $data,
+                        ]);
+                    }
+
+
                     $requestId = 'n8_'.md5(uniqid());
                     $this->oceanClickService->save([
                         'request_id' => $requestId,
                         'ad_id' => $item['adid'],
                         'creative_id'=> $item['creativeId'],
-                        'channel_id'=> $item['promotionId'],
+                        'channel_id'=> $channel['id'],
                         'ip'        => $item['ip'],
                         'ua'        => $item['ua'],
                         'click_at'  => $item['createDate'],
