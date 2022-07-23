@@ -38,7 +38,7 @@ class MbDyMiniProgramRegService extends UserActionAbstract
                 $requestId = '';
 
                 if(!empty($item['adid'])){
-                    $channel = $channelService->readChannelByCpChannelId($this->getCpType(),$data['promotionId']);
+                    $channel = $channelService->readChannelByCpChannelId($this->getCpType(),$item['promotionId']);
                     if(empty($channel)){
                         throw new CustomException([
                             'code' => 'NOT_FOUND_CHANNEL',
