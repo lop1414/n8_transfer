@@ -37,7 +37,13 @@ class MbDyMiniProgramOrderService extends UserActionAbstract
             $tmp =  $sdk->getOrders($startTime, $endTime, $page);
             foreach ($tmp['items'] as $item){
                 // 注册信息
-                $data[] = $regService->itemFilter($item,$item['memberId'],$item['memberCreateDate']);
+                $regTime = $item['memberCreateDate'];
+                if(strtotime($item['createDate']) - strtotime($regTime) >= 24*60*60*3){
+                    $regTime = $item['createDate'];
+                    $item['has_change_reg_time'] = 1;
+                }
+
+                $data[] = $regService->itemFilter($item,$item['memberId'],$regTime);
 
                 $data[] = [
                     'open_id'       => $item['memberId'],
