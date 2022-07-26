@@ -4,6 +4,7 @@ namespace App\Services\UserAction\Order;
 
 use App\Common\Enums\OrderTypeEnums;
 use App\Services\UserAction\CompleteOrder\MbDyMiniProgramCompleteOrderService;
+use App\Services\UserAction\Reg\MbDyMiniProgramRegService;
 use App\Services\UserAction\UserActionAbstract;
 use App\Traits\Cp\Mb;
 use App\Traits\ProductType\DyMiniProgram;
@@ -31,9 +32,13 @@ class MbDyMiniProgramOrderService extends UserActionAbstract
 
         $data = [];
         $page = 1;
+        $regService = new MbDyMiniProgramRegService();
         do{
             $tmp =  $sdk->getOrders($startTime, $endTime, $page);
             foreach ($tmp['items'] as $item){
+                // 注册信息
+                $data[] = $regService->itemFilter($item,$item['memberId'],$item['memberCreateDate']);
+
                 $data[] = [
                     'open_id'       => $item['memberId'],
                     'action_time'   => $item['createDate'],
