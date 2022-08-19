@@ -51,7 +51,7 @@ class TwH5FollowService extends UserActionAbstract
             'type'          => $this->getType(),
             'cp_channel_id' => $item['spread_id'],
             'request_id'    => '',
-            'ip'            => '',
+            'ip'            => $item['ip'],
             'extend'        => $this->filterExtendInfo($item),
             'data'          => $item,
             'action_id'     => $item['id']
