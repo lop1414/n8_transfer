@@ -27,6 +27,7 @@ use App\Services\UserAction\Reg\MbDyMiniProgramRegService;
 use App\Services\UserAction\Reg\MbWeChatMiniProgramRegService;
 use App\Services\UserAction\Reg\QyH5RegService;
 use App\Services\UserAction\Reg\TwAppRegService;
+use App\Services\UserAction\Reg\TwH5RegService;
 use App\Services\UserAction\Reg\TwKyyRegService;
 use App\Services\UserAction\Reg\YwH5RegService;
 use App\Services\UserAction\Reg\YwKyyRegService;
@@ -64,6 +65,7 @@ class UserActionService
             TwAppRegService::class,
             BmKyyRegService::class,
             TwKyyRegService::class,
+            TwH5RegService::class,
 //            QyH5RegService::class,
             FqKyyRegService::class,
             ZyKyyRegService::class,
