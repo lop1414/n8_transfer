@@ -21,6 +21,7 @@ use App\Services\UserAction\Order\TwH5OrderService;
 use App\Services\UserAction\Order\TwKyyOrderService;
 use App\Services\UserAction\Order\YwH5OrderService;
 use App\Services\UserAction\Order\YwKyyOrderService;
+use App\Services\UserAction\Order\ZyH5OrderService;
 use App\Services\UserAction\Order\ZyKyyOrderService;
 use App\Services\UserAction\Reg\BmKyyRegService;
 use App\Services\UserAction\Reg\FqKyyRegService;
@@ -32,6 +33,7 @@ use App\Services\UserAction\Reg\TwH5RegService;
 use App\Services\UserAction\Reg\TwKyyRegService;
 use App\Services\UserAction\Reg\YwH5RegService;
 use App\Services\UserAction\Reg\YwKyyRegService;
+use App\Services\UserAction\Reg\ZyH5RegService;
 use App\Services\UserAction\Reg\ZyKyyRegService;
 use App\Services\UserAction\UserActionInterface;
 
@@ -67,6 +69,7 @@ class UserActionService
             BmKyyRegService::class,
             TwKyyRegService::class,
             TwH5RegService::class,
+            ZyH5RegService::class,
 //            QyH5RegService::class,
             FqKyyRegService::class,
             ZyKyyRegService::class,
@@ -80,6 +83,7 @@ class UserActionService
             TwAppOrderService::class,
             TwKyyOrderService::class,
             TwH5OrderService::class,
+            ZyH5OrderService::class,
             FqKyyOrderService::class,
             ZyKyyOrderService::class,
             MbDyMiniProgramOrderService::class,
