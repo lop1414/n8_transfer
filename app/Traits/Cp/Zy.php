@@ -17,7 +17,7 @@ trait Zy
 
     protected function getSdk(array $product): ZySdk
     {
-        return new ZySdk($product['cp_product_alias'],$product['cp_secret']);
+        return new ZySdk($product['cp_product_alias'],$product['cp_secret'],$product['extends']['api_alias']);
     }
 
 
