@@ -34,6 +34,7 @@ class ZyKyyRegService extends UserActionAbstract
 
             $tmp =  $zySdk->getUsers([
                 'start_time'  => $startTime,
+                'end_time'  => $endTime,
                 'page'  => $page
             ]);
             foreach ($tmp['list'] as $item){
