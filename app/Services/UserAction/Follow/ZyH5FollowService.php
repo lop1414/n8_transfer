@@ -19,24 +19,27 @@ class ZyH5FollowService extends UserActionAbstract
     {
 
         $twSdk = $this->getSdk($product);
-        $date = date('Y-m-d',strtotime($startTime));
-        $endDate = date('Y-m-d',strtotime($endTime));
         $data = [];
+        $page = 1;
+        $total = 0;
+
         do{
             $tmp =  $twSdk->getUsers([
-                'date'  => $date
+                'start_time'  => $startTime,
+                'end_time'  => $endTime,
+                'page'  => $page
             ]);
 
             foreach ($tmp['list'] as $item){
+                $total += 1;
 
                 if($item['is_follow'] == 1){
                     $data[] = $this->itemFilter($item);
                 }
             }
-            $date = date('Y-m-d',strtotime('+1 days',strtotime($date)));
-
-        }while($date <= $endDate);
-
+            $page += 1;
+        }while($total < $tmp['count']);
+        
         return $data;
     }
 
