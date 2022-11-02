@@ -57,7 +57,6 @@ class ZyH5RegService extends UserActionAbstract
             }
 
             $page += 1;
-            dump($total);
         }while($total < $tmp['count']);
 
         return $data;
