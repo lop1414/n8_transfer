@@ -119,6 +119,9 @@ class SyncUserActionCommand extends BaseCommand
                 $userActionService->setParam('end_time',$tmpEndTime);
                 $userActionService->sync();
                 $tmpStartTime = $tmpEndTime;
+
+                // 避免频率限制（FQ）
+                sleep(1);
             }
         }
 
