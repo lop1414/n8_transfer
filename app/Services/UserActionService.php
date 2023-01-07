@@ -13,6 +13,7 @@ use App\Models\UserActionLogModel;
 use App\Services\UserAction\AddShortcut\BmKyyAddShortcutService;
 use App\Services\UserAction\Order\BmKyyOrderService;
 use App\Services\UserAction\Order\FqKyyOrderService;
+use App\Services\UserAction\Order\HsDjGzhOrderService;
 use App\Services\UserAction\Order\MbDyMiniProgramOrderService;
 use App\Services\UserAction\Order\MbWeChatMiniProgramOrderService;
 use App\Services\UserAction\Order\QyH5OrderService;
@@ -92,6 +93,7 @@ class UserActionService
             MbWeChatMiniProgramOrderService::class,
 //            QyH5OrderService::class,
             BmKyyOrderService::class,
+            HsDjGzhOrderService::class
         ];
     }
 
