@@ -25,6 +25,7 @@ use App\Services\UserAction\Order\ZyH5OrderService;
 use App\Services\UserAction\Order\ZyKyyOrderService;
 use App\Services\UserAction\Reg\BmKyyRegService;
 use App\Services\UserAction\Reg\FqKyyRegService;
+use App\Services\UserAction\Reg\HsDjGzhRegService;
 use App\Services\UserAction\Reg\MbDyMiniProgramRegService;
 use App\Services\UserAction\Reg\MbWeChatMiniProgramRegService;
 use App\Services\UserAction\Reg\QyH5RegService;
@@ -75,6 +76,7 @@ class UserActionService
             ZyKyyRegService::class,
             MbDyMiniProgramRegService::class,
             MbWeChatMiniProgramRegService::class,
+            HsDjGzhRegService::class,
 
             BmKyyAddShortcutService::class,
 
