@@ -80,6 +80,7 @@ class Kernel extends ConsoleKernel
         // 队列入库
         $schedule->command("user_action_data_to_db --enum=USER_REG_ACTION ")->cron('* * * * *');
         $schedule->command("user_action_data_to_db --enum=USER_ADD_SHORTCUT_ACTION ")->cron('* * * * *');
+        $schedule->command("user_action_data_to_db --enum=USER_FOLLOW_ACTION ")->cron('* * * * *');
 
         // 同步
 
