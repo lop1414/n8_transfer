@@ -52,6 +52,10 @@ $router->group([
         $router->post('add_shortcut', 'Open\FqKyy\UserController@addShortcut');
     });
 
+    $router->group(['prefix' => 'fq_h5'], function () use ($router) {
+        $router->post('reg', 'Open\FqH5\UserController@reg');
+    });
+
     $router->group(['prefix' => 'yw_h5'], function () use ($router) {
         $router->get('user', 'Open\YwH5\UserController@reg');
         $router->post('user', 'Open\YwH5\UserController@reg');

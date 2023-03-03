@@ -11,7 +11,6 @@ use App\Enums\QueueEnums;
 use App\Common\Services\DataToQueueService;
 use App\Enums\UserActionTypeEnum;
 use App\Http\Controllers\Open\BaseController;
-use App\Services\ForwardDataService;
 use Illuminate\Http\Request;
 
 class UserController extends BaseController
@@ -66,6 +65,11 @@ class UserController extends BaseController
     public function addShortcut(Request $request){
         $requestData = $request->all();
 
+        // 关注
+        if(isset($requestData['wx_platform_app_key'])){
+            return $this->follow($request);
+        }
+
         $ua = $requestData['user_agent'] ?? '';
 
         $data = array_merge([
@@ -84,6 +88,35 @@ class UserController extends BaseController
         ]);
 
         $service = new DataToQueueService(QueueEnums::USER_ADD_SHORTCUT_ACTION);
+        $service->push($data);
+        return $this->success();
+    }
+
+
+    /**
+     * 关注行为
+     */
+    public function follow(Request $request){
+        $requestData = $request->all();
+
+        $ua = $requestData['user_agent'] ?? '';
+
+        $data = array_merge([
+            'cp_type'      => $this->cpType,
+            'cp_product_alias' => $requestData['app_id'],
+            'open_id'      => $requestData['device_id'],
+            'action_time'  => date('Y-m-d H:i:s',$requestData['add_desktop_timestamp']),
+            'type'         => UserActionTypeEnum::FOLLOW,
+            'cp_channel_id'=>  $requestData['promotion_id'] ?? '',
+            'request_id'   => '',
+            'ip'           => '',
+            'extend'       => array_merge($this->filterDeviceInfo($requestData),['ua' => $ua]),
+            'data'         => $requestData,
+            'action_id'    => $requestData['device_id'],
+            'source'       => DataSourceEnums::CP
+        ]);
+
+        $service = new DataToQueueService(QueueEnums::USER_FOLLOW_ACTION);
         $service->push($data);
         return $this->success();
     }
