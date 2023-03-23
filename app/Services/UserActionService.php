@@ -16,6 +16,7 @@ use App\Services\UserAction\Order\FqKyyOrderService;
 use App\Services\UserAction\Order\HsDjGzhOrderService;
 use App\Services\UserAction\Order\MbDyMiniProgramOrderService;
 use App\Services\UserAction\Order\MbWeChatMiniProgramOrderService;
+use App\Services\UserAction\Order\QrWeChatMiniProgramOrderService;
 use App\Services\UserAction\Order\QyH5OrderService;
 use App\Services\UserAction\Order\TwAppOrderService;
 use App\Services\UserAction\Order\TwH5OrderService;
@@ -29,6 +30,7 @@ use App\Services\UserAction\Reg\FqKyyRegService;
 use App\Services\UserAction\Reg\HsDjGzhRegService;
 use App\Services\UserAction\Reg\MbDyMiniProgramRegService;
 use App\Services\UserAction\Reg\MbWeChatMiniProgramRegService;
+use App\Services\UserAction\Reg\QrWeChatMIniProgramRegService;
 use App\Services\UserAction\Reg\QyH5RegService;
 use App\Services\UserAction\Reg\TwAppRegService;
 use App\Services\UserAction\Reg\TwH5RegService;
@@ -78,6 +80,7 @@ class UserActionService
             MbDyMiniProgramRegService::class,
             MbWeChatMiniProgramRegService::class,
             HsDjGzhRegService::class,
+            QrWeChatMIniProgramRegService::class,
 
             BmKyyAddShortcutService::class,
 
@@ -93,7 +96,8 @@ class UserActionService
             MbWeChatMiniProgramOrderService::class,
 //            QyH5OrderService::class,
             BmKyyOrderService::class,
-            HsDjGzhOrderService::class
+            HsDjGzhOrderService::class,
+            QrWeChatMiniProgramOrderService::class,
         ];
     }
 
