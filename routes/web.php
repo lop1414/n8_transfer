@@ -61,6 +61,10 @@ $router->group([
         $router->post('user', 'Open\YwH5\UserController@reg');
     });
 
+    $router->group(['prefix' => 'yg'], function () use ($router) {
+        $router->post('user', 'Open\YgWechatMiniProgram\UserController@reg');
+    });
+
     $router->group(['prefix' => 'match'], function () use ($router) {
         $router->get('second_version', 'Open\MatchDataController@secondVersion');
     });
