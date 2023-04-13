@@ -42,7 +42,7 @@ class BmdjWeChatMiniProgramCompleteOrderService extends UserActionAbstract
     {
         return [
             'open_id'       => $item['uuid'],
-            'action_time'   => $item['payTime'],
+            'action_time'   => date('Y-m-d H:i:s',$item['payTime']),
             'type'          => $this->getType(),
             'cp_channel_id' => $item['channelid'],
             'request_id'    => '',

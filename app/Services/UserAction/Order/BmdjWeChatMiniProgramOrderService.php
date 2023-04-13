@@ -35,7 +35,7 @@ class BmdjWeChatMiniProgramOrderService extends UserActionAbstract
 
                 $data[] = [
                     'open_id'       => $item['uuid'],
-                    'action_time'   => $item['createTime'],
+                    'action_time'   => date('Y-m-d H:i:s',$item['createTime']),
                     'type'          => $this->getType(),
                     'cp_channel_id' => $item['channelid'],
                     'request_id'    => '',
