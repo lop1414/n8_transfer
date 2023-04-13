@@ -11,6 +11,7 @@ use App\Common\Tools\CustomException;
 use App\Enums\DataSourceEnums;
 use App\Models\UserActionLogModel;
 use App\Services\UserAction\AddShortcut\BmKyyAddShortcutService;
+use App\Services\UserAction\Order\BmdjWeChatMiniProgramOrderService;
 use App\Services\UserAction\Order\BmKyyOrderService;
 use App\Services\UserAction\Order\FqKyyOrderService;
 use App\Services\UserAction\Order\HsDjGzhOrderService;
@@ -25,6 +26,7 @@ use App\Services\UserAction\Order\YwH5OrderService;
 use App\Services\UserAction\Order\YwKyyOrderService;
 use App\Services\UserAction\Order\ZyH5OrderService;
 use App\Services\UserAction\Order\ZyKyyOrderService;
+use App\Services\UserAction\Reg\BmdjWeChatMIniProgramRegService;
 use App\Services\UserAction\Reg\BmKyyRegService;
 use App\Services\UserAction\Reg\FqKyyRegService;
 use App\Services\UserAction\Reg\HsDjGzhRegService;
@@ -81,6 +83,7 @@ class UserActionService
             MbWeChatMiniProgramRegService::class,
             HsDjGzhRegService::class,
             QrWeChatMIniProgramRegService::class,
+            BmdjWeChatMIniProgramRegService::class,
 
             BmKyyAddShortcutService::class,
 
@@ -98,6 +101,7 @@ class UserActionService
             BmKyyOrderService::class,
             HsDjGzhOrderService::class,
             QrWeChatMiniProgramOrderService::class,
+            BmdjWeChatMiniProgramOrderService::class
         ];
     }
 
