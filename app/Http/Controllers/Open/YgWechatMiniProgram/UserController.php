@@ -31,7 +31,7 @@ class UserController extends BaseController
             $ua = $requestData['userAgent'] ?? '';
             $data = array_merge([
                 'cp_type'     => $this->cpType,
-                'cp_product_alias' => $requestData['openId'],
+                'cp_product_alias' => $requestData['channleCode'],
                 'open_id'      => $requestData['userId'],
                 'action_time'  => $requestData['regTime'],
                 'type'         => UserActionTypeEnum::REG,
