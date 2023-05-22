@@ -57,7 +57,7 @@ class SyncUserActionCommand extends BaseCommand
 
         $this->lockRun(function () use ($cpType,$productType,$actionType){
             $this->action($cpType,$productType,$actionType);
-        },$lockKey,60*60*3,['log' => true]);
+        },$lockKey,60*60*1,['log' => true]);
 
 
     }
