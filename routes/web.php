@@ -63,7 +63,7 @@ $router->group([
 
     $router->group(['prefix' => 'yg'], function () use ($router) {
         $router->post('user', 'Open\YgWechatMiniProgram\UserController@reg');
-        $router->post('task/callback', 'Open\YgWechatMiniProgram\TaskController@callback');// 阳光任务回调
+        $router->get('task/callback', 'Open\YgWechatMiniProgram\TaskController@callback');// 阳光任务回调
     });
 
     $router->group(['prefix' => 'match'], function () use ($router) {
