@@ -6,6 +6,7 @@ use App\Common\Console\BaseCommand;
 use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
+use App\Common\Services\ErrorLogService;
 use App\Enums\UserActionTypeEnum;
 use App\Services\ProductService;
 use App\Services\UserAction\UserActionInterface;
@@ -89,39 +90,46 @@ class SyncUserActionCommand extends BaseCommand
         $services = UserActionService::getServices();
 
         foreach ($services as $service){
-            $container->bind(UserActionInterface::class,$service);
-            $userActionService = $container->make(UserActionService::class);
+            try{
+                $container->bind(UserActionInterface::class,$service);
+                $userActionService = $container->make(UserActionService::class);
 
-            if(!empty($cpType) &&  $cpType != $userActionService->getCpType()){
-                continue;
-            }
+                if(!empty($cpType) &&  $cpType != $userActionService->getCpType()){
+                    continue;
+                }
 
-            if(!empty($actionType) &&  $actionType != $userActionService->getType()){
-                continue;
-            }
+                if(!empty($actionType) &&  $actionType != $userActionService->getType()){
+                    continue;
+                }
 
-            if(!empty($productType) &&  $productType != $userActionService->getProductType()){
-                continue;
-            }
+                if(!empty($productType) &&  $productType != $userActionService->getProductType()){
+                    continue;
+                }
 
-            !empty($productId) && $userActionService->setParam('product_id',$productId);
+                !empty($productId) && $userActionService->setParam('product_id',$productId);
 
-            echo $userActionService->getCpType().':'.$userActionService->getProductType().':'.$userActionService->getType()."\n";
+                echo $userActionService->getCpType().':'.$userActionService->getProductType().':'.$userActionService->getType()."\n";
 
-            $tmpStartTime = $startTime;
-            while($tmpStartTime < $endTime){
-                $tmpEndTime = date('Y-m-d H:i:s',  strtotime($tmpStartTime) + $timeInterval);
-                $tmpEndTime = min($tmpEndTime,$endTime);
+                $tmpStartTime = $startTime;
+                while($tmpStartTime < $endTime){
+                    $tmpEndTime = date('Y-m-d H:i:s',  strtotime($tmpStartTime) + $timeInterval);
+                    $tmpEndTime = min($tmpEndTime,$endTime);
 
-                echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
+                    echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
 
-                $userActionService->setParam('start_time',$tmpStartTime);
-                $userActionService->setParam('end_time',$tmpEndTime);
-                $userActionService->sync();
-                $tmpStartTime = $tmpEndTime;
+                    $userActionService->setParam('start_time',$tmpStartTime);
+                    $userActionService->setParam('end_time',$tmpEndTime);
+                    $userActionService->sync();
+                    $tmpStartTime = $tmpEndTime;
 
-                // 避免频率限制（FQ）
-                sleep(1);
+                    // 避免频率限制（FQ）
+                    sleep(1);
+                }
+            }catch (\Exception $e){
+
+                //日志
+                (new ErrorLogService())->catch($e);
+                return $this->_response($e->getCode(), 'fail:'.$e->getMessage());
             }
         }
 
