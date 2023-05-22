@@ -23,8 +23,10 @@ class TaskController extends BaseController
     public function callback(Request $request){
         $requestData = $request->all();
 
-        $service = new DataToQueueService(QueueEnums::YG_TASK_CALLBACK_DATA);
-        $service->push($requestData);
+        if($requestData['xurl'] != '-1'){
+            $service = new DataToQueueService(QueueEnums::YG_TASK_CALLBACK_DATA);
+            $service->push($requestData);
+        }
 
         return $this->_response(0, 'success');
 
