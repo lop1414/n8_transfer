@@ -191,6 +191,25 @@ class UserActionService
     }
 
 
+    public function save($item){
+        try{
+            $item['source'] = DataSourceEnums::CP;
+            $item['status'] = ReportStatusEnum::WAITING;
+            $this->model->setTableNameWithMonth($item['action_time'])->create($item);
+
+        }catch (\Exception $e){
+            if($e->getCode() == 23000){
+                echo "        命中唯一索引 \n";
+                return ;
+            }
+
+            // 日志
+            (new ErrorLogService())->catch($e);
+            echo $e->getMessage()."\n";
+        }
+    }
+
+
     /**
      * @param array $product
      * @param string $startTime
@@ -202,24 +221,9 @@ class UserActionService
         $data = $this->service->get($product,$startTime,$endTime);
 
         foreach ($data as $item){
-
-            try{
-                $item['product_id'] = $product['id'];
-                $item['matcher'] = $product['matcher'];
-                $item['source'] = DataSourceEnums::CP;
-                $item['status'] = ReportStatusEnum::WAITING;
-                $this->model->setTableNameWithMonth($item['action_time'])->create($item);
-
-            }catch (\Exception $e){
-                if($e->getCode() == 23000){
-                    echo "        命中唯一索引 \n";
-                    continue;
-                }
-
-                // 日志
-                (new ErrorLogService())->catch($e);
-                echo $e->getMessage()."\n";
-            }
+            $item['product_id'] = $product['id'];
+            $item['matcher'] = $product['matcher'];
+            $this->save($item);
         }
     }
 
