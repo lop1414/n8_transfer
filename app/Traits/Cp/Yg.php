@@ -23,7 +23,7 @@ trait Yg
 
     }
 
-    protected function getOrderType($orderType){
+    public function getOrderType($orderType){
         $orderTypeMap = [
             1   => OrderTypeEnums::NORMAL,
             2   => OrderTypeEnums::OTHER,

@@ -13,6 +13,7 @@ use App\Console\Commands\PushAdvClickCommand;
 use App\Console\Commands\SyncUserActionCommand;
 use App\Console\Commands\PushUserActionCommand;
 use App\Console\Commands\UserActionDataToDbCommand;
+use App\Console\Commands\YgTaskCallbackCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -43,6 +44,9 @@ class Kernel extends ConsoleKernel
         PushAdvClickCommand::class,
         // 转发数据
         ForwardDataCommand::class,
+
+        //阳光短剧数据任务
+        YgTaskCallbackCommand::class
     ];
 
     /**
@@ -81,6 +85,9 @@ class Kernel extends ConsoleKernel
         $schedule->command("user_action_data_to_db --enum=USER_REG_ACTION ")->cron('* * * * *');
         $schedule->command("user_action_data_to_db --enum=USER_ADD_SHORTCUT_ACTION ")->cron('* * * * *');
         $schedule->command("user_action_data_to_db --enum=USER_FOLLOW_ACTION ")->cron('* * * * *');
+
+        // 阳光短剧数据任务
+        $schedule->command("yg_task_callback ")->cron('*/2 * * * *');
 
         // 同步
 
