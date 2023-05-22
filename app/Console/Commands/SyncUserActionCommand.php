@@ -7,11 +7,13 @@ use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\ProductTypeEnums;
 use App\Common\Helpers\Functions;
 use App\Common\Services\ErrorLogService;
+use App\Common\Tools\CustomException;
 use App\Enums\UserActionTypeEnum;
 use App\Services\ProductService;
 use App\Services\UserAction\UserActionInterface;
 use App\Services\UserActionService;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\DB;
 
 class SyncUserActionCommand extends BaseCommand
 {
@@ -125,11 +127,16 @@ class SyncUserActionCommand extends BaseCommand
                     // 避免频率限制（FQ）
                     sleep(1);
                 }
-            }catch (\Exception $e){
+            }catch (CustomException $e){
+                //日志
+                (new ErrorLogService())->catch($e);
+
+                continue;
+            } catch (\Exception $e){
 
                 //日志
                 (new ErrorLogService())->catch($e);
-                return $this->_response($e->getCode(), 'fail:'.$e->getMessage());
+               continue;
             }
         }
 
