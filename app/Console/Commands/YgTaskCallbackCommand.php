@@ -61,7 +61,7 @@ class YgTaskCallbackCommand extends BaseCommand
                             'data'          => $itemData,
                             'action_id'     => $itemData['id'],
                             'extend'        => array_merge([
-                                'amount'        => $itemData['discount'] * 100,
+                                'amount'        => intval($itemData['discount'] * 100),
                                 'type'          => $orderService->getOrderType($itemData['type']),
                                 'order_id'      => $itemData['id']
                             ],$orderService->filterExtendInfo($itemData)),
