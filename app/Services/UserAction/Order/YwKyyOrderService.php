@@ -46,13 +46,13 @@ class YwKyyOrderService extends UserActionAbstract
         ];
 
         $data = [];
-
+        $currentTotal = 0;
         do{
 
             $tmp = $ywSdk->getOrders($reqPara);
 
             foreach ($tmp['list'] as $item){
-
+                $currentTotal += 1;
                 $data[] = [
                     'open_id'       => $item['guid'],
                     'action_time'   => $item['order_time'],
@@ -81,7 +81,7 @@ class YwKyyOrderService extends UserActionAbstract
             $reqPara['total_count'] = $tmp['total_count'];
             $reqPara['last_page'] = $tmp['page'];
 
-        }while(count($data) < $tmp['total_count']);
+        }while($currentTotal < $tmp['total_count']);
 
         return $data;
     }
