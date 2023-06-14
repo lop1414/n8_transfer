@@ -42,7 +42,6 @@ class YwKyyCompleteOrderService extends UserActionAbstract
         do{
 
             $tmp = $ywSdk->getOrders($reqPara);
-            $data = array_merge($data,$tmp['list']);
 
             foreach ($tmp['list'] as $item){
 
