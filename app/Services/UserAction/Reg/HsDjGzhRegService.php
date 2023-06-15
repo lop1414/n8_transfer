@@ -28,7 +28,7 @@ class HsDjGzhRegService extends UserActionAbstract
     {
         $sdk = $this->getSdk($product);
         $param = [
-            'search_date' => $startTime.' - '.$endTime,
+            'search_dyeing_date' => $startTime.' - '.$endTime,
             'applet_id' => $product['extends']['applet_id'],
             'show_id' => $product['extends']['show_id'],
             'channel_id' => $product['cp_product_alias'],
