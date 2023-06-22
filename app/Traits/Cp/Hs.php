@@ -27,7 +27,8 @@ trait Hs
     protected function getOrderType($orderType){
         $orderTypeMap = [
             0   => OrderTypeEnums::NORMAL,
-            1   => OrderTypeEnums::PROP
+            1   => OrderTypeEnums::PROP,
+            2   => OrderTypeEnums::PROP,
         ];
         return $orderTypeMap[$orderType];
     }
