@@ -40,9 +40,9 @@ class HsDjGzhRegService extends UserActionAbstract
             $param['page'] = $page;
             $users =  $sdk->getUsers($param);
             foreach ($users['data'] as $item){
-                $tmp = $sdk->readUserIpUa($item['user_id']);
-                $item['ip'] = $tmp['ip'];
-                $item['ua'] = $tmp['ua'];
+//                $tmp = $sdk->readUserIpUa($item['user_id']);
+//                $item['ip'] = $tmp['ip'];
+//                $item['ua'] = $tmp['ua'];
                 $data[] = [
                     'open_id'       => $item['user_id'],
                     'action_time'   => $item['dyeing_at'],
