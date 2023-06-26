@@ -62,11 +62,14 @@ class Kernel extends ConsoleKernel
 
         //时间范围
         $dateTime = date('Y-m-d H:i:s',TIMESTAMP);
+        $oneMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*1);
         $fiveMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*5);
         $tenMinuteFront = date('Y-m-d H:i:s',TIMESTAMP-60*10);
         $oneHourFront = date('Y-m-d H:i:s',TIMESTAMP-60*60);
         $twoHourFront = date('Y-m-d H:i:s',TIMESTAMP-60*60*2);
 
+        //一分钟区间
+        $oneMinuteRange = "'{$oneMinuteFront}','{$dateTime}'";
         //五分钟区间
         $fiveMinuteRange = "'{$fiveMinuteFront}','{$dateTime}'";
         //十分钟区间
@@ -106,7 +109,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("sync_user_action --action_type=REG --cp_type=MB --product_type=WECHAT_MINI_PROGRAM --time={$fiveMinuteRange} ")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=QR --product_type=WECHAT_MINI_PROGRAM --time={$fiveMinuteRange} ")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=BMDJ --product_type=WECHAT_MINI_PROGRAM --time={$fiveMinuteRange} ")->cron('*/5 * * * *');
-        $schedule->command("sync_user_action --action_type=REG --cp_type=HS --product_type=DJ_GZH --time={$fiveMinuteRange} ")->cron('*/5 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=HS --product_type=DJ_GZH --time={$oneMinuteRange} ")->cron('*/1 * * * *');
 
         $schedule->command("sync_user_action --action_type=ADD_SHORTCUT --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
 
@@ -115,7 +118,7 @@ class Kernel extends ConsoleKernel
         // 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*24*2)."','{$oneHourFront}'";
         $schedule->command("check_user_action  --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
-        $schedule->command("check_user_action  --cp_type=HS --action_type=REG --time={$oneHourRange}")->cron('*/10 * * * *');
+        $schedule->command("check_user_action  --cp_type=HS --action_type=REG --time={$tenMinuteRange}")->cron('*/5 * * * *');
         $schedule->command("check_user_action  --cp_type=HS --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
 
         //补充用户行为的渠道信息等 阅文
