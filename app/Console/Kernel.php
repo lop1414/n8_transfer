@@ -115,7 +115,7 @@ class Kernel extends ConsoleKernel
         // 查漏补缺
         $tmpRange =  "'".date('Y-m-d H:i:s',TIMESTAMP - 60*60*24*2)."','{$oneHourFront}'";
         $schedule->command("check_user_action  --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
-        $schedule->command("check_user_action  --cp_type=HS --action_type=REG --time={$tmpRange}")->cron('*/10 * * * *');
+        $schedule->command("check_user_action  --cp_type=HS --action_type=REG --time={$oneHourRange}")->cron('*/10 * * * *');
         $schedule->command("check_user_action  --cp_type=HS --action_type=ORDER --time={$tmpRange}")->cron('10 * * * *');
 
         //补充用户行为的渠道信息等 阅文
