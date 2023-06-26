@@ -23,6 +23,20 @@ class HsDjGzhOrderService extends UserActionAbstract
     }
 
 
+    public function getTotal(array $product, string $startTime, string $endTime): ?int
+    {
+        $sdk = $this->getSdk($product);
+        $param = [
+            'search_date' => $startTime.' - '.$endTime,
+            'applet_id' => $product['extends']['applet_id'],
+            'show_id' => $product['extends']['show_id'],
+            'channel_id' => $product['cp_product_alias'],
+        ];
+        $orders =  $sdk->getOrders($param);
+        return $orders['count'] ?? null;
+    }
+
+
     public function get(array $product, string $startTime,string $endTime): array
     {
 

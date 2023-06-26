@@ -24,6 +24,21 @@ class HsDjGzhRegService extends UserActionAbstract
     }
 
 
+    public function getTotal(array $product, string $startTime, string $endTime): ?int
+    {
+        $sdk = $this->getSdk($product);
+        $param = [
+            'search_dyeing_date' => $startTime.' - '.$endTime,
+            'applet_id' => $product['extends']['applet_id'],
+            'show_id' => $product['extends']['show_id'],
+            'channel_id' => $product['cp_product_alias'],
+        ];
+
+        $users =  $sdk->getUsers($param);
+        return $users['count'] ?? null;
+    }
+
+
     public function get(array $product, string $startTime,string $endTime): array
     {
         $sdk = $this->getSdk($product);
