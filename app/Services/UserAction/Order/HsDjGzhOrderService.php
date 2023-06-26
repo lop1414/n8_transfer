@@ -50,11 +50,13 @@ class HsDjGzhOrderService extends UserActionAbstract
 
         $data = [];
         $page = 1;
+        $currentTotal = 0;
         do{
             $param['page'] = $page;
             $orders =  $sdk->getOrders($param);
 
             foreach ($orders['data'] as $item){
+                $currentTotal += 1;
                 $data[] = [
                     'open_id'       => $item['user_id'],
                     'action_time'   => $item['request_at'],
@@ -79,7 +81,7 @@ class HsDjGzhOrderService extends UserActionAbstract
 
             $page += 1;
 
-        }while(count($data) < $orders['count']);
+        }while($currentTotal < $orders['count']);
 
         return $data;
     }

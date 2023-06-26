@@ -51,10 +51,12 @@ class HsDjGzhRegService extends UserActionAbstract
 
         $data = [];
         $page = 1;
+        $currentTotal = 0;
         do{
             $param['page'] = $page;
             $users =  $sdk->getUsers($param);
             foreach ($users['data'] as $item){
+                $currentTotal += 1;
 //                $tmp = $sdk->readUserIpUa($item['user_id']);
 //                $item['ip'] = $tmp['ip'];
 //                $item['ua'] = $tmp['ua'];
@@ -77,7 +79,7 @@ class HsDjGzhRegService extends UserActionAbstract
             }
             $page += 1;
 
-        }while(count($data) < $users['count']);
+        }while($currentTotal < $users['count']);
 
 
         return $data;
