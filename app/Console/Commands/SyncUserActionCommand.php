@@ -117,12 +117,29 @@ class SyncUserActionCommand extends BaseCommand
                     $tmpEndTime = date('Y-m-d H:i:s',  strtotime($tmpStartTime) + $timeInterval);
                     $tmpEndTime = min($tmpEndTime,$endTime);
 
-                    echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
+                    // 跨月
+                    if(intval(date('m',strtotime($tmpEndTime))) - intval(date('m',strtotime($tmpStartTime))) > 0){
+                        $tmpStartMonth = date('Y-m',strtotime($tmpStartTime));
 
-                    $userActionService->setParam('start_time',$tmpStartTime);
-                    $userActionService->setParam('end_time',$tmpEndTime);
-                    $userActionService->sync();
-                    $tmpStartTime = $tmpEndTime;
+                        //开始时间月份最后一天
+                        $tmpEndTime = date('Y-m-d',strtotime("{$tmpStartMonth} +1 month -1 day")) . " 23:59:59";
+                        echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
+
+                        $userActionService->setParam('start_time',$tmpStartTime);
+                        $userActionService->setParam('end_time',$tmpEndTime);
+
+                        // 开始时间的下个月第一天
+                        $tmpStartTime = date('Y-m',strtotime("{$tmpStartMonth} +1 month")) . "-01 00:00:00";
+
+                    }else{
+                        echo "时间 : {$tmpStartTime} ~ {$tmpEndTime}\n";
+
+                        $userActionService->setParam('start_time',$tmpStartTime);
+                        $userActionService->setParam('end_time',$tmpEndTime);
+                        $tmpStartTime = $tmpEndTime;
+                    }
+
+//                    $userActionService->sync();
 
                     // 避免频率限制（FQ）
                     sleep(1);
