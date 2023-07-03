@@ -250,10 +250,11 @@ class UserActionService
                 if(!in_array($product['cp_type'],$tmpAccountLevel)){
                     echo "    {$product['name']}\n";
                     $this->syncByProduct($product,$startTime,$endTime);
+                    continue;
                 }
 
                 // 账户级别
-                if($accountLevelCpType[$product['cp_type']]){
+                if(isset($accountLevelCpType[$product['cp_type']])){
                     continue;
                 }else{
                     echo "    {$product['cp_type']}\n";
