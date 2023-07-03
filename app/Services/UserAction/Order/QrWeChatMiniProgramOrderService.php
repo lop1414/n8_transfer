@@ -15,11 +15,14 @@ class QrWeChatMiniProgramOrderService extends UserActionAbstract
     use Qr;
     use Order;
 
+    protected $productMap;
     protected $qrWeChatMiniProgramCompleteOrderService;
 
     public function __construct()
     {
+        $this->productMap = $this->getQrProductMap();
         $this->qrWeChatMiniProgramCompleteOrderService = new QrWeChatMiniProgramCompleteOrderService();
+        $this->qrWeChatMiniProgramCompleteOrderService->setProductMap($this->productMap);
     }
 
 
@@ -34,6 +37,7 @@ class QrWeChatMiniProgramOrderService extends UserActionAbstract
             foreach ($list['orderList'] as $item){
 
                 $data[] = [
+                    'product_id'    => $this->productMap[$item['pack_appid']],
                     'open_id'       => $item['user_id'],
                     'action_time'   => $item['create_time'],
                     'type'          => $this->getType(),

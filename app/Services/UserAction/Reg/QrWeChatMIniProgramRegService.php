@@ -30,12 +30,14 @@ class QrWeChatMIniProgramRegService extends UserActionAbstract
 
         $page = 1;
         $data = [];
+        $productMap = $this->getQrProductMap();
         do{
             $list =  $sdk->getUserList($startTime,$endTime,$page);
             foreach ($list['userList'] as $item){
                 $item['ua'] = base64_decode($item['user_agent']);
 
                 $data[] = [
+                    'product_id'    => $productMap[$item['pack_appid']],
                     'open_id'       => $item['user_id'],
                     'action_time'   => $item['user_time'],
                     'type'          => $this->getType(),

@@ -223,7 +223,7 @@ class UserActionService
         $data = $this->service->get($product,$startTime,$endTime);
 
         foreach ($data as $item){
-            $item['product_id'] = $product['id'];
+            $item['product_id'] = $item['product_id'] ?? $product['id'];
             $item['matcher'] = $product['matcher'];
             $this->save($item);
         }
@@ -240,11 +240,29 @@ class UserActionService
         $startTime = $this->getParam('start_time');
         $endTime = $this->getParam('end_time');
 
+        $accountLevelCpType = [CpTypeEnums::QR => false];
+        $tmpAccountLevel = array_keys($accountLevelCpType);
+
         foreach ($productList as $product){
             try{
-                echo "    {$product['name']}\n";
 
-                $this->syncByProduct($product,$startTime,$endTime);
+                // 产品级别
+                if(!in_array($product['cp_type'],$tmpAccountLevel)){
+                    echo "    {$product['name']}\n";
+                    $this->syncByProduct($product,$startTime,$endTime);
+                }
+
+                // 账户级别
+                if($accountLevelCpType[$product['cp_type']]){
+                    continue;
+                }else{
+                    echo "    {$product['cp_type']}\n";
+
+                    $this->syncByProduct($product,$startTime,$endTime);
+                    $accountLevelCpType[$product['cp_type']] = true;
+                }
+
+
 
             }catch (CustomException $e){
 
@@ -336,10 +354,12 @@ class UserActionService
                         continue;
                     }
 
+                    $productId = $item['product_id'] ?? $product['id'];
+
                     $actions = $userActionLogModel
                         ->setTableNameWithMonth($item['action_time'])
                         ->where('open_id',strval($item['open_id']))
-                        ->where('product_id',$product['id'])
+                        ->where('product_id',$productId)
                         ->where('type',$this->service->getType())
                         ->where('cp_channel_id','')
                         ->get();

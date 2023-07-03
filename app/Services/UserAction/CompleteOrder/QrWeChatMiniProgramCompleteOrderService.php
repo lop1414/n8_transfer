@@ -14,6 +14,14 @@ class QrWeChatMiniProgramCompleteOrderService extends UserActionAbstract
     use Qr;
     use CompleteOrder;
 
+    protected $productMap;
+
+
+
+    public function setProductMap($arr){
+        $this->productMap = $arr;
+        return $this;
+    }
 
     public function get(array $product, string $startTime,string $endTime): array
     {
@@ -42,6 +50,7 @@ class QrWeChatMiniProgramCompleteOrderService extends UserActionAbstract
     public function itemFilter($item): array
     {
         return [
+            'product_id'    => $this->productMap[$item['pack_appid']],
             'open_id'       => $item['user_id'],
             'action_time'   => $item['pay_time'],
             'type'          => $this->getType(),

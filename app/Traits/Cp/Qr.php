@@ -6,6 +6,7 @@ namespace App\Traits\Cp;
 use App\Common\Enums\CpTypeEnums;
 use App\Common\Enums\OrderTypeEnums;
 use App\Common\Sdks\Qr\QrSdk;
+use App\Common\Services\SystemApi\UnionApiService;
 
 
 trait Qr
@@ -19,8 +20,9 @@ trait Qr
 
     protected function getSdk(array $product): QrSdk
     {
-        return new QrSdk($product['extends']['host_id'],$product['cp_product_alias'],$product['cp_secret']);
-
+        $cpAccount = $product['cp_account'];
+        list($hostId,$appid) = explode('#',$cpAccount['account']);
+        return new QrSdk($hostId,$appid,$cpAccount['cp_secret']);
     }
 
     protected function getOrderType($orderType){
@@ -35,6 +37,20 @@ trait Qr
             7   => OrderTypeEnums::OTHER,
         ];
         return $orderTypeMap[$orderType];
+    }
+
+
+    /**
+     * 获取青榕产品Map
+     * @return array
+     * @throws \App\Common\Tools\CustomException
+     */
+    protected function getQrProductMap(): array
+    {
+        $productList = (new UnionApiService())->apiGetProduct([
+            'cp_type'=> CpTypeEnums::QR,
+        ]);
+        return array_column($productList,'id','cp_product_alias');
     }
 
 }
