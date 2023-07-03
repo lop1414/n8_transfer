@@ -61,6 +61,10 @@ $router->group([
         $router->post('user', 'Open\YwH5\UserController@reg');
     });
 
+    $router->group(['prefix' => 'yw_dj'], function () use ($router) {
+        $router->post('user', 'Open\YwdjWechatMiniProgram\UserController@reg');
+    });
+
     $router->group(['prefix' => 'yg'], function () use ($router) {
         $router->post('user', 'Open\YgWechatMiniProgram\UserController@reg');
         $router->get('task/callback', 'Open\YgWechatMiniProgram\TaskController@callback');// 阳光任务回调
