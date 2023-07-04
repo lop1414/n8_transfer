@@ -50,7 +50,7 @@ trait Qr
         $productList = (new UnionApiService())->apiGetProduct([
             'cp_type'=> CpTypeEnums::QR,
         ]);
-        return array_column($productList,'id','cp_product_alias');
+        return array_column($productList,null,'cp_product_alias');
     }
 
 }

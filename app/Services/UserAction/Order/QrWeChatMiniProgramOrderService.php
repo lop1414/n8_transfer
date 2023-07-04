@@ -37,7 +37,7 @@ class QrWeChatMiniProgramOrderService extends UserActionAbstract
             foreach ($list['orderList'] as $item){
 
                 $data[] = [
-                    'product_id'    => $this->productMap[$item['pack_appid']],
+                    'product_id'    => $this->productMap[$item['pack_appid']]['id'],
                     'open_id'       => $item['user_id'],
                     'action_time'   => $item['create_time'],
                     'type'          => $this->getType(),

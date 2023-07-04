@@ -50,7 +50,7 @@ class QrWeChatMiniProgramCompleteOrderService extends UserActionAbstract
     public function itemFilter($item): array
     {
         return [
-            'product_id'    => $this->productMap[$item['pack_appid']],
+            'product_id'    => $this->productMap[$item['pack_appid']]['id'],
             'open_id'       => $item['user_id'],
             'action_time'   => $item['pay_time'],
             'type'          => $this->getType(),
