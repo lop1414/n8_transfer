@@ -253,8 +253,8 @@ class UserActionService
                     continue;
                 }
 
-                // 账户级别
-                if(isset($accountLevelCpType[$product['cp_type']])){
+                // 账户级别 true 表示执行过
+                if(isset($accountLevelCpType[$product['cp_type']]) && $accountLevelCpType[$product['cp_type']]){
                     continue;
                 }else{
                     echo "    {$product['cp_type']}\n";
