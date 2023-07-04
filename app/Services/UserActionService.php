@@ -257,7 +257,7 @@ class UserActionService
                 if(isset($accountLevelCpType[$product['cp_type']]) && $accountLevelCpType[$product['cp_type']]){
                     continue;
                 }else{
-                    echo "    {$product['cp_type']}\n";
+//                    echo "    {$product['cp_type']}\n";
 
                     $this->syncByProduct($product,$startTime,$endTime);
                     $accountLevelCpType[$product['cp_type']] = true;
