@@ -37,7 +37,7 @@ class QrWeChatMIniProgramRegService extends UserActionAbstract
                 $item['ua'] = base64_decode($item['user_agent']);
 
                 $data[] = [
-                    'product_id'    => $productMap[$item['pack_appid']],
+                    'product_id'    => $productMap[$item['pack_appid']]['id'],
                     'open_id'       => $item['user_id'],
                     'action_time'   => $item['user_time'],
                     'type'          => $this->getType(),
