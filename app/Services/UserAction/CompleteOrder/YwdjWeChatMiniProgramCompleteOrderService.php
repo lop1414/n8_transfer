@@ -40,9 +40,9 @@ class YwdjWeChatMiniProgramCompleteOrderService extends UserActionAbstract
                 $data[] = $this->itemFilter($item);
             }
 
-            $lastMinId = $tmp['min_id'];
-            $lastMaxId = $tmp['max_id'];
-            $totalCount = $tmp['total_count'];
+            $lastMinId = $tmp['min_id'] ?? null;
+            $lastMaxId = $tmp['max_id'] ?? null;
+            $totalCount = $tmp['total_count'] ?? null;
             $page += 1;
 
         }while($currentTotal < $tmp['total_count']);
