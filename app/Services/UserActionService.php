@@ -23,6 +23,7 @@ use App\Services\UserAction\Order\TwAppOrderService;
 use App\Services\UserAction\Order\TwH5OrderService;
 use App\Services\UserAction\Order\TwKyyOrderService;
 use App\Services\UserAction\Order\YgWeChatMiniProgramOrderService;
+use App\Services\UserAction\Order\YwdjWeChatMiniProgramOrderService;
 use App\Services\UserAction\Order\YwH5OrderService;
 use App\Services\UserAction\Order\YwKyyOrderService;
 use App\Services\UserAction\Order\ZyH5OrderService;
@@ -104,6 +105,7 @@ class UserActionService
             QrWeChatMiniProgramOrderService::class,
             BmdjWeChatMiniProgramOrderService::class,
             YgWeChatMiniProgramOrderService::class,
+            YwdjWeChatMiniProgramOrderService::class
         ];
     }
 
