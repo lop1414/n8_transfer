@@ -74,11 +74,6 @@ class YwdjWeChatMiniProgramOrderService extends UserActionAbstract
             $page += 1;
 
         }while($currentTotal < $tmp['total_count']);
-
-        if(!empty($data)){
-            dump($data);
-        }
-
         return $data;
     }
 
