@@ -33,7 +33,7 @@ class UserController extends BaseController
                 'cp_type'     => $this->cpType,
                 'cp_product_alias' => $requestData['appflag'],
                 'open_id'      => $requestData['guid'],
-                'action_time'  => $time,
+                'action_time'  => date('Y-m-d H:i:s',$time),
                 'type'         => UserActionTypeEnum::REG,
                 'cp_channel_id'=> $requestData['channel_id'],
                 'request_id'   => '',
