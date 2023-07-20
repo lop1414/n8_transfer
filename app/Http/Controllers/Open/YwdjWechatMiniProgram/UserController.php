@@ -27,7 +27,7 @@ class UserController extends BaseController
         try {
             $requestData = $request->all();
 
-            $ua = $requestData['ua'] ?? '';
+            $ua = base64_decode($requestData['ua'] ?? '');
             $data = array_merge([
                 'cp_type'     => $this->cpType,
                 'cp_product_alias' => $requestData['appflag'],
