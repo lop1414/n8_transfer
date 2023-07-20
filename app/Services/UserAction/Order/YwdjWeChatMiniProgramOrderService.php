@@ -26,7 +26,7 @@ class YwdjWeChatMiniProgramOrderService extends UserActionAbstract
     public function getTotal(array $product, string $startTime, string $endTime): ?int
     {
         $ywSdk = $this->getSdk($product);
-        $tmp = $ywSdk->getOrdersByTime($startTime,$endTime);
+        $tmp = $ywSdk->getOrdersByTime($product['cp_product_alias'],$startTime,$endTime);
         return $tmp['total_count'] ?? null;
     }
 
@@ -40,7 +40,7 @@ class YwdjWeChatMiniProgramOrderService extends UserActionAbstract
         $lastMinId = $lastMaxId = $totalCount = null;
         $currentTotal = 0;
         do{
-            $tmp = $ywSdk->getOrdersByTime($startTime,$endTime,$page,$lastMinId,$lastMaxId,$totalCount);
+            $tmp = $ywSdk->getOrdersByTime($product['cp_product_alias'],$startTime,$endTime,$page,$lastMinId,$lastMaxId,$totalCount);
 
             foreach ($tmp['list'] as $item){
                 $currentTotal += 1;
