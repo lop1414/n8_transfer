@@ -26,13 +26,14 @@ class UserController extends BaseController
     public function reg(Request $request){
         try {
             $requestData = $request->all();
+            $time = intval($requestData['time']/10);
 
             $ua = base64_decode($requestData['ua'] ?? '');
             $data = array_merge([
                 'cp_type'     => $this->cpType,
                 'cp_product_alias' => $requestData['appflag'],
                 'open_id'      => $requestData['guid'],
-                'action_time'  => date('Y-m-d H:i:s',$requestData['time']),
+                'action_time'  => $time,
                 'type'         => UserActionTypeEnum::REG,
                 'cp_channel_id'=> $requestData['channel_id'],
                 'request_id'   => '',

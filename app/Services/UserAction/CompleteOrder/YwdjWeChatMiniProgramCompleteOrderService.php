@@ -34,7 +34,8 @@ class YwdjWeChatMiniProgramCompleteOrderService extends UserActionAbstract
         do{
 
             $tmp = $ywSdk->getOrdersByTime($product['cp_product_alias'],$startTime,$endTime,$page,$lastMinId,$lastMaxId,$totalCount,2);
-            foreach ($tmp['list'] as $item){
+            $list = $tmp['list'] ?: [];
+            foreach ($list as $item){
                 $currentTotal += 1;
                 $data[] = $this->itemFilter($item);
             }

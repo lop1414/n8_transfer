@@ -42,7 +42,9 @@ class YwdjWeChatMiniProgramOrderService extends UserActionAbstract
         do{
             $tmp = $ywSdk->getOrdersByTime($product['cp_product_alias'],$startTime,$endTime,$page,$lastMinId,$lastMaxId,$totalCount);
 
-            foreach ($tmp['list'] as $item){
+            $list = $tmp['list'] ?: [];
+
+            foreach ($list as $item){
                 $currentTotal += 1;
                 $data[] = [
                     'open_id'       => $item['guid'],
@@ -72,6 +74,10 @@ class YwdjWeChatMiniProgramOrderService extends UserActionAbstract
             $page += 1;
 
         }while($currentTotal < $tmp['total_count']);
+
+        if(!empty($data)){
+            dump($data);
+        }
 
         return $data;
     }
