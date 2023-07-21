@@ -35,6 +35,10 @@ trait Qr
             5   => OrderTypeEnums::OTHER,
             6   => OrderTypeEnums::OTHER,
             7   => OrderTypeEnums::OTHER,
+            8   => OrderTypeEnums::OTHER,
+            9   => OrderTypeEnums::OTHER,
+            10   => OrderTypeEnums::OTHER,
+            11   => OrderTypeEnums::OTHER,
         ];
         return $orderTypeMap[$orderType];
     }
