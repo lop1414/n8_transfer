@@ -46,6 +46,7 @@ class HsDjGzhOrderService extends UserActionAbstract
             'applet_id' => $product['extends']['applet_id'],
             'show_id' => $product['extends']['show_id'],
             'channel_id' => $product['cp_product_alias'],
+            'limit' => 100
         ];
 
         $data = [];
