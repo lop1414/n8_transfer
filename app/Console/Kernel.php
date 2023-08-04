@@ -110,6 +110,7 @@ class Kernel extends ConsoleKernel
         $schedule->command("sync_user_action --action_type=REG --cp_type=QR --product_type=WECHAT_MINI_PROGRAM --time={$fiveMinuteRange} ")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=BMDJ --product_type=WECHAT_MINI_PROGRAM --time={$fiveMinuteRange} ")->cron('*/5 * * * *');
         $schedule->command("sync_user_action --action_type=REG --cp_type=HS --product_type=DJ_GZH --time={$oneMinuteRange} ")->cron('*/1 * * * *');
+        $schedule->command("sync_user_action --action_type=REG --cp_type=HS --product_type=DJ_GZH --key_suffix=hs_reg_ten_minute_range --time={$tenMinuteRange} ")->cron('*/10 * * * *');
         $schedule->command("sync_user_action --action_type=ORDER --cp_type=HS --product_type=DJ_GZH --time={$oneMinuteRange}")->cron('*/1 * * * *');
 
         $schedule->command("sync_user_action --action_type=ADD_SHORTCUT --cp_type=BM --product_type=KYY --time={$fiveMinuteRange}")->cron('*/5 * * * *');
