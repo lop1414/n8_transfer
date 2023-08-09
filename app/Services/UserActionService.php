@@ -119,8 +119,8 @@ class UserActionService
             YwKyyOrderService::class,
             YwH5OrderService::class,
             FqKyyRegService::class,
-//            HsDjGzhOrderService::class,
-//            HsDjGzhRegService::class,
+            HsDjGzhOrderService::class,
+            HsDjGzhRegService::class,
         ];
     }
 
